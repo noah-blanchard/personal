@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { ActiveSectionProvider } from "@/components/ActiveSectionProvider";
-import { CursorFollower } from "@/components/CursorFollower";
+import { Providers } from "@/components/Providers";
 
 const sans = Inter({
   subsets: ["latin"],
@@ -97,10 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <ActiveSectionProvider>
-          <CursorFollower />
-          {children}
-        </ActiveSectionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

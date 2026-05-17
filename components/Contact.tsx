@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { CopyableEmail } from "./CopyableEmail";
 
 const SOCIALS = [
   { label: "GitHub", href: "#", icon: GitHubIcon },
@@ -50,17 +51,17 @@ export function Contact() {
             no funnel.
           </motion.p>
 
-          <motion.a
-            variants={fade}
-            href="mailto:hello@kairenner.dev"
-            data-magnet
-            className="group mt-10 inline-flex items-center gap-3 font-serif text-3xl text-ink-900 underline decoration-ink-300 decoration-1 underline-offset-[6px] transition-colors hover:text-accent hover:decoration-accent dark:text-ink-50 dark:decoration-ink-700 md:text-5xl"
-          >
-            hello@kairenner.dev
-            <span aria-hidden className="text-accent transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </motion.a>
+          <motion.div variants={fade} className="mt-10">
+            <CopyableEmail
+              email="hello@kairenner.dev"
+              className="group inline-flex items-center gap-3 font-serif text-3xl text-ink-900 underline decoration-ink-300 decoration-1 underline-offset-[6px] transition-colors hover:text-accent hover:decoration-accent dark:text-ink-50 dark:decoration-ink-700 md:text-5xl"
+            >
+              <span>hello@kairenner.dev</span>
+              <span aria-hidden className="text-accent transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </CopyableEmail>
+          </motion.div>
 
           <motion.ul variants={fade} className="mt-14 flex flex-wrap items-center gap-3">
             {SOCIALS.map(({ label, href, icon: Icon }) => (
