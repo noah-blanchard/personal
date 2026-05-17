@@ -60,6 +60,21 @@ export function Terminal({
     if (el) setPos(el.selectionStart ?? el.value.length);
   }, []);
 
+  // Ghost-text suggestion: the completion tail for the current first-token prefix.
+  // Empty when the cursor isn't at the end, when the input already has whitespace,
+  // or when nothing matches. Hidden commands are excluded — discovery stays in `ls`.
+  const suggestion = useMemo(() => {
+    if (!input) return "";
+    if (pos !== input.length) return "";
+    if (/\s/.test(input)) return "";
+    const prefix = input.toLowerCase();
+    const match = commands
+      .filter((c) => !c.hidden)
+      .map((c) => c.name)
+      .find((n) => n.startsWith(prefix) && n !== prefix);
+    return match ? match.slice(input.length) : "";
+  }, [input, pos, commands]);
+
   // Greeting + boot command on very first mount (no persisted scrollback)
   useEffect(() => {
     if (booted.current) return;
@@ -139,9 +154,19 @@ export function Terminal({
         }
         return;
       }
-      // Tab → autocomplete command name (first token only)
+      // Right arrow at end of input accepts the current ghost suggestion (fish-style).
+      if (e.key === "ArrowRight" && suggestion && pos === input.length) {
+        e.preventDefault();
+        setInputAtEnd(input + suggestion);
+        return;
+      }
+      // Tab → accept ghost suggestion, or print multi-match options.
       if (e.key === "Tab") {
         e.preventDefault();
+        if (suggestion) {
+          setInputAtEnd(input + suggestion + " ");
+          return;
+        }
         const parts = input.split(/\s+/);
         if (parts.length > 1) return; // only complete the command, not args
         const prefix = (parts[0] ?? "").toLowerCase();
@@ -150,15 +175,13 @@ export function Terminal({
           .filter((c) => !c.hidden)
           .map((c) => c.name)
           .filter((n) => n.startsWith(prefix));
-        if (matches.length === 1) {
-          setInputAtEnd(matches[0] + " ");
-        } else if (matches.length > 1) {
+        if (matches.length > 1) {
           appendLine("info", matches.join("  "));
         }
         return;
       }
     },
-    [input, history, histIdx, draft, commands, appendLine, execute, setInputAtEnd]
+    [input, pos, suggestion, history, histIdx, draft, commands, appendLine, execute, setInputAtEnd]
   );
 
   const promptUser = useMemo(
@@ -229,6 +252,9 @@ export function Terminal({
                 {input[pos] ?? " "}
               </span>
               <span>{input.slice(pos + 1)}</span>
+              {suggestion && (
+                <span className="text-ink-400/70 dark:text-ink-500/70">{suggestion}</span>
+              )}
             </div>
             <input
               ref={inputRef}

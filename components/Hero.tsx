@@ -104,9 +104,7 @@ export function Hero() {
           </motion.div>
         </div>
       </div>
-
-      <ScrollIndicator />
-
+      
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-ink-200/80 to-transparent dark:via-ink-800/80"
