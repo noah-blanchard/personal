@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useMemo } from "react";
+import { Tag } from "./ui/Tag";
 
 type Group = { title: string; items: string[] };
 
@@ -108,10 +109,9 @@ function Pill({ label }: { label: string }) {
       }}
       className="will-change-transform"
     >
-      <span className="group inline-flex items-center gap-2 rounded-full border hairline bg-ink-100/50 px-3 py-1.5 font-mono text-xs text-ink-700 transition-colors hover:border-accent/60 hover:text-ink-900 dark:bg-ink-900/40 dark:text-ink-300 dark:hover:text-ink-50">
-        <span className="h-1 w-1 rounded-full bg-ink-400 transition-colors group-hover:bg-accent dark:bg-ink-600" />
+      <Tag size="md" withDot>
         {label}
-      </span>
+      </Tag>
     </motion.li>
   );
 }

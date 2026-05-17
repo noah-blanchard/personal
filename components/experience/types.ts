@@ -9,6 +9,8 @@ export type Entry = {
   end?: string;         // "YYYY-MM"; omitted = ongoing
   location?: string;
   description?: string; // one sentence, pinned mode
+  did?: string[];       // what I did / responsibilities (bullets)
+  learned?: string[];   // what I learned (bullets)
   tags?: string[];
   href?: string;
 };

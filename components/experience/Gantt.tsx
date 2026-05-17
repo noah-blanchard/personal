@@ -2,15 +2,15 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { forwardRef } from "react";
-import type { Entry, Lane } from "./types";
+import type { Entry } from "./types";
 import { LANE_META, LANE_ORDER } from "./types";
 import {
   indexToX,
   monthIndex,
-  todayIndex,
   yearTicks,
   type GanttDomain,
 } from "./useGantt";
+import { Legend } from "./Legend";
 
 type Props = {
   entries: Entry[];
@@ -20,105 +20,131 @@ type Props = {
   onPin: (id: string | null) => void;
 };
 
+// Gutter widths kept in one place so axis spacer + lane labels align perfectly.
+const GUTTER = "w-14 sm:w-16";
+
 export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
   { entries, domain, playhead, pinnedId, onPin },
   surfaceRef
 ) {
   const reduced = useReducedMotion();
   const playheadX = indexToX(playhead, domain) * 100;
+  const todayYear = Math.floor(domain.end / 12);
 
   return (
     <div className="rounded-lg border hairline bg-ink-50/50 p-4 dark:bg-ink-900/30 sm:p-6">
       <div className="overflow-x-auto">
-        <div
-          ref={surfaceRef}
-          tabIndex={0}
-          role="slider"
-          aria-label="Scrub through career history"
-          aria-valuemin={domain.start}
-          aria-valuemax={domain.end}
-          aria-valuenow={playhead}
-          className="relative min-w-[680px] cursor-ew-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
-        >
-          {/* Year axis */}
-          <div className="relative h-7 select-none border-b hairline">
-            {yearTicks(domain).map((idx) => {
-              const x = indexToX(idx, domain) * 100;
-              const year = Math.floor(idx / 12);
-              const isFirst = idx === domain.start;
-              const isLast = idx === yearTicks(domain).at(-1);
-              const showLabel = isFirst || isLast || year % 2 === 0;
-              return (
-                <div
-                  key={idx}
-                  className="absolute top-0 flex h-full -translate-x-1/2 flex-col items-center"
-                  style={{ left: `${x}%` }}
-                >
-                  {showLabel && (
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
-                      {year}
-                    </span>
-                  )}
-                  <span className="mt-auto h-1 w-px bg-ink-300 dark:bg-ink-700" />
-                </div>
-              );
-            })}
-            {/* today marker */}
-            <div className="absolute right-0 top-1/2 flex -translate-y-1/2 items-center gap-1">
-              <span
-                className="h-1.5 w-1.5 rounded-full bg-accent"
-                aria-hidden
-              />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
-                today
-              </span>
+        <div className="min-w-[680px]">
+          {/* Axis row — gutter spacer + scrub-aligned ticks */}
+          <div className="flex h-7 select-none">
+            <div className={`${GUTTER} shrink-0`} />
+            <div className="relative flex-1 border-b hairline">
+              {yearTicks(domain).map((idx) => {
+                const x = indexToX(idx, domain) * 100;
+                const year = Math.floor(idx / 12);
+                // Hide labels too close to the right edge — the merged
+                // "today" group below carries that year.
+                const tooCloseToToday = x > 90;
+                const showLabel =
+                  !tooCloseToToday &&
+                  (idx === domain.start || year % 2 === 0);
+                return (
+                  <div
+                    key={idx}
+                    className="absolute top-0 flex h-full -translate-x-1/2 flex-col items-center"
+                    style={{ left: `${x}%` }}
+                  >
+                    {showLabel && (
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
+                        {year}
+                      </span>
+                    )}
+                    <span className="mt-auto h-1 w-px bg-ink-300 dark:bg-ink-700" />
+                  </div>
+                );
+              })}
+              {/* Right-edge: today's year + dot + label, as one group. */}
+              <div className="absolute right-0 top-0 flex h-full translate-x-0 items-center gap-1.5">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
+                  {todayYear}
+                </span>
+                <span
+                  className="h-1.5 w-1.5 rounded-full bg-accent"
+                  aria-hidden
+                />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
+                  today
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Lanes */}
-          <div className="relative">
-            {LANE_ORDER.map((lane) => (
-              <LaneRow
-                key={lane}
-                lane={lane}
-                entries={entries.filter((e) => e.lane === lane)}
-                domain={domain}
-                playhead={playhead}
-                pinnedId={pinnedId}
-                onPin={onPin}
-                reduced={Boolean(reduced)}
-              />
-            ))}
+          {/* Body — gutter labels + scrub surface */}
+          <div className="flex">
+            {/* Lane labels column */}
+            <div className={`${GUTTER} shrink-0`}>
+              {LANE_ORDER.map((lane) => (
+                <div
+                  key={lane}
+                  className="flex h-10 items-center pl-1 sm:h-12"
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
+                    {LANE_META[lane].label}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-            {/* Playhead — spans all lanes */}
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 z-20"
-              animate={{ left: `${playheadX}%` }}
-              transition={
-                reduced
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 420, damping: 36, mass: 0.4 }
-              }
+            {/* Surface column — everything that scrubs */}
+            <div
+              ref={surfaceRef}
+              tabIndex={0}
+              role="slider"
+              aria-label="Scrub through career history"
+              aria-valuemin={domain.start}
+              aria-valuemax={domain.end}
+              aria-valuenow={playhead}
+              className="relative flex-1 cursor-ew-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
             >
-              <div className="absolute inset-y-0 left-0 w-px -translate-x-1/2 bg-accent/70" />
-              <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-2/3">
-                <div className="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_0_3px_rgba(163,230,53,0.18)]" />
-              </div>
-            </motion.div>
+              {LANE_ORDER.map((lane) => (
+                <LaneRow
+                  key={lane}
+                  entries={entries.filter((e) => e.lane === lane)}
+                  domain={domain}
+                  playhead={playhead}
+                  pinnedId={pinnedId}
+                  onPin={onPin}
+                  reduced={Boolean(reduced)}
+                />
+              ))}
+
+              {/* Playhead — spans all lanes within this surface */}
+              <motion.div
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 z-20"
+                animate={{ left: `${playheadX}%` }}
+                transition={
+                  reduced
+                    ? { duration: 0 }
+                    : { type: "spring", stiffness: 420, damping: 36, mass: 0.4 }
+                }
+              >
+                <div className="absolute inset-y-0 left-0 w-px -translate-x-1/2 bg-accent/70" />
+                <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-2/3">
+                  <div className="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_0_3px_rgba(163,230,53,0.18)]" />
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
 
-      <p className="mt-4 font-mono text-[10px] uppercase tracking-widest text-ink-400 dark:text-ink-500">
-        drag the playhead · ← → step month · shift+← → step year · tab cycle entries
-      </p>
+      <Legend />
     </div>
   );
 });
 
 function LaneRow({
-  lane,
   entries,
   domain,
   playhead,
@@ -126,7 +152,6 @@ function LaneRow({
   onPin,
   reduced,
 }: {
-  lane: Lane;
   entries: Entry[];
   domain: GanttDomain;
   playhead: number;
@@ -136,12 +161,6 @@ function LaneRow({
 }) {
   return (
     <div className="relative h-10 border-b hairline last:border-b-0 sm:h-12">
-      <div className="pointer-events-none absolute left-0 top-1/2 z-10 -translate-y-1/2 select-none pl-1">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
-          {LANE_META[lane].label}
-        </span>
-      </div>
-
       {entries.map((entry) => {
         const s = monthIndex(entry.start);
         const f = entry.end ? monthIndex(entry.end) : domain.end;
@@ -206,6 +225,7 @@ function Bar({
       transition={{ duration: 0.4, ease: "easeOut" }}
       style={{ left: `${x}%`, width: `${w}%` }}
       data-magnet
+      data-gantt-bar
       className={[
         "absolute top-1/2 flex h-5 -translate-y-1/2 items-center overflow-hidden rounded-[3px] border px-1.5 text-left transition-colors sm:h-6",
         highlight
@@ -232,3 +252,4 @@ function Bar({
     </motion.button>
   );
 }
+

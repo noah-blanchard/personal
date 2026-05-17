@@ -119,6 +119,11 @@ export function useGanttScrub({ entries, surfaceRef }: Options) {
 
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
+      // Clicks on bars should pin, not start a scrub. Without this, the
+      // surface's pointer capture steals the up-event from the bar and the
+      // click never fires (especially on touch).
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("[data-gantt-bar]")) return;
       setDragging(true);
       setPinnedId(null);
       el.setPointerCapture(e.pointerId);

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Tag } from "./ui/Tag";
 
 export type Project = {
   index: string;       // "01", "02", ...
@@ -118,11 +119,8 @@ export function ProjectCard({ project }: { project: Project }) {
             ].join(" ")}
           >
             {project.stack.map((s) => (
-              <li
-                key={s}
-                className="rounded-full border hairline px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-500 dark:text-ink-400"
-              >
-                {s}
+              <li key={s}>
+                <Tag size="sm">{s}</Tag>
               </li>
             ))}
           </ul>

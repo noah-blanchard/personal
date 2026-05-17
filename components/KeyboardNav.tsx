@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Kbd } from "./ui/Kbd";
 
 type Target = "top" | "work" | "about" | "experience" | "tech" | "contact";
 
@@ -182,10 +183,3 @@ function ShortcutKeys({ keys }: { keys: string }) {
   );
 }
 
-function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd className="rounded border hairline bg-ink-100 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-ink-700 dark:bg-ink-800 dark:text-ink-200">
-      {children}
-    </kbd>
-  );
-}
