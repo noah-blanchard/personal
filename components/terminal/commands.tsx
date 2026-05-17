@@ -1,5 +1,7 @@
 import type { Command } from "./types";
 import { randomFortune } from "./fortune";
+import { AsciiAnimation } from "./AsciiAnimation";
+import { ANIMATIONS, findAnimation, randomAnimation } from "./animations";
 
 const SOCIALS: Record<string, string> = {
   gh: "https://github.com/",
@@ -39,6 +41,12 @@ const FILES: Record<string, string[]> = {
     "backend   · go · node · rust · postgres · clickhouse",
     "infra     · kubernetes · terraform · aws · cloudflare",
     "tooling   · neovim · tmux · bun · opentelemetry",
+  ],
+  "surprise.sh": [
+    "#!/bin/bash",
+    "# surprise.sh — runs a small ascii animation",
+    `# usage: ./surprise.sh [${ANIMATIONS.map((a) => a.name).join("|")}]`,
+    "echo \"you have to run me, not read me.\"",
   ],
 };
 
@@ -91,7 +99,12 @@ export const COMMANDS: Command[] = [
         for (const p of PROJECTS) ctx.print(`  ${p.year}  ${p.name}  ${p.blurb}`);
         return;
       }
-      ctx.print("work/  about/  tech/  contact/");
+      ctx.print(
+        <>
+          work/  about/  tech/  contact/{"  "}
+          <span className="text-accent">surprise.sh</span>
+        </>
+      );
     },
   },
   {
@@ -157,7 +170,7 @@ export const COMMANDS: Command[] = [
   {
     name: "cat",
     description: "print a file",
-    usage: "cat <bio|about.md|currently|stack>",
+    usage: "cat <bio|about.md|currently|stack|surprise.sh>",
     run: (ctx, args) => {
       const file = args[0];
       if (!file) {
@@ -284,6 +297,23 @@ export const COMMANDS: Command[] = [
         return;
       }
       ctx.print(randomFortune());
+    },
+  },
+  {
+    name: "./surprise.sh",
+    aliases: ["surprise.sh", "surprise", "./surprise"],
+    description: "run a small ascii animation",
+    usage: `./surprise.sh [${ANIMATIONS.map((a) => a.name).join("|")}]`,
+    hidden: true,
+    run: (ctx, args) => {
+      const requested = args[0];
+      const anim = requested ? findAnimation(requested) : randomAnimation();
+      if (!anim) {
+        ctx.print(`./surprise.sh: unknown animation: ${requested}`);
+        ctx.print(`available: ${ANIMATIONS.map((a) => a.name).join("  ")}`);
+        return;
+      }
+      ctx.print(<AsciiAnimation frames={anim.frames} intervalMs={anim.intervalMs} />);
     },
   },
 ];

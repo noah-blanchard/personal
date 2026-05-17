@@ -74,29 +74,7 @@ function NavLink({ id, label, active }: { id: SectionId; label: string; active: 
       className="relative px-3 py-2 text-sm text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-300 dark:hover:text-ink-50"
       aria-current={active ? "true" : undefined}
     >
-      <span className="relative inline-flex items-center gap-2">
-        {/* Active-section indicator: a rotating bracket pair, not an underline */}
-        {active && (
-          <motion.span
-            aria-hidden
-            layoutId="nav-indicator"
-            className="pointer-events-none absolute -inset-x-1 inset-y-1 flex items-center justify-between font-mono text-[10px] leading-none text-accent"
-            transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          >
-            <motion.span
-              animate={{ rotate: [0, 90, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              [
-            </motion.span>
-            <motion.span
-              animate={{ rotate: [0, -90, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              ]
-            </motion.span>
-          </motion.span>
-        )}
+      <span className="relative inline-flex items-center gap-4">
         <span className={active ? "text-ink-900 dark:text-ink-50" : ""}>{label}</span>
       </span>
     </a>

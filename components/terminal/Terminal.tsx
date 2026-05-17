@@ -33,12 +33,32 @@ export function Terminal({
   const { lines, history, execute, appendLine, commands } = useTerminal();
 
   const [input, setInput] = useState("");
+  const [pos, setPos] = useState(0);
+  const [focused, setFocused] = useState(false);
   const [histIdx, setHistIdx] = useState<number | null>(null);
   const [draft, setDraft] = useState("");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const booted = useRef(false);
+
+  // Programmatic value update — used for history nav and autocomplete.
+  // Places the caret at end after React commits the new value.
+  const setInputAtEnd = useCallback((val: string) => {
+    setInput(val);
+    setPos(val.length);
+    requestAnimationFrame(() => {
+      const el = inputRef.current;
+      if (el) el.setSelectionRange(val.length, val.length);
+    });
+  }, []);
+
+  // Sync caret position from the real input — called on click/keyup/select
+  // so left/right arrow, home/end, and pointer clicks keep the block aligned.
+  const syncCaret = useCallback(() => {
+    const el = inputRef.current;
+    if (el) setPos(el.selectionStart ?? el.value.length);
+  }, []);
 
   // Greeting + boot command on very first mount (no persisted scrollback)
   useEffect(() => {
@@ -78,7 +98,7 @@ export function Terminal({
       if (e.ctrlKey && e.key.toLowerCase() === "c" && !window.getSelection()?.toString()) {
         e.preventDefault();
         if (input) appendLine("echo", `${input}^C`);
-        setInput("");
+        setInputAtEnd("");
         setHistIdx(null);
         return;
       }
@@ -86,7 +106,7 @@ export function Terminal({
       if (e.key === "Enter") {
         e.preventDefault();
         const val = input;
-        setInput("");
+        setInputAtEnd("");
         setHistIdx(null);
         setDraft("");
         void execute(val);
@@ -99,10 +119,10 @@ export function Terminal({
         if (histIdx === null) {
           setDraft(input);
           setHistIdx(history.length - 1);
-          setInput(history[history.length - 1] ?? "");
+          setInputAtEnd(history[history.length - 1] ?? "");
         } else if (histIdx > 0) {
           setHistIdx(histIdx - 1);
-          setInput(history[histIdx - 1] ?? "");
+          setInputAtEnd(history[histIdx - 1] ?? "");
         }
         return;
       }
@@ -112,10 +132,10 @@ export function Terminal({
         const next = histIdx + 1;
         if (next >= history.length) {
           setHistIdx(null);
-          setInput(draft);
+          setInputAtEnd(draft);
         } else {
           setHistIdx(next);
-          setInput(history[next] ?? "");
+          setInputAtEnd(history[next] ?? "");
         }
         return;
       }
@@ -131,14 +151,14 @@ export function Terminal({
           .map((c) => c.name)
           .filter((n) => n.startsWith(prefix));
         if (matches.length === 1) {
-          setInput(matches[0] + " ");
+          setInputAtEnd(matches[0] + " ");
         } else if (matches.length > 1) {
           appendLine("info", matches.join("  "));
         }
         return;
       }
     },
-    [input, history, histIdx, draft, commands, appendLine, execute]
+    [input, history, histIdx, draft, commands, appendLine, execute, setInputAtEnd]
   );
 
   const promptUser = useMemo(
@@ -189,19 +209,49 @@ export function Terminal({
         {/* Live prompt + input */}
         <div className="mt-1 flex items-baseline">
           {promptUser}
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={onKeyDown}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            aria-label="Terminal input"
-            className="flex-1 border-0 bg-transparent mx-1 p-0 font-mono text-[13px] text-ink-900 caret-accent outline-none focus:ring-0 dark:text-ink-50"
-          />
+          <div className="relative mx-1 flex-1 font-mono text-[13px] leading-relaxed">
+            {/* Shadow layer: visible text + the block cursor. The real input
+                below is fully transparent and captures all interaction. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 whitespace-pre text-ink-900 dark:text-ink-50"
+            >
+              <span>{input.slice(0, pos)}</span>
+              <span
+                className={[
+                  "inline-block",
+                  focused
+                    ? "animate-caret-blink bg-accent text-ink-950"
+                    : "outline outline-1 -outline-offset-[1px] outline-ink-400 dark:outline-ink-600",
+                ].join(" ")}
+                style={{ minWidth: "1ch" }}
+              >
+                {input[pos] ?? " "}
+              </span>
+              <span>{input.slice(pos + 1)}</span>
+            </div>
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
+                setPos(e.target.selectionStart ?? e.target.value.length);
+              }}
+              onKeyDown={onKeyDown}
+              onKeyUp={syncCaret}
+              onClick={syncCaret}
+              onSelect={syncCaret}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              aria-label="Terminal input"
+              className="relative z-10 w-full border-0 bg-transparent p-0 font-mono text-[13px] text-transparent caret-transparent outline-none focus:ring-0"
+            />
+          </div>
         </div>
       </div>
     </div>
