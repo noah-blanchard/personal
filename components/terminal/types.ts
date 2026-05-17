@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 export type CommandOutput = string | string[] | ReactNode;
 
-export type SectionId = "top" | "work" | "about" | "tech" | "contact";
+export type SectionId = "top" | "work" | "about" | "experience" | "tech" | "contact";
 
 export type CommandCtx = {
   print: (line: CommandOutput) => void;

@@ -9,6 +9,7 @@ import { MobileDrawer } from "./MobileDrawer";
 const LINKS: { id: SectionId; label: string }[] = [
   { id: "work", label: "Work" },
   { id: "about", label: "About" },
+  { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },
 ];
 

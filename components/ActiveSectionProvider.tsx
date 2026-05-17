@@ -9,9 +9,9 @@ import {
   type ReactNode,
 } from "react";
 
-export type SectionId = "work" | "about" | "tech" | "contact";
+export type SectionId = "work" | "about" | "experience" | "tech" | "contact";
 
-const SECTION_IDS: SectionId[] = ["work", "about", "tech", "contact"];
+const SECTION_IDS: SectionId[] = ["work", "about", "experience", "tech", "contact"];
 
 type Ctx = { active: SectionId | null };
 const ActiveSectionContext = createContext<Ctx>({ active: null });

@@ -3,12 +3,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Target = "top" | "work" | "about" | "tech" | "contact";
+type Target = "top" | "work" | "about" | "experience" | "tech" | "contact";
 
 const SHORTCUTS: { keys: string; label: string; target: Target }[] = [
   { keys: "g g", label: "Top", target: "top" },
   { keys: "g w", label: "Work", target: "work" },
   { keys: "g a", label: "About", target: "about" },
+  { keys: "g e", label: "Experience", target: "experience" },
   { keys: "g t", label: "Tech", target: "tech" },
   { keys: "g c", label: "Contact", target: "contact" },
 ];
@@ -69,6 +70,7 @@ export function KeyboardNav() {
           g: "top",
           w: "work",
           a: "about",
+          e: "experience",
           t: "tech",
           c: "contact",
         };

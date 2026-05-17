@@ -101,7 +101,7 @@ export const COMMANDS: Command[] = [
       }
       ctx.print(
         <>
-          work/  about/  tech/  contact/{"  "}
+          work/  about/  experience/  tech/  contact/{"  "}
           <span className="text-accent">surprise.sh</span>
         </>
       );
@@ -113,13 +113,14 @@ export const COMMANDS: Command[] = [
     usage: "cd <work|about|tech|contact|/>",
     run: (ctx, args) => {
       const target = (args[0] ?? "").replace(/\/$/, "");
-      const map: Record<string, "top" | "work" | "about" | "tech" | "contact"> = {
+      const map: Record<string, "top" | "work" | "about" | "experience" | "tech" | "contact"> = {
         "": "top",
         "/": "top",
         "~": "top",
         "..": "top",
         "work": "work",
         "about": "about",
+        "experience": "experience",
         "tech": "tech",
         "contact": "contact",
       };
@@ -194,6 +195,15 @@ export const COMMANDS: Command[] = [
       ctx.print(email);
       const ok = await ctx.copy(email);
       if (ok) ctx.toast("copied — drop me a line.");
+    },
+  },
+  {
+    name: "timeline",
+    description: "jump to the experience timeline",
+    aliases: ["experience"],
+    run: (ctx) => {
+      ctx.navigate("experience");
+      ctx.print("→ scrubbing through history");
     },
   },
   {
