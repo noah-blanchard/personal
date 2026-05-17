@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-900 font-sans antialiased;
+    @apply selection:bg-accent/30 selection:text-ink-950;
+  }
+
+  html.dark body {
+    @apply bg-ink-950 text-ink-100;
+    @apply selection:bg-accent/40 selection:text-ink-950;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-ink-50;
+    border-radius: 2px;
+  }
+  html.dark :focus-visible {
+    @apply ring-offset-ink-950;
+  }
+
+  /* Suppress in-page scrollbar shift when modals open */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .container-grid {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .hairline {
+    @apply border-ink-200/80 dark:border-ink-800/80;
+  }
+}

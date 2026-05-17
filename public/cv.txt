@@ -1,0 +1,1 @@
+Placeholder CV. Replace with cv.pdf and update the link in components/Hero.tsx.
