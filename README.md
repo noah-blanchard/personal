@@ -5,8 +5,8 @@ A single-page personal site for a senior fullstack engineer. Next.js App Router,
 ## Run locally
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Then open <http://localhost:3000>.
@@ -14,7 +14,7 @@ Then open <http://localhost:3000>.
 Production smoke test:
 
 ```bash
-npm run build && npm start
+bun run build && bun run start
 ```
 
 ## What's in here

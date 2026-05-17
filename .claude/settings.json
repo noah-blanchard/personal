@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bun pm *)"
+      "Bash(bun pm *)",
+      "Bash(bun install *)",
+      "Bash(bun run *)"
     ]
   }
 }
