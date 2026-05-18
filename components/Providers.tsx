@@ -1,14 +1,35 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { ToasterProvider, useToast } from "./Toaster";
-import { TerminalProvider } from "./terminal/TerminalProvider";
+import { TerminalProvider, useTerminal } from "./terminal/TerminalProvider";
 import { CommandPalette } from "./terminal/CommandPalette";
 import { KeyboardNav } from "./KeyboardNav";
 import { KonamiListener } from "./KonamiListener";
 import { ScrollProgress } from "./ScrollProgress";
 import { CursorFollower } from "./CursorFollower";
 import { ActiveSectionProvider } from "./ActiveSectionProvider";
+import { NeonFluidBackground } from "./NeonFluidBackground";
+import { MatrixBackground } from "./MatrixBackground";
+
+function BackgroundEffectLayer() {
+  const { features } = useTerminal();
+  return (
+    <>
+      <NeonFluidBackground active={features.bgEffect === "neon"} />
+      <MatrixBackground active={features.bgEffect === "matrix"} />
+    </>
+  );
+}
+
+function GlitchLayer() {
+  const { features } = useTerminal();
+  useEffect(() => {
+    document.body.classList.toggle("glitch-active", features.glitch);
+    return () => { document.body.classList.remove("glitch-active"); };
+  }, [features.glitch]);
+  return null;
+}
 
 function TerminalAndExtras({ children }: { children: ReactNode }) {
   const toast = useToast();
@@ -19,6 +40,8 @@ function TerminalAndExtras({ children }: { children: ReactNode }) {
       <KeyboardNav />
       <KonamiListener />
       <ScrollProgress />
+      <BackgroundEffectLayer />
+      <GlitchLayer />
     </TerminalProvider>
   );
 }

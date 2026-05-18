@@ -34,7 +34,7 @@ export function Terminal({
   const t = useTranslations("terminal");
   const titleText = title ?? t("title");
   const greetingLines: ReactNode[] = greeting ?? [t("boot")];
-  const { lines, history, execute, appendLine, commands } = useTerminal();
+  const { lines, history, execute, appendLine, commands, cwd } = useTerminal();
 
   const [input, setInput] = useState("");
   const [pos, setPos] = useState(0);
@@ -194,10 +194,11 @@ export function Terminal({
         <span className="text-accent">kai</span>
         <span className="text-ink-500">@</span>
         <span className="text-ink-700 dark:text-ink-300">berlin</span>
-        <span className="text-ink-500"> $ </span>
+        <span className="text-ink-500"> {cwd} </span>
+        <span className="text-ink-500">$ </span>
       </span>
     ),
-    []
+    [cwd]
   );
 
   return (

@@ -5,6 +5,10 @@ export type CommandOutput = string | string[] | ReactNode;
 
 export type SectionId = "top" | "work" | "about" | "experience" | "tech" | "contact";
 
+export type BgEffect = "none" | "neon" | "matrix";
+
+export type Cwd = "~" | "~/fun-stuff";
+
 /**
  * Translate a key under the `terminal` namespace.
  * Mirrors `useTranslations("terminal")` from next-intl, but typed as a plain
@@ -23,10 +27,14 @@ export type CommandCtx = {
   toast: (msg: string) => void;
   history: readonly string[];
   commands: readonly Command[];
-  features: { fortune: boolean };
+  features: { fortune: boolean; bgEffect: BgEffect; glitch: boolean };
   locale: Locale;
   /** Translate a key under the `terminal` namespace. */
   t: TerminalT;
+  cwd: Cwd;
+  setCwd: (path: Cwd) => void;
+  setBgEffect: (effect: BgEffect) => void;
+  setGlitch: (val: boolean) => void;
 };
 
 export type Command = {

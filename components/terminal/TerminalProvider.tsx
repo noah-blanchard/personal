@@ -16,8 +16,10 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { COMMANDS } from "./commands";
 import { parse } from "./parse";
 import type {
+  BgEffect,
   CommandCtx,
   CommandOutput,
+  Cwd,
   OutputLine,
   SectionId,
   TerminalT,
@@ -29,7 +31,7 @@ const STORAGE_HISTORY = "term:history";
 const STORAGE_FEATURES = "term:features";
 const MAX_PERSIST_LINES = 500;
 
-type Features = { fortune: boolean };
+type Features = { fortune: boolean; bgEffect: BgEffect; glitch: boolean };
 type ToastFn = (msg: string) => void;
 
 type TerminalCtxValue = {
@@ -42,6 +44,10 @@ type TerminalCtxValue = {
   reset: () => void;
   unlock: (feature: keyof Features) => void;
   commands: typeof COMMANDS;
+  cwd: Cwd;
+  setCwd: (path: Cwd) => void;
+  setBgEffect: (effect: BgEffect) => void;
+  setGlitch: (val: boolean) => void;
 };
 
 const TerminalCtx = createContext<TerminalCtxValue | null>(null);
@@ -74,7 +80,8 @@ export function TerminalProvider({
 }) {
   const [lines, setLines] = useState<OutputLine[]>([]);
   const [history, setHistory] = useState<string[]>([]);
-  const [features, setFeatures] = useState<Features>({ fortune: false });
+  const [features, setFeatures] = useState<Features>({ fortune: false, bgEffect: "none", glitch: false });
+  const [cwd, setCwd] = useState<Cwd>("~");
   const hydrated = useRef(false);
 
   const locale = useLocale() as Locale;
@@ -92,7 +99,7 @@ export function TerminalProvider({
   useEffect(() => {
     const persistedLines = loadJSON<OutputLine[]>(STORAGE_LINES, []);
     const persistedHistory = loadJSON<string[]>(STORAGE_HISTORY, []);
-    const persistedFeatures = loadJSON<Features>(STORAGE_FEATURES, { fortune: false });
+    const persistedFeatures = loadJSON<Features>(STORAGE_FEATURES, { fortune: false, bgEffect: "none", glitch: false });
     setLines(persistedLines);
     setHistory(persistedHistory);
     setFeatures(persistedFeatures);
@@ -133,13 +140,23 @@ export function TerminalProvider({
     setFeatures((prev) => ({ ...prev, [feature]: true }));
   }, []);
 
+  const setBgEffect = useCallback((effect: BgEffect) => {
+    setFeatures((prev) => ({ ...prev, bgEffect: effect }));
+  }, []);
+
+  const setGlitch = useCallback((val: boolean) => {
+    setFeatures((prev) => ({ ...prev, glitch: val }));
+  }, []);
+
   // Refs keep ctx fresh without re-creating execute on every state change.
   const historyRef = useRef(history);
   const featuresRef = useRef(features);
   const localeRef = useRef(locale);
+  const cwdRef = useRef(cwd);
   useEffect(() => { historyRef.current = history; }, [history]);
   useEffect(() => { featuresRef.current = features; }, [features]);
   useEffect(() => { localeRef.current = locale; }, [locale]);
+  useEffect(() => { cwdRef.current = cwd; }, [cwd]);
 
   const setLocale = useCallback(
     (next: Locale) => {
@@ -216,6 +233,10 @@ export function TerminalProvider({
         features: featuresRef.current,
         locale: localeRef.current,
         t,
+        cwd: cwdRef.current,
+        setCwd,
+        setBgEffect,
+        setGlitch,
       };
 
       try {
@@ -224,7 +245,7 @@ export function TerminalProvider({
         appendLine("err", `error: ${err instanceof Error ? err.message : String(err)}`);
       }
     },
-    [appendLine, clear, toast, t, setLocale]
+    [appendLine, clear, toast, t, setLocale, setCwd, setBgEffect, setGlitch]
   );
 
   const value = useMemo<TerminalCtxValue>(
@@ -238,8 +259,12 @@ export function TerminalProvider({
       reset,
       unlock,
       commands: COMMANDS,
+      cwd,
+      setCwd,
+      setBgEffect,
+      setGlitch,
     }),
-    [lines, history, features, execute, clear, appendLine, reset, unlock]
+    [lines, history, features, execute, clear, appendLine, reset, unlock, cwd, setCwd, setBgEffect, setGlitch]
   );
 
   return <TerminalCtx.Provider value={value}>{children}</TerminalCtx.Provider>;

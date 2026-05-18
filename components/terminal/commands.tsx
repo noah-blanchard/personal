@@ -19,7 +19,10 @@ const OPEN_TARGETS: Record<string, string> = {
 
 // `cat` virtual files. Names are stable across locales; contents come from
 // content/* and are picked via locale at run time.
-const FILE_KEYS = ["bio", "about.md", "currently", "stack", "surprise.sh"] as const;
+const FILE_KEYS = [
+  "bio", "about.md", "currently", "stack", "surprise.sh",
+  "fun-stuff/experiment.sh", "fun-stuff/hack.sh", "fun-stuff/matrix.sh", "fun-stuff/glitch.sh",
+] as const;
 type FileKey = (typeof FILE_KEYS)[number];
 
 function fileContent(key: FileKey, locale: Locale): string[] {
@@ -61,6 +64,42 @@ function fileContent(key: FileKey, locale: Locale): string[] {
         locale === "fr"
           ? 'echo "il faut me lancer, pas me lire."'
           : 'echo "you have to run me, not read me."',
+      ];
+    case "fun-stuff/experiment.sh":
+      return [
+        "#!/bin/bash",
+        locale === "fr"
+          ? "# experiment.sh — surcharge le fond avec un plasma néon animé"
+          : "# experiment.sh — overrides the background with animated neon plasma",
+        "# WARNING: may cause involuntary staring at the screen.",
+        locale === "fr"
+          ? 'echo "il faut me lancer, pas me lire."'
+          : 'echo "you have to run me, not read me."',
+      ];
+    case "fun-stuff/hack.sh":
+      return [
+        "#!/bin/bash",
+        locale === "fr"
+          ? "# hack.sh — initialise le protocole d'intrusion"
+          : "# hack.sh — initializes the breach protocol",
+        'echo "you have to run me, not read me."',
+      ];
+    case "fun-stuff/matrix.sh":
+      return [
+        "#!/bin/bash",
+        locale === "fr"
+          ? "# matrix.sh — il n'y a pas de cuillère"
+          : "# matrix.sh — there is no spoon",
+        'echo "you have to run me, not read me."',
+      ];
+    case "fun-stuff/glitch.sh":
+      return [
+        "#!/bin/bash",
+        locale === "fr"
+          ? "# glitch.sh — corrompt le rendu visuel"
+          : "# glitch.sh — corrupts the visual renderer",
+        "# SIDE EFFECTS: reality may flicker.",
+        'echo "you have to run me, not read me."',
       ];
   }
 }
@@ -120,11 +159,27 @@ export const COMMANDS: Command[] = [
         }
         return;
       }
+      if (target === "fun-stuff" || ctx.cwd === "~/fun-stuff") {
+        ctx.print(
+          <>
+            <span className="text-accent">experiment.sh</span>
+            {"  "}
+            <span className="text-accent">hack.sh</span>
+            {"  "}
+            <span className="text-accent">matrix.sh</span>
+            {"  "}
+            <span className="text-accent">glitch.sh</span>
+          </>
+        );
+        return;
+      }
       ctx.print(
         <>
           {ctx.t("ls.directories")}
           {"  "}
           <span className="text-accent">surprise.sh</span>
+          {"  "}
+          <span className="text-[#00fff5]">fun-stuff/</span>
         </>
       );
     },
@@ -132,9 +187,20 @@ export const COMMANDS: Command[] = [
   {
     name: "cd",
     description: { en: "scroll to a section", fr: "défiler jusqu'à une section" },
-    usage: "cd <work|about|experience|tech|contact|/>",
+    usage: "cd <work|about|experience|tech|contact|fun-stuff|/>",
     run: (ctx, args) => {
       const target = (args[0] ?? "").replace(/\/$/, "");
+
+      if (target === "fun-stuff") {
+        ctx.setCwd("~/fun-stuff");
+        return;
+      }
+
+      if (ctx.cwd === "~/fun-stuff" && (target === ".." || target === "~" || target === "" || target === "/")) {
+        ctx.setCwd("~");
+        return;
+      }
+
       const map: Record<string, "top" | "work" | "about" | "experience" | "tech" | "contact"> = {
         "": "top",
         "/": "top",
@@ -352,6 +418,103 @@ export const COMMANDS: Command[] = [
         return;
       }
       ctx.print(randomFortune(ctx.locale));
+    },
+  },
+  {
+    name: "./experiment.sh",
+    aliases: ["./fun-stuff/experiment.sh", "experiment.sh"],
+    description: { en: "activate neon plasma background", fr: "activer le fond plasma néon" },
+    hidden: true,
+    run: async (ctx, args) => {
+      if (args[0] === "--off" || ctx.features.bgEffect === "neon") {
+        ctx.setBgEffect("none");
+        ctx.print(ctx.locale === "fr" ? "[  OK  ] Fond réinitialisé." : "[  OK  ] Background restored.");
+        return;
+      }
+      const delay = (ms: number) => new Promise<void>((res) => setTimeout(res, ms));
+      ctx.print(ctx.locale === "fr" ? "[....] Initialisation du sous-système néon..." : "[....] Initializing neon subsystem...");
+      await delay(380);
+      ctx.print("[  OK  ] Kernel neon module loaded.");
+      await delay(260);
+      ctx.print("[  OK  ] Chromatic blob renderer ready.");
+      await delay(300);
+      ctx.print("[  OK  ] Fluid dynamics engine started.");
+      await delay(220);
+      ctx.setBgEffect("neon");
+      ctx.print(
+        ctx.locale === "fr"
+          ? "> Fond surchargé. Lance ./experiment.sh pour désactiver."
+          : "> Background overridden. Run ./experiment.sh to disable."
+      );
+    },
+  },
+  {
+    name: "./hack.sh",
+    aliases: ["./fun-stuff/hack.sh", "hack.sh"],
+    description: { en: "initiate breach protocol", fr: "initier le protocole d'intrusion" },
+    hidden: true,
+    run: async (ctx) => {
+      const delay = (ms: number) => new Promise<void>((res) => setTimeout(res, ms));
+      const fr = ctx.locale === "fr";
+      ctx.print(fr ? "[....] Initialisation du protocole d'intrusion..." : "[....] Initializing breach protocol...");
+      await delay(400);
+      ctx.print("[  OK  ] Network interface eth0 UP");
+      await delay(300);
+      ctx.print(fr ? "> Scan du réseau 10.0.0.0/24..." : "> Scanning network 10.0.0.0/24...");
+      await delay(600);
+      ctx.print("  10.0.0.1    open  22/tcp   ssh");
+      await delay(120);
+      ctx.print("  10.0.0.7    open  80/tcp   http");
+      await delay(120);
+      ctx.print("  10.0.0.42   open  443/tcp  https  ← target");
+      await delay(500);
+      ctx.print(fr ? "> Exploitation CVE-2024-31337 (buffer overflow)..." : "> Exploiting CVE-2024-31337 (buffer overflow)...");
+      await delay(800);
+      ctx.print("  [████████████████] 100%");
+      await delay(400);
+      ctx.print(fr ? "> Shell obtenu sur 10.0.0.42" : "> Shell acquired on 10.0.0.42");
+      await delay(200);
+      ctx.print("  uid=0(root) gid=0(root) groups=0(root)");
+      await delay(300);
+      ctx.print("");
+      ctx.print(fr ? "BIENVENUE SUR LE MAINFRAME" : "WELCOME TO THE MAINFRAME");
+      ctx.print(fr ? "Dernière connexion: jamais  (vous êtes le premier)" : "Last login: never  (you are the first)");
+      ctx.print(fr ? 'Tapez "help" pour les commandes disponibles.' : 'Type "help" for available commands.');
+    },
+  },
+  {
+    name: "./matrix.sh",
+    aliases: ["./fun-stuff/matrix.sh", "matrix.sh"],
+    description: { en: "toggle matrix rain background", fr: "activer la pluie matrix" },
+    hidden: true,
+    run: async (ctx, args) => {
+      if (args[0] === "--off" || ctx.features.bgEffect === "matrix") {
+        ctx.setBgEffect("none");
+        ctx.print(ctx.locale === "fr" ? "[  OK  ] Fond réinitialisé." : "[  OK  ] Background restored.");
+        return;
+      }
+      const delay = (ms: number) => new Promise<void>((res) => setTimeout(res, ms));
+      ctx.print(ctx.locale === "fr" ? "[....] Chargement du module matrix..." : "[....] Loading matrix module...");
+      await delay(300);
+      ctx.print("[  OK  ] Digital rain renderer initialized.");
+      await delay(250);
+      ctx.setBgEffect("matrix");
+      ctx.print(ctx.locale === "fr" ? "> Il n'y a pas de cuillère." : "> There is no spoon.");
+    },
+  },
+  {
+    name: "./glitch.sh",
+    aliases: ["./fun-stuff/glitch.sh", "glitch.sh"],
+    description: { en: "toggle visual glitch effect", fr: "activer l'effet glitch visuel" },
+    hidden: true,
+    run: (ctx) => {
+      const next = !ctx.features.glitch;
+      ctx.setGlitch(next);
+      ctx.print(
+        next
+          ? (ctx.locale === "fr" ? "> R̷e̸n̷d̸u̷ c̸o̷r̸r̵o̶m̷p̸u̷." : "> R̷e̸n̷d̸e̵r̸e̷r̸ c̷o̵r̸r̸u̷p̵t̸e̶d̷.")
+          : (ctx.locale === "fr" ? "[  OK  ] Réalité restaurée." : "[  OK  ] Reality restored.")
+      );
     },
   },
   {
