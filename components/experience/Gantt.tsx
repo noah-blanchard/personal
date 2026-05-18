@@ -38,7 +38,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
   return (
     <div className="rounded-lg border hairline bg-ink-50/50 p-4 dark:bg-ink-900/30 sm:p-6">
       <div className="overflow-x-auto">
-        <div className="min-w-[680px] overflow-x-clip">
+        <div className="min-w-[680px]">
           {/* Axis row — gutter spacer + scrub-aligned ticks */}
           <div className="flex h-7 select-none">
             <div className={`${GUTTER} shrink-0`} />
@@ -108,7 +108,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
               aria-valuemin={domain.start}
               aria-valuemax={domain.end}
               aria-valuenow={playhead}
-              className="relative flex-1 cursor-ew-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
+              className="relative flex-1 [overflow-x:clip] cursor-ew-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink-50 dark:focus-visible:ring-offset-ink-950"
             >
               {LANE_ORDER.map((lane) => (
                 <LaneRow

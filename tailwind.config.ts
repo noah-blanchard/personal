@@ -11,8 +11,8 @@ const config: Config = {
       colors: {
         // Slate-based ink/paper aliases for clarity in components
         ink: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
+          50: "#eef1f5",
+          100: "#e4e9f0",
           200: "#e2e8f0",
           300: "#cbd5e1",
           400: "#94a3b8",
