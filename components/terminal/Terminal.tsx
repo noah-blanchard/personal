@@ -191,9 +191,9 @@ export function Terminal({
   const promptUser = useMemo(
     () => (
       <span className="select-none">
-        <span className="text-accent">kai</span>
+        <span className="text-accent">noah</span>
         <span className="text-ink-500">@</span>
-        <span className="text-ink-700 dark:text-ink-300">berlin</span>
+        <span className="text-ink-700 dark:text-ink-300">mtl</span>
         <span className="text-ink-500"> {cwd} </span>
         <span className="text-ink-500">$ </span>
       </span>

@@ -122,7 +122,7 @@
     "headline": "Égaré·e",
     "copy": "Pas de route à ce nom. Le terminal fonctionne toujours,  essaie <a>cd /</a> ou <b>help</b>.",
     "home": "← Retour à l'accueil",
-    "terminalTitle": "kai@berlin : /inconnu",
+    "terminalTitle": "noah@mtl : /inconnu",
     "terminalGreeting": [
       "> cd /inconnu",
       "> erreur : ENOENT,  répertoire inexistant.",
@@ -130,8 +130,8 @@
     ]
   },
   "terminal": {
-    "title": "kai@berlin : ~/",
-    "boot": "kai-os 1.0.0,  tape `help` pour les commandes",
+    "title": "noah@mtl : ~/",
+    "boot": "noah-os 1.0.0,  tape `help` pour les commandes",
     "ariaLabel": "Entrée du terminal",
     "errors": {
       "notFound": "commande introuvable : {name}. tape `help`."
@@ -172,7 +172,7 @@
       "empty": "(pas d'historique)"
     },
     "sudo": {
-      "line1": "permission refusée : kai n'est pas dans le fichier sudoers.",
+      "line1": "permission refusée : noah n'est pas dans le fichier sudoers.",
       "line2": "cet incident sera signalé."
     },
     "contactToast": "copié,  écris-moi.",

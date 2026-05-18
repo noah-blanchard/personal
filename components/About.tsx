@@ -62,9 +62,9 @@ export function About() {
               <div className="px-4 py-3">
                 <div className="flex items-baseline">
                   <span className="select-none">
-                    <span className="text-accent">kai</span>
+                    <span className="text-accent">noah</span>
                     <span className="text-ink-500">@</span>
-                    <span className="text-ink-700 dark:text-ink-300">berlin</span>
+                    <span className="text-ink-700 dark:text-ink-300">mtl</span>
                     <span className="text-ink-500"> $ </span>
                   </span>
                   <span className="text-ink-900 dark:text-ink-50">whoami</span>

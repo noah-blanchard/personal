@@ -2,16 +2,16 @@ import type { Localized } from "./types";
 
 export const SITE = {
   // Brand / identity,  proper nouns mostly don't translate
-  name: "Kai Renner",
-  initials: "kr",
-  email: "hello@kairenner.dev",
-  url: "https://kairenner.dev",
-  twitter: "@kairenner",
+  name: "Noah Blanchard",
+  initials: "NB",
+  email: "n.blanchard190302@gmail.com",
+  url: "https://noahblanchard.dev",
+  twitter: "@noahblanchard",
 
   // Short tagline used in metadata + OG
   roleShort: {
-    en: "Senior Fullstack Engineer",
-    fr: "Ingénieur·e fullstack sénior",
+    en: "Fullstack Software Developer.",
+    fr: "Développeur logiciel Fullstack.",
   } satisfies Localized<string>,
 
   // Long description used as meta description
@@ -22,8 +22,8 @@ export const SITE = {
 
   // City, used in several places
   location: {
-    en: "Berlin",
-    fr: "Berlin",
+    en: "Montreal",
+    fr: "Montréal",
   } satisfies Localized<string>,
 
   timezone: "UTC+1",

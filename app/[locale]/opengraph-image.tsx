@@ -61,7 +61,7 @@ export default async function OpengraphImage({
             }}
           >
             <div style={{ width: 10, height: 10, borderRadius: 9999, background: "#a3e635" }} />
-            <span>kairenner.dev</span>
+            <span>noahblanchard.dev</span>
           </div>
           <div style={{ fontSize: 18, color: "#94a3b8", letterSpacing: "0.2em" }}>
             §01 · {safeLocale.toUpperCase()}

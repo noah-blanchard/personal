@@ -122,7 +122,7 @@
     "headline": "Wandered off",
     "copy": "No route by that name. The terminal still works,  try <a>cd /</a> or <b>help</b>.",
     "home": "← Head home",
-    "terminalTitle": "kai@berlin: /unknown",
+    "terminalTitle": "noah@mtl: /unknown",
     "terminalGreeting": [
       "> cd /unknown",
       "> error: ENOENT,  no such directory.",
@@ -130,8 +130,8 @@
     ]
   },
   "terminal": {
-    "title": "kai@berlin: ~/",
-    "boot": "kai-os 1.0.0,  type `help` for commands",
+    "title": "noah@mtl: ~/",
+    "boot": "noah-os 1.0.0,  type `help` for commands",
     "ariaLabel": "Terminal input",
     "errors": {
       "notFound": "command not found: {name}. type `help`."
@@ -172,7 +172,7 @@
       "empty": "(no history)"
     },
     "sudo": {
-      "line1": "permission denied: kai is not in the sudoers file.",
+      "line1": "permission denied: noah is not in the sudoers file.",
       "line2": "this incident will be reported."
     },
     "contactToast": "copied,  drop me a line.",
