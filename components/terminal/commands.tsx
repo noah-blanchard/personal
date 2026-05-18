@@ -144,7 +144,7 @@ export const COMMANDS: Command[] = [
       ctx.print(`${SITE.name},  ${pick(SITE.roleShort, ctx.locale)}`);
       for (const line of pick(WHOAMI, ctx.locale)) ctx.print(line);
       ctx.print(
-        `${pick(SITE.location, ctx.locale)}, ${ctx.locale === "fr" ? "allemagne" : "de"} · ${ctx.locale === "fr" ? "ouvert·e à des missions q3 2026" : "open to select work in q3 2026"}`
+        `${pick(SITE.location, ctx.locale)}, ${ctx.locale === "fr" ? "canada" : "canada"} · ${ctx.locale === "fr" ? "ouvert·e à des missions q3 2026" : "open to select work in q3 2026"}`
       );
     },
   },

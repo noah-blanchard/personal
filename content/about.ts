@@ -23,7 +23,7 @@ export type Fact = { key: string; value: Localized<string> };
 // FACTS labels come from messages (about.facts.*); values stay localized here.
 export const FACTS: Fact[] = [
   { key: "basedIn", value: { en: "Berlin, DE", fr: "Berlin, Allemagne" } },
-  { key: "experience", value: { en: "11 years", fr: "11 ans" } },
+  { key: "experience", value: { en: "8 years", fr: "8 ans" } },
   {
     key: "currentStack",
     value: { en: "TypeScript · Go · Postgres", fr: "TypeScript · Go · Postgres" },
@@ -56,12 +56,12 @@ export const CURRENTLY: Localized<string[]> = {
 
 export const WHOAMI: Localized<string[]> = {
   en: [
-    "senior fullstack engineer · 11y · ts/go/rust",
+    "fullstack software developer · 8y · ts/c++/c#",
     "builds: realtime, devtools, data pipelines",
     "not interested in: ad-tech, surveillance, crypto",
   ],
   fr: [
-    "ingénieur·e fullstack sénior · 11 ans · ts/go/rust",
+    "développeur logiciel fullstack · 8 ans · ts/c++/c#",
     "construit : temps réel, devtools, pipelines de données",
     "pas intéressé·e par : pub-tech, surveillance, crypto",
   ],
