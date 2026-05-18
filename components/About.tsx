@@ -48,27 +48,32 @@ export function About() {
 
             <motion.div
               variants={block}
-              className="mt-10 rounded-lg border hairline bg-ink-100/50 p-5 font-mono text-[13px] leading-relaxed text-ink-700 dark:bg-ink-900/50 dark:text-ink-300"
+              className="mt-10 rounded-lg border hairline bg-ink-50/95 font-mono text-[13px] leading-relaxed text-ink-700 shadow-lg shadow-ink-900/5 dark:bg-ink-950/80 dark:text-ink-300"
             >
-              <div className="flex items-center gap-2 border-b hairline pb-2 text-[11px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
-                <span className="inline-flex gap-1">
-                  <span className="h-2 w-2 rounded-full bg-ink-300 dark:bg-ink-700" />
-                  <span className="h-2 w-2 rounded-full bg-ink-300 dark:bg-ink-700" />
-                  <span className="h-2 w-2 rounded-full bg-ink-300 dark:bg-ink-700" />
+              <div className="flex items-center gap-2 border-b hairline bg-ink-100/70 px-3 py-2 dark:bg-ink-900/50 text-[11px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
+                <span className="inline-flex gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]/80" />
                 </span>
-                <span>{t("terminalPath")}</span>
+                <span className="flex-1 text-center">{t("terminalPath")}</span>
+                <span className="w-10" aria-hidden />
               </div>
-              <div className="mt-3 space-y-1">
-                <p>
-                  <span className="text-accent">kai</span>
-                  <span className="text-ink-500">@</span>
-                  <span className="text-ink-700 dark:text-ink-300">berlin</span>
-                  <span className="text-ink-500"> $ </span>whoami
-                </p>
+              <div className="px-4 py-3">
+                <div className="flex items-baseline">
+                  <span className="select-none">
+                    <span className="text-accent">kai</span>
+                    <span className="text-ink-500">@</span>
+                    <span className="text-ink-700 dark:text-ink-300">berlin</span>
+                    <span className="text-ink-500"> $ </span>
+                  </span>
+                  <span className="text-ink-900 dark:text-ink-50">whoami</span>
+                </div>
                 {whoami.map((line, i) => (
-                  <p key={i} className="text-ink-600 dark:text-ink-400">
-                    &gt; {line}
-                  </p>
+                  <div key={i} className="flex items-baseline text-ink-600 dark:text-ink-400">
+                    <span className="select-none text-ink-400 dark:text-ink-600">&gt;&nbsp;</span>
+                    <span className="whitespace-pre-wrap">{line}</span>
+                  </div>
                 ))}
               </div>
             </motion.div>
