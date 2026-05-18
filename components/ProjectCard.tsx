@@ -32,7 +32,7 @@ export function ProjectCard({ project }: { project: Project }) {
             href={project.href}
             data-magnet
             className="relative block aspect-[16/10] overflow-hidden rounded-xl border hairline bg-ink-100/60 transition-colors hover:border-ink-300 dark:bg-ink-900/40 dark:hover:border-ink-700"
-            aria-label={`${project.title} — ${t("viewProject")}`}
+            aria-label={`${project.title},  ${t("viewProject")}`}
           >
             <div
               aria-hidden

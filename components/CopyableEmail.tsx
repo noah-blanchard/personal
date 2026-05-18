@@ -17,12 +17,12 @@ export function CopyableEmail({ email, className, children }: Props) {
       // Let normal mailto: navigation happen; we just copy alongside.
       try {
         await navigator.clipboard.writeText(email);
-        toast("copied — drop me a line.");
+        toast("copied,  drop me a line.");
       } catch {
         // Clipboard API unavailable (insecure context, denied permission, etc.).
         // The mailto link still works; just no toast.
       }
-      // intentionally not preventDefault — open the mail client too
+      // intentionally not preventDefault,  open the mail client too
       void e;
     },
     [email, toast]

@@ -38,7 +38,7 @@ const ROCKET: string[] = [
     "              ",
     "    T-1       ",
   ].join("\n"),
-  // LIFTOFF — sparks
+  // LIFTOFF,  sparks
   [
     "      /\\      ",
     "     |  |     ",
@@ -209,7 +209,7 @@ function centerLine(s: string): string {
   return " ".repeat(pad) + s + " ".repeat(Math.max(0, width - s.length - pad));
 }
 
-// Equalizer bars — 8 columns, heights cycling like an audio visualizer.
+// Equalizer bars,  8 columns, heights cycling like an audio visualizer.
 function makeBars(): string[] {
   const cols = 8;
   const maxH = 6;

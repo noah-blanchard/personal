@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "{name} — {role}",
+    "title": "{name},  {role}",
     "titleTemplate": "%s · {name}"
   },
   "nav": {
@@ -49,12 +49,12 @@
   "contact": {
     "sectionLabel": "Contact",
     "headline": "Un projet qui vaut le coup ?",
-    "copy": "Je lis chaque message. Le plus rapide, c'est l'email — pas de formulaire, pas d'entonnoir.",
-    "copiedToast": "copié — écris-moi."
+    "copy": "Je lis chaque message. Le plus rapide, c'est l'email,  pas de formulaire, pas d'entonnoir.",
+    "copiedToast": "copié,  écris-moi."
   },
   "footer": {
     "copyright": "© {year} {name}. Fait au café et au TypeScript.",
-    "version": "v1.0 — tous les systèmes en marche"
+    "version": "v1.0,  tous les systèmes en marche"
   },
   "experience": {
     "sectionLabel": "Parcours",
@@ -70,7 +70,7 @@
       "on": "en",
       "active": "{count} actif·s",
       "hint": "→ clique une barre pour voir ce que j'ai fait & appris",
-      "empty": "(rien pour l'instant — fais glisser la tête de lecture à droite)",
+      "empty": "(rien pour l'instant,  fais glisser la tête de lecture à droite)",
       "durationMonths": "{months} mois dedans",
       "durationYears": "{years} an dedans",
       "durationYearsMonths": "{years} an {months} mois dedans",
@@ -120,18 +120,18 @@
   "notFound": {
     "tag": "404",
     "headline": "Égaré·e",
-    "copy": "Pas de route à ce nom. Le terminal fonctionne toujours — essaie <a>cd /</a> ou <b>help</b>.",
+    "copy": "Pas de route à ce nom. Le terminal fonctionne toujours,  essaie <a>cd /</a> ou <b>help</b>.",
     "home": "← Retour à l'accueil",
     "terminalTitle": "kai@berlin : /inconnu",
     "terminalGreeting": [
       "> cd /inconnu",
-      "> erreur : ENOENT — répertoire inexistant.",
+      "> erreur : ENOENT,  répertoire inexistant.",
       "> indice : essaie `cd /` ou `help`."
     ]
   },
   "terminal": {
     "title": "kai@berlin : ~/",
-    "boot": "kai-os 1.0.0 — tape `help` pour les commandes",
+    "boot": "kai-os 1.0.0,  tape `help` pour les commandes",
     "ariaLabel": "Entrée du terminal",
     "errors": {
       "notFound": "commande introuvable : {name}. tape `help`."
@@ -175,7 +175,7 @@
       "line1": "permission refusée : kai n'est pas dans le fichier sudoers.",
       "line2": "cet incident sera signalé."
     },
-    "contactToast": "copié — écris-moi.",
+    "contactToast": "copié,  écris-moi.",
     "rm": {
       "niceTry": "bien essayé.",
       "refuse": "rm : refus de supprimer ton portfolio."

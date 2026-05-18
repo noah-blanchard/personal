@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -47,7 +48,7 @@ export async function generateMetadata({
 
   const role = pick(SITE.roleShort, safeLocale);
   const description = pick(SITE.description, safeLocale);
-  const title = `${SITE.name} — ${role}`;
+  const title = `${SITE.name},  ${role}`;
 
   return {
     metadataBase: new URL(SITE.url),
@@ -90,14 +91,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const themeBootstrap = `
-(function(){try{
-  var s=localStorage.getItem('theme');
-  var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.classList.toggle('dark',d);
-}catch(e){document.documentElement.classList.add('dark');}})();
-`;
-
 export default async function LocaleLayout({
   children,
   params,
@@ -110,16 +103,16 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "hero" });
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get("theme")?.value;
+  const themeClass = themeCookie === "dark" ? "dark" : "";
 
   return (
     <html
       lang={locale}
-      className={`${sans.variable} ${serif.variable} ${mono.variable}`}
+      className={`${sans.variable} ${serif.variable} ${mono.variable} ${themeClass}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
-      </head>
       <body>
         <a
           href="#work"

@@ -3,12 +3,36 @@
 import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
+const THEME_COOKIE = "theme";
+const THEME_MAX_AGE = 60 * 60 * 24 * 365;
+
+function readCookieTheme(): Theme | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie
+    .split("; ")
+    .find((entry) => entry.startsWith(`${THEME_COOKIE}=`));
+  if (!match) return null;
+  const value = decodeURIComponent(match.split("=")[1] ?? "");
+  return value === "light" || value === "dark" ? value : null;
+}
 
 function readTheme(): Theme {
   if (typeof window === "undefined") return "dark";
-  const stored = localStorage.getItem("theme");
+  const cookieTheme = readCookieTheme();
+  if (cookieTheme) return cookieTheme;
+  const stored = localStorage.getItem(THEME_COOKIE);
   if (stored === "light" || stored === "dark") return stored;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(next: Theme) {
+  document.documentElement.classList.toggle("dark", next === "dark");
+  try {
+    localStorage.setItem(THEME_COOKIE, next);
+  } catch {
+    /* localStorage unavailable; in-memory toggle still works */
+  }
+  document.cookie = `${THEME_COOKIE}=${encodeURIComponent(next)}; Path=/; Max-Age=${THEME_MAX_AGE}; SameSite=Lax`;
 }
 
 export function ThemeToggle() {
@@ -17,18 +41,15 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-    setTheme(readTheme());
+    const initial = readTheme();
+    setTheme(initial);
+    applyTheme(initial);
   }, []);
 
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
     setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-    try {
-      localStorage.setItem("theme", next);
-    } catch {
-      /* localStorage unavailable; in-memory toggle still works */
-    }
+    applyTheme(next);
   };
 
   const label = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";

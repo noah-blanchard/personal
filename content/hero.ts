@@ -1,7 +1,7 @@
 import type { Localized } from "./types";
 
 export const HERO = {
-  // The name shown in the scramble effect — proper noun, no FR variant
+  // The name shown in the scramble effect,  proper noun, no FR variant
   scrambleName: "Kai Renner",
 
   // The terminal that introduces Kai pre-populates with `whoami`; this is just

@@ -67,7 +67,7 @@ export function CommandPalette() {
   const onItemRun = useCallback(
     (name: string) => {
       setOpen(false);
-      // Run in the shared engine — output flows into the hero terminal
+      // Run in the shared engine,  output flows into the hero terminal
       void execute(name);
     },
     [execute]

@@ -83,7 +83,7 @@ export function TerminalProvider({
   const pathname = usePathname();
   const [, startTransition] = useTransition();
 
-  // next-intl's translator typed as TerminalT — accepts (key, params?) and returns string.
+  // next-intl's translator typed as TerminalT,  accepts (key, params?) and returns string.
   const t: TerminalT = useCallback(
     (key, params) => rawT(key, params as Parameters<typeof rawT>[1]),
     [rawT]

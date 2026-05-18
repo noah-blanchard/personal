@@ -39,7 +39,7 @@ export function Nav() {
         >
           <span className="font-serif text-lg leading-none">{SITE.name}</span>
           <span className="hidden text-xs text-ink-500 dark:text-ink-400 sm:inline">
-            — {tNav("tagline")}
+           ,  {tNav("tagline")}
           </span>
         </a>
 

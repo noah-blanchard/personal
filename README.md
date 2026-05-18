@@ -64,7 +64,7 @@ The site ships with a stand-in persona, **Kai Renner**. To make it yours, edit:
 - **Motion**: Framer Motion only. Everything respects `prefers-reduced-motion` via `useReducedMotion()`. Only `transform` and `opacity` are animated.
 - **Active nav indicator**: a single `IntersectionObserver` in `ActiveSectionProvider` feeds a `[ ... ]` bracket marker that animates between links via `layoutId`.
 - **Cursor follower**: spring-physics dot, magnetizes onto anything with `data-magnet`, `<a>`, `<button>`. Hidden on touch / coarse pointers and when reduced motion is on.
-- **No image assets** in v1 — project cards use a typographic visual layer. To add screenshots, drop them in `public/` and use `next/image` inside `ProjectCard.tsx`.
+- **No image assets** in v1,  project cards use a typographic visual layer. To add screenshots, drop them in `public/` and use `next/image` inside `ProjectCard.tsx`.
 - **A11y**: semantic landmarks, skip link, keyboard-reachable everything, visible focus rings, AA contrast for body copy.
 
 ## Lighthouse

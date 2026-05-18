@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "{name} — {role}",
+    "title": "{name},  {role}",
     "titleTemplate": "%s · {name}"
   },
   "nav": {
@@ -49,12 +49,12 @@
   "contact": {
     "sectionLabel": "Contact",
     "headline": "Have something worth building?",
-    "copy": "I read every message. The fastest way to reach me is email — no form, no funnel.",
-    "copiedToast": "copied — drop me a line."
+    "copy": "I read every message. The fastest way to reach me is email,  no form, no funnel.",
+    "copiedToast": "copied,  drop me a line."
   },
   "footer": {
     "copyright": "© {year} {name}. Built with caffeine and TypeScript.",
-    "version": "v1.0 — all systems nominal"
+    "version": "v1.0,  all systems nominal"
   },
   "experience": {
     "sectionLabel": "Experience",
@@ -70,7 +70,7 @@
       "on": "on",
       "active": "{count} active",
       "hint": "→ click a bar for what i did & learned",
-      "empty": "(nothing yet — drag the playhead right)",
+      "empty": "(nothing yet,  drag the playhead right)",
       "durationMonths": "{months}mo in",
       "durationYears": "{years}y in",
       "durationYearsMonths": "{years}y {months}mo in",
@@ -120,18 +120,18 @@
   "notFound": {
     "tag": "404",
     "headline": "Wandered off",
-    "copy": "No route by that name. The terminal still works — try <a>cd /</a> or <b>help</b>.",
+    "copy": "No route by that name. The terminal still works,  try <a>cd /</a> or <b>help</b>.",
     "home": "← Head home",
     "terminalTitle": "kai@berlin: /unknown",
     "terminalGreeting": [
       "> cd /unknown",
-      "> error: ENOENT — no such directory.",
+      "> error: ENOENT,  no such directory.",
       "> hint: try `cd /` or `help`."
     ]
   },
   "terminal": {
     "title": "kai@berlin: ~/",
-    "boot": "kai-os 1.0.0 — type `help` for commands",
+    "boot": "kai-os 1.0.0,  type `help` for commands",
     "ariaLabel": "Terminal input",
     "errors": {
       "notFound": "command not found: {name}. type `help`."
@@ -175,7 +175,7 @@
       "line1": "permission denied: kai is not in the sudoers file.",
       "line2": "this incident will be reported."
     },
-    "contactToast": "copied — drop me a line.",
+    "contactToast": "copied,  drop me a line.",
     "rm": {
       "niceTry": "nice try.",
       "refuse": "rm: refusing to remove your portfolio."

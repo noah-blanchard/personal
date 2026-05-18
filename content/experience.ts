@@ -4,7 +4,7 @@ export type Lane = "work" | "education" | "internship" | "side";
 
 export const LANE_ORDER: Lane[] = ["work", "education", "internship", "side"];
 
-// Lane display labels — translated UI chrome. Kept here next to LANE_ORDER for cohesion.
+// Lane display labels,  translated UI chrome. Kept here next to LANE_ORDER for cohesion.
 export const LANE_META: Record<Lane, { label: Localized<string> }> = {
   work: { label: { en: "WORK", fr: "TRAVAIL" } },
   education: { label: { en: "EDU", fr: "ÉTUDES" } },
@@ -27,7 +27,7 @@ export type Entry = {
   href?: string;
 };
 
-// ⭐ Extension point — add / edit experience entries here.
+// ⭐ Extension point,  add / edit experience entries here.
 export const ENTRIES: Entry[] = [
   // ── work ────────────────────────────────────────────────────────────
   {
@@ -349,8 +349,8 @@ export const ENTRIES: Entry[] = [
     label: "Lumen",
     start: "2024-08",
     description: {
-      en: "Realtime collaboration engine — CRDTs, WebSockets, Postgres. Cut p99 sync latency from 380ms to 42ms.",
-      fr: "Moteur de collaboration temps réel — CRDTs, WebSockets, Postgres. Latence p99 de sync ramenée de 380ms à 42ms.",
+      en: "Realtime collaboration engine,  CRDTs, WebSockets, Postgres. Cut p99 sync latency from 380ms to 42ms.",
+      fr: "Moteur de collaboration temps réel,  CRDTs, WebSockets, Postgres. Latence p99 de sync ramenée de 380ms à 42ms.",
     },
     did: {
       en: [
@@ -400,11 +400,11 @@ export const ENTRIES: Entry[] = [
     },
     learned: {
       en: [
-        "internal tools are products too — adoption matters",
+        "internal tools are products too,  adoption matters",
         "the best abstraction is the one you almost didn't write",
       ],
       fr: [
-        "les outils internes sont aussi des produits — l'adoption compte",
+        "les outils internes sont aussi des produits,  l'adoption compte",
         "la meilleure abstraction est celle qu'on a failli ne pas écrire",
       ],
     },
@@ -435,11 +435,11 @@ export const ENTRIES: Entry[] = [
     },
     learned: {
       en: [
-        "rollups are a hot potato — get them right early",
+        "rollups are a hot potato,  get them right early",
         "operators want one query language, not a layered DSL stack",
       ],
       fr: [
-        "les rollups sont une patate chaude — il faut les caler tôt",
+        "les rollups sont une patate chaude,  il faut les caler tôt",
         "les opérateur·rice·s veulent un seul langage de requête, pas une pile de DSLs",
       ],
     },
@@ -471,11 +471,11 @@ export const ENTRIES: Entry[] = [
     learned: {
       en: [
         "maintaining OSS is a slow gardening, not a sprint",
-        "a CLI is a UI — error messages are the product",
+        "a CLI is a UI,  error messages are the product",
       ],
       fr: [
         "maintenir un projet open source, c'est du jardinage lent, pas un sprint",
-        "un CLI, c'est une UI — les messages d'erreur sont le produit",
+        "un CLI, c'est une UI,  les messages d'erreur sont le produit",
       ],
     },
     tags: ["Bun", "Ink", "TypeScript", "OSS"],

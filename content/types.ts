@@ -5,7 +5,7 @@ export const DEFAULT_LOCALE: Locale = "en";
 export type Localized<T = string> = Record<Locale, T>;
 
 /**
- * Pick the right side of a Localized<T>. Accepts a bare T too — useful for
+ * Pick the right side of a Localized<T>. Accepts a bare T too,  useful for
  * proper nouns and values that don't translate (e.g. "Hooli", "Postgres").
  */
 export function pick<T>(field: Localized<T> | T, locale: Locale): T {

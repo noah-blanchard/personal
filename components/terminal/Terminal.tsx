@@ -46,7 +46,7 @@ export function Terminal({
   const scrollRef = useRef<HTMLDivElement>(null);
   const booted = useRef(false);
 
-  // Programmatic value update — used for history nav and autocomplete.
+  // Programmatic value update,  used for history nav and autocomplete.
   // Places the caret at end after React commits the new value.
   const setInputAtEnd = useCallback((val: string) => {
     setInput(val);
@@ -57,7 +57,7 @@ export function Terminal({
     });
   }, []);
 
-  // Sync caret position from the real input — called on click/keyup/select
+  // Sync caret position from the real input,  called on click/keyup/select
   // so left/right arrow, home/end, and pointer clicks keep the block aligned.
   const syncCaret = useCallback(() => {
     const el = inputRef.current;
@@ -66,7 +66,7 @@ export function Terminal({
 
   // Ghost-text suggestion: the completion tail for the current first-token prefix.
   // Empty when the cursor isn't at the end, when the input already has whitespace,
-  // or when nothing matches. Hidden commands are excluded — discovery stays in `ls`.
+  // or when nothing matches. Hidden commands are excluded,  discovery stays in `ls`.
   const suggestion = useMemo(() => {
     if (!input) return "";
     if (pos !== input.length) return "";

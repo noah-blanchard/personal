@@ -55,8 +55,8 @@ function fileContent(key: FileKey, locale: Locale): string[] {
       return [
         "#!/bin/bash",
         locale === "fr"
-          ? "# surprise.sh — lance une petite animation ascii"
-          : "# surprise.sh — runs a small ascii animation",
+          ? "# surprise.sh,  lance une petite animation ascii"
+          : "# surprise.sh,  runs a small ascii animation",
         `# ${locale === "fr" ? "usage" : "usage"}: ./surprise.sh [${ANIMATIONS.map((a) => a.name).join("|")}]`,
         locale === "fr"
           ? 'echo "il faut me lancer, pas me lire."'
@@ -65,7 +65,7 @@ function fileContent(key: FileKey, locale: Locale): string[] {
   }
 }
 
-// ⭐ Command registry — append to this array to add new commands.
+// ⭐ Command registry,  append to this array to add new commands.
 // Each command receives a CommandCtx (see ./types.ts).
 export const COMMANDS: Command[] = [
   {
@@ -85,7 +85,7 @@ export const COMMANDS: Command[] = [
           ctx.print(ctx.t("help.noSuch", { target }));
           return;
         }
-        ctx.print(`${c.name} — ${pick(c.description, ctx.locale)}`);
+        ctx.print(`${c.name},  ${pick(c.description, ctx.locale)}`);
         if (c.usage) ctx.print(`  ${ctx.t("help.usagePrefix")} ${c.usage}`);
         if (c.aliases?.length) ctx.print(`  ${ctx.t("help.aliases", { list: c.aliases.join(", ") })}`);
         return;
@@ -102,7 +102,7 @@ export const COMMANDS: Command[] = [
     name: "whoami",
     description: { en: "who is this", fr: "qui c'est" },
     run: (ctx) => {
-      ctx.print(`${SITE.name} — ${pick(SITE.roleShort, ctx.locale)}`);
+      ctx.print(`${SITE.name},  ${pick(SITE.roleShort, ctx.locale)}`);
       for (const line of pick(WHOAMI, ctx.locale)) ctx.print(line);
       ctx.print(
         `${pick(SITE.location, ctx.locale)}, ${ctx.locale === "fr" ? "allemagne" : "de"} · ${ctx.locale === "fr" ? "ouvert·e à des missions q3 2026" : "open to select work in q3 2026"}`

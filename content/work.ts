@@ -20,8 +20,8 @@ export const PROJECTS: Project[] = [
     title: "Lumen",
     year: "2025",
     blurb: {
-      en: "A realtime collaboration engine for design tools — CRDTs, presence, and conflict-free history.",
-      fr: "Un moteur de collaboration temps réel pour outils de design — CRDTs, présence, et historique sans conflit.",
+      en: "A realtime collaboration engine for design tools,  CRDTs, presence, and conflict-free history.",
+      fr: "Un moteur de collaboration temps réel pour outils de design,  CRDTs, présence, et historique sans conflit.",
     },
     built: {
       en: "Designed the wire format and the CRDT layer. Wrote the WebSocket gateway in Go and the Postgres-backed snapshot store. Cut p99 sync latency from 380ms to 42ms across three regions.",
@@ -74,8 +74,8 @@ export const PROJECTS: Project[] = [
     title: "Foundry",
     year: "2022",
     blurb: {
-      en: "An open-source CLI for scaffolding TypeScript projects — opinionated, fast, no plugins.",
-      fr: "Un CLI open-source pour échafauder des projets TypeScript — opinionné, rapide, sans plugins.",
+      en: "An open-source CLI for scaffolding TypeScript projects,  opinionated, fast, no plugins.",
+      fr: "Un CLI open-source pour échafauder des projets TypeScript,  opinionné, rapide, sans plugins.",
     },
     built: {
       en: "Wrote the template engine and the interactive prompt layer in Ink. Maintained for two years across 14 releases. Shipped on Bun before it was cool.",

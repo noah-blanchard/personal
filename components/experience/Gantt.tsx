@@ -39,14 +39,14 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
     <div className="rounded-lg border hairline bg-ink-50/50 p-4 dark:bg-ink-900/30 sm:p-6">
       <div className="overflow-x-auto">
         <div className="min-w-[680px]">
-          {/* Axis row — gutter spacer + scrub-aligned ticks */}
+          {/* Axis row,  gutter spacer + scrub-aligned ticks */}
           <div className="flex h-7 select-none">
             <div className={`${GUTTER} shrink-0`} />
             <div className="relative flex-1 border-b hairline">
               {yearTicks(domain).map((idx) => {
                 const x = indexToX(idx, domain) * 100;
                 const year = Math.floor(idx / 12);
-                // Hide labels too close to the right edge — the merged
+                // Hide labels too close to the right edge,  the merged
                 // "today" group below carries that year.
                 const tooCloseToToday = x > 90;
                 const showLabel =
@@ -83,7 +83,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
             </div>
           </div>
 
-          {/* Body — gutter labels + scrub surface */}
+          {/* Body,  gutter labels + scrub surface */}
           <div className="flex">
             {/* Lane labels column */}
             <div className={`${GUTTER} shrink-0`}>
@@ -99,7 +99,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
               ))}
             </div>
 
-            {/* Surface column — everything that scrubs */}
+            {/* Surface column,  everything that scrubs */}
             <div
               ref={surfaceRef}
               tabIndex={0}
@@ -122,7 +122,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
                 />
               ))}
 
-              {/* Playhead — spans all lanes within this surface */}
+              {/* Playhead,  spans all lanes within this surface */}
               <motion.div
                 aria-hidden
                 className="pointer-events-none absolute inset-y-0 z-20"
@@ -239,7 +239,7 @@ function Bar({
           ? "after:absolute after:right-0 after:top-0 after:h-full after:w-3 after:bg-gradient-to-r after:from-transparent after:to-ink-50/80 dark:after:to-ink-900/60"
           : "",
       ].join(" ")}
-      aria-label={`${entry.label}${entry.role ? " — " + entry.role : ""}`}
+      aria-label={`${entry.label}${entry.role ? ",  " + entry.role : ""}`}
       aria-pressed={pinned}
     >
       <span className="truncate whitespace-nowrap font-mono text-[10px] uppercase tracking-wider">
