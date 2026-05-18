@@ -98,6 +98,18 @@ export function MobileDrawer({ links, active }: { links: Link[]; active: Section
                     </a>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href="/studio"
+                    onClick={close}
+                    className="group flex items-baseline justify-between rounded-md py-3 font-serif text-3xl leading-none text-ink-900 transition-colors hover:text-accent dark:text-ink-50"
+                  >
+                    <span>Studio</span>
+                    <span className="font-mono text-xs text-ink-400 dark:text-ink-500">
+                      0{links.length + 1}
+                    </span>
+                  </a>
+                </li>
               </ul>
               <div className="mt-auto border-t hairline pt-6">
                 <p className="font-mono text-xs text-ink-500 dark:text-ink-400">

@@ -54,6 +54,15 @@ export function Nav() {
                 />
               </li>
             ))}
+            <li>
+              <a
+                href="/studio"
+                className="relative px-3 py-2 text-sm font-mono tracking-widest uppercase transition-colors text-ink-600 hover:text-ink-900 dark:text-ink-300 dark:hover:text-ink-50"
+                style={{ fontSize: "11px", letterSpacing: "0.15em" }}
+              >
+                Studio
+              </a>
+            </li>
           </ul>
           <div className="mx-3 h-5 w-px bg-ink-200 dark:bg-ink-800" aria-hidden />
           <LangSwitch />
