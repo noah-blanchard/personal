@@ -42,16 +42,16 @@ function MatrixCanvas() {
 
       for (let i = 0; i < drops.length; i++) {
         const x = i * CHAR_SIZE;
-        const y = drops[i] * CHAR_SIZE;
+        const y = drops[i]! * CHAR_SIZE;
 
         if (y > 0 && y < canvas.height + CHAR_SIZE) {
           // Head: near-white
           ctx.fillStyle = "#ccffcc";
-          ctx.fillText(randomChar(), x, y);
+          ctx.fillText(randomChar() ?? '', x, y);
         }
 
-        drops[i]++;
-        if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) {
+        drops[i]!++;
+        if (drops[i]! * CHAR_SIZE > canvas.height && Math.random() > 0.975) {
           drops[i] = Math.floor(Math.random() * -20);
         }
       }
