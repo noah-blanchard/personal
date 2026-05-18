@@ -2,7 +2,9 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { useTerminal } from "./TerminalProvider";
+import { pick, type Locale } from "@/content/types";
 
 export function CommandPalette() {
   const { commands, execute, features } = useTerminal();
@@ -10,6 +12,8 @@ export function CommandPalette() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations("palette");
+  const locale = useLocale() as Locale;
 
   // Global hotkey
   useEffect(() => {
@@ -49,11 +53,11 @@ export function CommandPalette() {
     if (!q) return visible;
     return visible.filter((c) => {
       if (c.name.toLowerCase().includes(q)) return true;
-      if (c.description.toLowerCase().includes(q)) return true;
+      if (pick(c.description, locale).toLowerCase().includes(q)) return true;
       if (c.aliases?.some((a) => a.toLowerCase().includes(q))) return true;
       return false;
     });
-  }, [visible, query]);
+  }, [visible, query, locale]);
 
   // Clamp selection when results change
   useEffect(() => {
@@ -111,7 +115,7 @@ export function CommandPalette() {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label="Command palette"
+              aria-label={t("trigger")}
               initial={{ opacity: 0, y: -8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.98 }}
@@ -126,9 +130,9 @@ export function CommandPalette() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={onInputKey}
-                  placeholder="run a command…"
+                  placeholder={t("placeholder")}
                   className="flex-1 border-0 bg-transparent p-0 text-sm text-ink-900 outline-none placeholder:text-ink-400 focus:ring-0 dark:text-ink-50 dark:placeholder:text-ink-500"
-                  aria-label="Command query"
+                  aria-label={t("placeholder")}
                 />
                 <kbd className="font-mono text-[10px] uppercase tracking-widest text-ink-400 dark:text-ink-500">
                   esc
@@ -137,7 +141,7 @@ export function CommandPalette() {
               <ul className="max-h-[40vh] overflow-y-auto py-1" role="listbox">
                 {filtered.length === 0 && (
                   <li className="px-4 py-3 font-mono text-xs text-ink-500 dark:text-ink-400">
-                    no commands match
+                    {t("noMatch")}
                   </li>
                 )}
                 {filtered.map((cmd, i) => (
@@ -161,7 +165,7 @@ export function CommandPalette() {
                           {cmd.name}
                         </span>
                         <span className="text-xs text-ink-500 dark:text-ink-400">
-                          {cmd.description}
+                          {pick(cmd.description, locale)}
                         </span>
                       </span>
                       {cmd.aliases?.[0] && (
@@ -174,8 +178,8 @@ export function CommandPalette() {
                 ))}
               </ul>
               <div className="flex items-center justify-between border-t hairline bg-ink-100/40 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:bg-ink-950/40 dark:text-ink-400">
-                <span>↑↓ navigate · ↵ run</span>
-                <span>output appears in the terminal</span>
+                <span>{t("footerNav")}</span>
+                <span>{t("footerOutput")}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -188,6 +192,7 @@ export function CommandPalette() {
 function HintButton({ onClick }: { onClick: () => void }) {
   const [isMac, setIsMac] = useState(false);
   const [enabled, setEnabled] = useState(false);
+  const t = useTranslations("palette");
 
   useEffect(() => {
     setIsMac(/Mac|iPhone|iPod|iPad/.test(navigator.platform));
@@ -201,12 +206,12 @@ function HintButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      aria-label="Open command palette"
+      aria-label={t("trigger")}
       data-magnet
       className="fixed bottom-4 left-4 z-40 hidden items-center gap-2 rounded-full border hairline bg-ink-50/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500 backdrop-blur transition-colors hover:text-ink-900 dark:bg-ink-900/70 dark:text-ink-400 dark:hover:text-ink-50 md:inline-flex"
     >
       <span className="h-1 w-1 rounded-full bg-accent" />
-      <span>palette</span>
+      <span>{t("trigger")}</span>
       <kbd className="rounded border hairline px-1 py-px text-ink-600 dark:text-ink-300">
         {isMac ? "⌘" : "ctrl"}
       </kbd>

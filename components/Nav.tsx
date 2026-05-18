@@ -1,21 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useActiveSection, type SectionId } from "./ActiveSectionProvider";
+import { useTranslations } from "next-intl";
+import { useActiveSection } from "./ActiveSectionProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { MobileDrawer } from "./MobileDrawer";
-
-const LINKS: { id: SectionId; label: string }[] = [
-  { id: "work", label: "Work" },
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
-  { id: "contact", label: "Contact" },
-];
+import { LangSwitch } from "./LangSwitch";
+import { NAV_LINKS } from "@/content/nav";
+import { SITE } from "@/content/site";
 
 export function Nav() {
   const active = useActiveSection();
   const [scrolled, setScrolled] = useState(false);
+  const tNav = useTranslations("nav");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -40,34 +37,54 @@ export function Nav() {
           className="group flex items-center gap-2 text-sm font-medium tracking-tight text-ink-900 dark:text-ink-50"
           data-magnet
         >
-          <span className="font-serif text-lg leading-none">Kai Renner</span>
+          <span className="font-serif text-lg leading-none">{SITE.name}</span>
           <span className="hidden text-xs text-ink-500 dark:text-ink-400 sm:inline">
-            — fullstack engineer
+            — {tNav("tagline")}
           </span>
         </a>
 
         <div className="hidden items-center gap-1 md:flex">
           <ul className="flex items-center gap-1">
-            {LINKS.map((link) => (
+            {NAV_LINKS.map((link) => (
               <li key={link.id}>
-                <NavLink id={link.id} label={link.label} active={active === link.id} />
+                <NavLink
+                  id={link.id}
+                  label={tNav(link.messageKey)}
+                  active={active === link.id}
+                />
               </li>
             ))}
           </ul>
           <div className="mx-3 h-5 w-px bg-ink-200 dark:bg-ink-800" aria-hidden />
+          <LangSwitch />
           <ThemeToggle />
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
+          <LangSwitch />
           <ThemeToggle />
-          <MobileDrawer links={LINKS} active={active} />
+          <MobileDrawer
+            links={NAV_LINKS.map((l) => ({
+              id: l.id,
+              label: tNav(l.messageKey),
+            }))}
+            active={active}
+          />
         </div>
       </div>
     </nav>
   );
 }
 
-function NavLink({ id, label, active }: { id: SectionId; label: string; active: boolean }) {
+function NavLink({
+  id,
+  label,
+  active,
+}: {
+  id: string;
+  label: string;
+  active: boolean;
+}) {
   return (
     <a
       href={`#${id}`}

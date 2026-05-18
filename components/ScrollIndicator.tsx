@@ -2,10 +2,12 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function ScrollIndicator() {
   const reduced = useReducedMotion();
   const [hidden, setHidden] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     const onScroll = () => setHidden(window.scrollY > 200);
@@ -23,7 +25,7 @@ export function ScrollIndicator() {
     >
       <div className="flex flex-col items-center gap-3">
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400">
-          scroll
+          {t("scroll")}
         </span>
         <div className="relative h-12 w-px overflow-hidden bg-ink-200 dark:bg-ink-800">
           {!reduced && (

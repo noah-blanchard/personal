@@ -1,13 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { CopyableEmail } from "./CopyableEmail";
+import { SITE, SOCIALS } from "@/content/site";
 
-const SOCIALS = [
-  { label: "GitHub", href: "#", icon: GitHubIcon },
-  { label: "LinkedIn", href: "#", icon: LinkedInIcon },
-  { label: "Twitter / X", href: "#", icon: XIcon },
-];
+const ICONS: Record<"gh" | "li" | "x", (p: { className?: string }) => React.ReactElement> = {
+  gh: GitHubIcon,
+  li: LinkedInIcon,
+  x: XIcon,
+};
 
 const fade = {
   hidden: { opacity: 0, y: 20 },
@@ -15,6 +17,8 @@ const fade = {
 };
 
 export function Contact() {
+  const t = useTranslations("contact");
+
   return (
     <section
       id="contact"
@@ -33,30 +37,29 @@ export function Contact() {
             variants={fade}
             className="font-mono text-xs uppercase tracking-[0.3em] text-ink-500 dark:text-ink-400"
           >
-            <span className="text-accent">§</span> Contact
+            <span className="text-accent">§</span> {t("sectionLabel")}
           </motion.p>
 
           <motion.h2
             variants={fade}
             className="mt-6 font-serif text-5xl leading-[1.05] tracking-tight text-ink-900 dark:text-ink-50 md:text-7xl"
           >
-            Have something worth building?
+            {t("headline")}
           </motion.h2>
 
           <motion.p
             variants={fade}
             className="mt-6 max-w-xl text-balance text-lg text-ink-600 dark:text-ink-300"
           >
-            I read every message. The fastest way to reach me is email — no form,
-            no funnel.
+            {t("copy")}
           </motion.p>
 
           <motion.div variants={fade} className="mt-10">
             <CopyableEmail
-              email="hello@kairenner.dev"
+              email={SITE.email}
               className="group inline-flex items-center gap-3 font-serif text-3xl text-ink-900 underline decoration-ink-300 decoration-1 underline-offset-[6px] transition-colors hover:text-accent hover:decoration-accent dark:text-ink-50 dark:decoration-ink-700 md:text-5xl"
             >
-              <span>hello@kairenner.dev</span>
+              <span>{SITE.email}</span>
               <span aria-hidden className="text-accent transition-transform group-hover:translate-x-1">
                 →
               </span>
@@ -64,18 +67,21 @@ export function Contact() {
           </motion.div>
 
           <motion.ul variants={fade} className="mt-14 flex flex-wrap items-center gap-3">
-            {SOCIALS.map(({ label, href, icon: Icon }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  data-magnet
-                  aria-label={label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border hairline text-ink-600 transition-colors hover:border-accent/60 hover:text-ink-900 dark:text-ink-300 dark:hover:text-ink-50"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              </li>
-            ))}
+            {SOCIALS.map(({ id, label, href }) => {
+              const Icon = ICONS[id];
+              return (
+                <li key={id}>
+                  <a
+                    href={href}
+                    data-magnet
+                    aria-label={label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border hairline text-ink-600 transition-colors hover:border-accent/60 hover:text-ink-900 dark:text-ink-300 dark:hover:text-ink-50"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                </li>
+              );
+            })}
           </motion.ul>
         </motion.div>
       </div>

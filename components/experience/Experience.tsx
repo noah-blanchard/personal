@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useRef } from "react";
-import { ENTRIES } from "./data";
+import { useTranslations } from "next-intl";
+import { ENTRIES, LANE_ORDER } from "@/content/experience";
 import { Gantt } from "./Gantt";
 import { DetailsPanel } from "./DetailsPanel";
 import { useDomain, useGanttScrub } from "./useGantt";
@@ -14,6 +15,7 @@ export function Experience() {
     entries: ENTRIES,
     surfaceRef,
   });
+  const t = useTranslations("experience");
 
   return (
     <section
@@ -24,10 +26,10 @@ export function Experience() {
       <div className="container-grid">
         <div className="flex items-baseline justify-between border-b hairline pb-6">
           <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-ink-500 dark:text-ink-400">
-            <span className="text-accent">§</span> Experience
+            <span className="text-accent">§</span> {t("sectionLabel")}
           </h2>
           <p className="font-mono text-xs text-ink-500 dark:text-ink-400">
-            {ENTRIES.length} entries · 4 lanes
+            {t("summary", { count: ENTRIES.length, lanes: LANE_ORDER.length })}
           </p>
         </div>
 

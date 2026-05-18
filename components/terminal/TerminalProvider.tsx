@@ -8,11 +8,21 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
   type ReactNode,
 } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { COMMANDS } from "./commands";
 import { parse } from "./parse";
-import type { CommandCtx, CommandOutput, OutputLine, SectionId } from "./types";
+import type {
+  CommandCtx,
+  CommandOutput,
+  OutputLine,
+  SectionId,
+  TerminalT,
+} from "./types";
+import type { Locale } from "@/content/types";
 
 const STORAGE_LINES = "term:lines";
 const STORAGE_HISTORY = "term:history";
@@ -20,7 +30,6 @@ const STORAGE_FEATURES = "term:features";
 const MAX_PERSIST_LINES = 500;
 
 type Features = { fortune: boolean };
-
 type ToastFn = (msg: string) => void;
 
 type TerminalCtxValue = {
@@ -40,8 +49,6 @@ const TerminalCtx = createContext<TerminalCtxValue | null>(null);
 let lineCounter = 0;
 const nextId = () => `l${++lineCounter}_${Date.now().toString(36)}`;
 
-// Serializable lines only (strings / string[]); ReactNode outputs are intentionally
-// not persisted. Commands that emit ReactNode are interactive and re-runnable.
 function serializableLines(lines: OutputLine[]): OutputLine[] {
   return lines
     .filter((l) => typeof l.content === "string" || Array.isArray(l.content))
@@ -70,7 +77,18 @@ export function TerminalProvider({
   const [features, setFeatures] = useState<Features>({ fortune: false });
   const hydrated = useRef(false);
 
-  // Hydrate from localStorage post-mount (avoids SSR mismatch).
+  const locale = useLocale() as Locale;
+  const rawT = useTranslations("terminal");
+  const router = useRouter();
+  const pathname = usePathname();
+  const [, startTransition] = useTransition();
+
+  // next-intl's translator typed as TerminalT — accepts (key, params?) and returns string.
+  const t: TerminalT = useCallback(
+    (key, params) => rawT(key, params as Parameters<typeof rawT>[1]),
+    [rawT]
+  );
+
   useEffect(() => {
     const persistedLines = loadJSON<OutputLine[]>(STORAGE_LINES, []);
     const persistedHistory = loadJSON<string[]>(STORAGE_HISTORY, []);
@@ -81,7 +99,6 @@ export function TerminalProvider({
     hydrated.current = true;
   }, []);
 
-  // Persist
   useEffect(() => {
     if (!hydrated.current) return;
     try {
@@ -107,30 +124,36 @@ export function TerminalProvider({
     setLines((prev) => [...prev, { id: nextId(), kind, content }]);
   }, []);
 
-  const clear = useCallback(() => {
-    setLines([]);
-  }, []);
-
+  const clear = useCallback(() => setLines([]), []);
   const reset = useCallback(() => {
     setLines([]);
     setHistory([]);
   }, []);
-
   const unlock = useCallback((feature: keyof Features) => {
     setFeatures((prev) => ({ ...prev, [feature]: true }));
   }, []);
 
-  // Keep refs to current history/features so execute()'s ctx sees fresh values
-  // mid-run without re-creating the function on every change.
+  // Refs keep ctx fresh without re-creating execute on every state change.
   const historyRef = useRef(history);
   const featuresRef = useRef(features);
+  const localeRef = useRef(locale);
   useEffect(() => { historyRef.current = history; }, [history]);
   useEffect(() => { featuresRef.current = features; }, [features]);
+  useEffect(() => { localeRef.current = locale; }, [locale]);
+
+  const setLocale = useCallback(
+    (next: Locale) => {
+      if (next === localeRef.current) return;
+      startTransition(() => {
+        router.replace(pathname, { locale: next });
+      });
+    },
+    [router, pathname]
+  );
 
   const execute = useCallback(
     async (input: string) => {
       const trimmed = input.trim();
-      // Echo the prompt+input regardless
       appendLine("echo", trimmed);
       if (!trimmed) return;
       setHistory((prev) => [...prev, trimmed]);
@@ -141,7 +164,7 @@ export function TerminalProvider({
       );
 
       if (!cmd) {
-        appendLine("err", `command not found: ${name}. type \`help\`.`);
+        appendLine("err", t("errors.notFound", { name }));
         return;
       }
 
@@ -163,10 +186,11 @@ export function TerminalProvider({
           const el = document.getElementById(id);
           el?.scrollIntoView({ behavior: "smooth", block: "start" });
         },
-        setTheme: (t) => {
-          document.documentElement.classList.toggle("dark", t === "dark");
-          try { localStorage.setItem("theme", t); } catch { /* */ }
+        setTheme: (theme) => {
+          document.documentElement.classList.toggle("dark", theme === "dark");
+          try { localStorage.setItem("theme", theme); } catch { /* */ }
         },
+        setLocale,
         open: (url) => {
           if (url.startsWith("#")) {
             const id = url.slice(1);
@@ -190,6 +214,8 @@ export function TerminalProvider({
         history: historyRef.current,
         commands: COMMANDS,
         features: featuresRef.current,
+        locale: localeRef.current,
+        t,
       };
 
       try {
@@ -198,7 +224,7 @@ export function TerminalProvider({
         appendLine("err", `error: ${err instanceof Error ? err.message : String(err)}`);
       }
     },
-    [appendLine, clear, toast]
+    [appendLine, clear, toast, t, setLocale]
   );
 
   const value = useMemo<TerminalCtxValue>(

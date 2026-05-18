@@ -2,17 +2,18 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Kbd } from "./ui/Kbd";
 
 type Target = "top" | "work" | "about" | "experience" | "tech" | "contact";
 
-const SHORTCUTS: { keys: string; label: string; target: Target }[] = [
-  { keys: "g g", label: "Top", target: "top" },
-  { keys: "g w", label: "Work", target: "work" },
-  { keys: "g a", label: "About", target: "about" },
-  { keys: "g e", label: "Experience", target: "experience" },
-  { keys: "g t", label: "Tech", target: "tech" },
-  { keys: "g c", label: "Contact", target: "contact" },
+const SHORTCUTS: { keys: string; messageKey: Target; target: Target }[] = [
+  { keys: "g g", messageKey: "top", target: "top" },
+  { keys: "g w", messageKey: "work", target: "work" },
+  { keys: "g a", messageKey: "about", target: "about" },
+  { keys: "g e", messageKey: "experience", target: "experience" },
+  { keys: "g t", messageKey: "tech", target: "tech" },
+  { keys: "g c", messageKey: "contact", target: "contact" },
 ];
 
 function isEditable(el: EventTarget | null): boolean {
@@ -36,6 +37,7 @@ export function KeyboardNav() {
   const [gMode, setGMode] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const gTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const t = useTranslations("keyboardNav");
 
   const exitG = useCallback(() => {
     if (gTimer.current) clearTimeout(gTimer.current);
@@ -133,7 +135,7 @@ export function KeyboardNav() {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label="Keyboard shortcuts"
+              aria-label={t("title")}
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
@@ -141,29 +143,31 @@ export function KeyboardNav() {
               className="relative w-[min(24rem,100%)] overflow-hidden rounded-xl border hairline bg-ink-50/95 p-6 shadow-2xl shadow-ink-950/30 backdrop-blur dark:bg-ink-900/95"
             >
               <p className="font-mono text-xs uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400">
-                Keyboard shortcuts
+                {t("title")}
               </p>
               <ul className="mt-5 space-y-2">
                 {SHORTCUTS.map((s) => (
                   <li key={s.keys} className="flex items-center justify-between">
-                    <span className="text-sm text-ink-800 dark:text-ink-200">{s.label}</span>
+                    <span className="text-sm text-ink-800 dark:text-ink-200">
+                      {t(s.messageKey)}
+                    </span>
                     <ShortcutKeys keys={s.keys} />
                   </li>
                 ))}
                 <li className="flex items-center justify-between pt-2">
-                  <span className="text-sm text-ink-800 dark:text-ink-200">Command palette</span>
+                  <span className="text-sm text-ink-800 dark:text-ink-200">{t("palette")}</span>
                   <span className="flex gap-1">
                     <Kbd>⌘</Kbd>
                     <Kbd>K</Kbd>
                   </span>
                 </li>
                 <li className="flex items-center justify-between">
-                  <span className="text-sm text-ink-800 dark:text-ink-200">This sheet</span>
+                  <span className="text-sm text-ink-800 dark:text-ink-200">{t("thisSheet")}</span>
                   <Kbd>?</Kbd>
                 </li>
               </ul>
               <p className="mt-6 font-mono text-[10px] uppercase tracking-widest text-ink-400 dark:text-ink-500">
-                press esc or ? to close
+                {t("closeHint")}
               </p>
             </motion.div>
           </motion.div>

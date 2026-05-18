@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useTranslations } from "next-intl";
 import { useTerminal } from "./TerminalProvider";
 import type { OutputLine } from "./types";
 
@@ -24,12 +25,15 @@ type Props = {
 };
 
 export function Terminal({
-  title = "kai@berlin: ~/",
-  greeting = ["kai-os 1.0.0 — type `help` for commands"],
+  title,
+  greeting,
   bootCommand = "whoami",
   maxHeightClass = "h-80 md:h-[26rem]",
   className,
 }: Props) {
+  const t = useTranslations("terminal");
+  const titleText = title ?? t("title");
+  const greetingLines: ReactNode[] = greeting ?? [t("boot")];
   const { lines, history, execute, appendLine, commands } = useTerminal();
 
   const [input, setInput] = useState("");
@@ -80,13 +84,13 @@ export function Terminal({
     if (booted.current) return;
     booted.current = true;
     // Wait one tick so hydration from localStorage completes
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       if (lines.length === 0) {
-        for (const g of greeting) appendLine("info", g);
+        for (const g of greetingLines) appendLine("info", g);
         if (bootCommand) void execute(bootCommand);
       }
     }, 0);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -212,7 +216,7 @@ export function Terminal({
           <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]/80" />
         </span>
         <span className="flex-1 text-center text-[11px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
-          {title}
+          {titleText}
         </span>
         <span className="w-10" aria-hidden />
       </div>
@@ -274,7 +278,7 @@ export function Terminal({
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck={false}
-              aria-label="Terminal input"
+              aria-label={t("ariaLabel")}
               className="relative z-10 w-full border-0 bg-transparent p-0 font-mono text-[13px] text-transparent caret-transparent outline-none focus:ring-0"
             />
           </div>

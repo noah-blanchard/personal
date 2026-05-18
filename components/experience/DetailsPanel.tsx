@@ -1,10 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import type { Entry } from "./types";
-import { LANE_META } from "./types";
-import { entriesAt, indexToLabel, monthIndex } from "./useGantt";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
+import type { Entry } from "@/content/experience";
+import { LANE_META } from "@/content/experience";
+import { entriesAt, indexToDate, monthIndex } from "./useGantt";
 import { Tag } from "../ui/Tag";
+import { pick, type Locale } from "@/content/types";
 
 type Props = {
   entries: Entry[];
@@ -30,7 +32,12 @@ export function DetailsPanel({ entries, playhead, pinnedId, onUnpin }: Props) {
 }
 
 function ScrubView({ entries, playhead }: { entries: Entry[]; playhead: number }) {
+  const t = useTranslations("experience");
+  const formatter = useFormatter();
   const active = entriesAt(entries, playhead);
+
+  const date = indexToDate(playhead);
+  const formatted = formatter.dateTime(date, { month: "short", year: "numeric" });
 
   return (
     <motion.div
@@ -41,21 +48,22 @@ function ScrubView({ entries, playhead }: { entries: Entry[]; playhead: number }
     >
       <div className="flex items-baseline justify-between gap-4">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400">
-          on <span className="text-accent">{indexToLabel(playhead)}</span>
+          {t("scrub.on")} <span className="text-accent">{formatted}</span>
           {active.length > 0 && (
             <span className="text-ink-400 dark:text-ink-500">
-              {" "}· {active.length} active
+              {" · "}
+              {t("scrub.active", { count: active.length })}
             </span>
           )}
         </p>
         <p className="font-mono text-[10px] uppercase tracking-widest text-ink-400 dark:text-ink-500">
-          → click a bar for what i did & learned
+          {t("scrub.hint")}
         </p>
       </div>
 
       {active.length === 0 ? (
         <p className="mt-6 font-mono text-sm text-ink-500 dark:text-ink-400">
-          (nothing yet — drag the playhead right)
+          {t("scrub.empty")}
         </p>
       ) : (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -69,18 +77,25 @@ function ScrubView({ entries, playhead }: { entries: Entry[]; playhead: number }
 }
 
 function ActiveCard({ entry, playhead }: { entry: Entry; playhead: number }) {
+  const t = useTranslations("experience");
+  const locale = useLocale() as Locale;
+
   const s = monthIndex(entry.start);
   const monthsIn = Math.max(1, playhead - s + 1);
   const years = Math.floor(monthsIn / 12);
   const months = monthsIn % 12;
   const duration =
-    years === 0 ? `${months}mo in` : months === 0 ? `${years}y in` : `${years}y ${months}mo in`;
+    years === 0
+      ? t("scrub.durationMonths", { months })
+      : months === 0
+        ? t("scrub.durationYears", { years })
+        : t("scrub.durationYearsMonths", { years, months });
 
   return (
     <div className="rounded-md border hairline bg-ink-100/40 p-4 dark:bg-ink-900/30">
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
-          {LANE_META[entry.lane].label.toLowerCase()}
+          {pick(LANE_META[entry.lane].label, locale).toLowerCase()}
         </span>
         <span className="font-mono text-[10px] uppercase tracking-widest text-ink-400 dark:text-ink-500">
           {duration}
@@ -91,21 +106,21 @@ function ActiveCard({ entry, playhead }: { entry: Entry; playhead: number }) {
       </h4>
       {(entry.role || entry.location) && (
         <p className="mt-0.5 text-sm text-ink-600 dark:text-ink-400">
-          {entry.role}
+          {entry.role && pick(entry.role, locale)}
           {entry.role && entry.location ? " · " : ""}
           {entry.location}
         </p>
       )}
       {entry.description && (
         <p className="mt-3 text-balance text-sm leading-relaxed text-ink-700 dark:text-ink-300">
-          {entry.description}
+          {pick(entry.description, locale)}
         </p>
       )}
       {entry.tags && entry.tags.length > 0 && (
         <ul className="mt-3 flex flex-wrap gap-1.5">
-          {entry.tags.map((t) => (
-            <li key={t}>
-              <Tag size="sm">{t}</Tag>
+          {entry.tags.map((tag) => (
+            <li key={tag}>
+              <Tag size="sm">{tag}</Tag>
             </li>
           ))}
         </ul>
@@ -115,8 +130,23 @@ function ActiveCard({ entry, playhead }: { entry: Entry; playhead: number }) {
 }
 
 function PinnedView({ entry, onUnpin }: { entry: Entry; onUnpin: () => void }) {
-  const start = indexToLabel(monthIndex(entry.start));
-  const end = entry.end ? indexToLabel(monthIndex(entry.end)) : "ongoing";
+  const t = useTranslations("experience");
+  const formatter = useFormatter();
+  const locale = useLocale() as Locale;
+
+  const start = formatter.dateTime(indexToDate(monthIndex(entry.start)), {
+    month: "short",
+    year: "numeric",
+  });
+  const end = entry.end
+    ? formatter.dateTime(indexToDate(monthIndex(entry.end)), {
+        month: "short",
+        year: "numeric",
+      })
+    : t("pinned.ongoing");
+
+  const did = entry.did ? pick(entry.did, locale) : undefined;
+  const learned = entry.learned ? pick(entry.learned, locale) : undefined;
 
   return (
     <motion.div
@@ -128,7 +158,7 @@ function PinnedView({ entry, onUnpin }: { entry: Entry; onUnpin: () => void }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400">
-            {LANE_META[entry.lane].label.toLowerCase()} ·{" "}
+            {pick(LANE_META[entry.lane].label, locale).toLowerCase()} ·{" "}
             <span className="text-accent">
               {start} → {end}
             </span>
@@ -136,7 +166,7 @@ function PinnedView({ entry, onUnpin }: { entry: Entry; onUnpin: () => void }) {
           <h3 className="mt-2 font-serif text-2xl leading-tight tracking-tight text-ink-900 dark:text-ink-50 md:text-3xl">
             {entry.label}
             {entry.role && (
-              <span className="text-ink-500 dark:text-ink-400"> · {entry.role}</span>
+              <span className="text-ink-500 dark:text-ink-400"> · {pick(entry.role, locale)}</span>
             )}
           </h3>
           {entry.location && (
@@ -150,33 +180,30 @@ function PinnedView({ entry, onUnpin }: { entry: Entry; onUnpin: () => void }) {
           onClick={onUnpin}
           data-magnet
           className="shrink-0 rounded-full border hairline px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-ink-500 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-50"
-          aria-label="Unpin details"
+          aria-label={t("pinned.unpin")}
         >
-          esc · unpin
+          {t("pinned.unpin")}
         </button>
       </div>
 
       {entry.description && (
         <p className="mt-4 max-w-2xl text-balance text-ink-700 dark:text-ink-300">
-          {entry.description}
+          {pick(entry.description, locale)}
         </p>
       )}
 
-      {entry.did && entry.did.length > 0 && (
-        <Section label="built" items={entry.did} />
-      )}
-
-      {entry.learned && entry.learned.length > 0 && (
-        <Section label="learned" items={entry.learned} />
+      {did && did.length > 0 && <Section label={t("pinned.built")} items={did} />}
+      {learned && learned.length > 0 && (
+        <Section label={t("pinned.learned")} items={learned} />
       )}
 
       {entry.tags && entry.tags.length > 0 && (
         <div className="mt-7">
-          <SectionHeader label="stack" />
+          <SectionHeader label={t("pinned.stack")} />
           <ul className="mt-3 flex flex-wrap gap-1.5">
-            {entry.tags.map((t) => (
-              <li key={t}>
-                <Tag size="sm">{t}</Tag>
+            {entry.tags.map((tag) => (
+              <li key={tag}>
+                <Tag size="sm">{tag}</Tag>
               </li>
             ))}
           </ul>
@@ -189,7 +216,7 @@ function PinnedView({ entry, onUnpin }: { entry: Entry; onUnpin: () => void }) {
           data-magnet
           className="mt-6 inline-flex items-center gap-2 text-sm text-ink-900 underline decoration-ink-300 decoration-1 underline-offset-4 transition-colors hover:decoration-accent dark:text-ink-50 dark:decoration-ink-700"
         >
-          View related work
+          {t("pinned.view")}
           <span aria-hidden>→</span>
         </a>
       )}

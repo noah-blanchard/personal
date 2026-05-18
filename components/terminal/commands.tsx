@@ -2,60 +2,78 @@ import type { Command } from "./types";
 import { randomFortune } from "./fortune";
 import { AsciiAnimation } from "./AsciiAnimation";
 import { ANIMATIONS, findAnimation, randomAnimation } from "./animations";
+import { PROJECTS } from "@/content/work";
+import { BIO, CURRENTLY, WHOAMI } from "@/content/about";
+import { SITE, SOCIALS } from "@/content/site";
+import { pick, LOCALES, type Locale } from "@/content/types";
 
-const SOCIALS: Record<string, string> = {
-  gh: "https://github.com/",
-  github: "https://github.com/",
-  li: "https://linkedin.com/",
-  linkedin: "https://linkedin.com/",
-  x: "https://x.com/",
-  twitter: "https://x.com/",
+// Outbound URLs the `open` command knows about (canonical names).
+const OPEN_TARGETS: Record<string, string> = {
+  gh: SOCIALS.find((s) => s.id === "gh")?.href ?? "#",
+  github: SOCIALS.find((s) => s.id === "gh")?.href ?? "#",
+  li: SOCIALS.find((s) => s.id === "li")?.href ?? "#",
+  linkedin: SOCIALS.find((s) => s.id === "li")?.href ?? "#",
+  x: SOCIALS.find((s) => s.id === "x")?.href ?? "#",
+  twitter: SOCIALS.find((s) => s.id === "x")?.href ?? "#",
 };
 
-const PROJECTS: { name: string; year: string; blurb: string; href: string }[] = [
-  { name: "lumen", year: "2025", blurb: "realtime collaboration engine (crdts, ws, postgres)", href: "#work" },
-  { name: "halyard", year: "2024", blurb: "internal devtools platform (next, go, k8s)", href: "#work" },
-  { name: "tessera", year: "2023", blurb: "event analytics pipeline (rust, kafka, clickhouse)", href: "#work" },
-  { name: "foundry", year: "2022", blurb: "open-source cli for scaffolding (bun, ink)", href: "#work" },
-];
+// `cat` virtual files. Names are stable across locales; contents come from
+// content/* and are picked via locale at run time.
+const FILE_KEYS = ["bio", "about.md", "currently", "stack", "surprise.sh"] as const;
+type FileKey = (typeof FILE_KEYS)[number];
 
-const FILES: Record<string, string[]> = {
-  "bio": [
-    "i build the full stack — fast uis, clean apis, and the",
-    "infrastructure that ties them together. i care about",
-    "correctness, performance, and code that future-me won't hate.",
-  ],
-  "about.md": [
-    "# about",
-    "senior fullstack engineer · 11 years · berlin",
-    "ts / go / rust / postgres",
-    "prefers small teams, sharp constraints, real users.",
-  ],
-  "currently": [
-    "reading the postgres source. the query planner is a small city.",
-    "writing a toy sql engine in zig — for fun, mostly to learn.",
-    "mentoring two engineers transitioning into backend roles.",
-  ],
-  "stack": [
-    "frontend  · typescript · react · next.js · tailwind",
-    "backend   · go · node · rust · postgres · clickhouse",
-    "infra     · kubernetes · terraform · aws · cloudflare",
-    "tooling   · neovim · tmux · bun · opentelemetry",
-  ],
-  "surprise.sh": [
-    "#!/bin/bash",
-    "# surprise.sh — runs a small ascii animation",
-    `# usage: ./surprise.sh [${ANIMATIONS.map((a) => a.name).join("|")}]`,
-    "echo \"you have to run me, not read me.\"",
-  ],
-};
+function fileContent(key: FileKey, locale: Locale): string[] {
+  switch (key) {
+    case "bio":
+      return pick(BIO, locale);
+    case "about.md":
+      return [
+        "# about",
+        `${pick(SITE.roleShort, locale)} · 11 years · ${pick(SITE.location, locale)}`,
+        "ts / go / rust / postgres",
+        locale === "fr"
+          ? "préfère les petites équipes, les contraintes nettes, les vrais utilisateurs."
+          : "prefers small teams, sharp constraints, real users.",
+      ];
+    case "currently":
+      return pick(CURRENTLY, locale);
+    case "stack":
+      return locale === "fr"
+        ? [
+            "frontend  · typescript · react · next.js · tailwind",
+            "backend   · go · node · rust · postgres · clickhouse",
+            "infra     · kubernetes · terraform · aws · cloudflare",
+            "outillage · neovim · tmux · bun · opentelemetry",
+          ]
+        : [
+            "frontend  · typescript · react · next.js · tailwind",
+            "backend   · go · node · rust · postgres · clickhouse",
+            "infra     · kubernetes · terraform · aws · cloudflare",
+            "tooling   · neovim · tmux · bun · opentelemetry",
+          ];
+    case "surprise.sh":
+      return [
+        "#!/bin/bash",
+        locale === "fr"
+          ? "# surprise.sh — lance une petite animation ascii"
+          : "# surprise.sh — runs a small ascii animation",
+        `# ${locale === "fr" ? "usage" : "usage"}: ./surprise.sh [${ANIMATIONS.map((a) => a.name).join("|")}]`,
+        locale === "fr"
+          ? 'echo "il faut me lancer, pas me lire."'
+          : 'echo "you have to run me, not read me."',
+      ];
+  }
+}
 
 // ⭐ Command registry — append to this array to add new commands.
 // Each command receives a CommandCtx (see ./types.ts).
 export const COMMANDS: Command[] = [
   {
     name: "help",
-    description: "list commands, or `help <cmd>` for usage",
+    description: {
+      en: "list commands, or `help <cmd>` for usage",
+      fr: "liste les commandes, ou `help <cmd>` pour l'usage",
+    },
     usage: "help [command]",
     run: (ctx, args) => {
       const [target] = args;
@@ -64,44 +82,48 @@ export const COMMANDS: Command[] = [
           (c) => c.name === target || c.aliases?.includes(target)
         );
         if (!c || (c.hidden && !isUnlocked(ctx, c))) {
-          ctx.print(`help: no such command '${target}'`);
+          ctx.print(ctx.t("help.noSuch", { target }));
           return;
         }
-        ctx.print(`${c.name} — ${c.description}`);
-        if (c.usage) ctx.print(`  usage: ${c.usage}`);
-        if (c.aliases?.length) ctx.print(`  aliases: ${c.aliases.join(", ")}`);
+        ctx.print(`${c.name} — ${pick(c.description, ctx.locale)}`);
+        if (c.usage) ctx.print(`  ${ctx.t("help.usagePrefix")} ${c.usage}`);
+        if (c.aliases?.length) ctx.print(`  ${ctx.t("help.aliases", { list: c.aliases.join(", ") })}`);
         return;
       }
-      ctx.print("available commands:");
+      ctx.print(ctx.t("help.header"));
       const visible = ctx.commands.filter((c) => !c.hidden || isUnlocked(ctx, c));
       const width = Math.max(...visible.map((c) => c.name.length));
       for (const c of visible) {
-        ctx.print(`  ${c.name.padEnd(width + 2)}${c.description}`);
+        ctx.print(`  ${c.name.padEnd(width + 2)}${pick(c.description, ctx.locale)}`);
       }
     },
   },
   {
     name: "whoami",
-    description: "who is this",
+    description: { en: "who is this", fr: "qui c'est" },
     run: (ctx) => {
-      ctx.print("kai renner — senior fullstack engineer");
-      ctx.print("11 years building products end-to-end");
-      ctx.print("ts / go / postgres · realtime · devtools");
-      ctx.print("berlin, de · open to select work in q3 2026");
+      ctx.print(`${SITE.name} — ${pick(SITE.roleShort, ctx.locale)}`);
+      for (const line of pick(WHOAMI, ctx.locale)) ctx.print(line);
+      ctx.print(
+        `${pick(SITE.location, ctx.locale)}, ${ctx.locale === "fr" ? "allemagne" : "de"} · ${ctx.locale === "fr" ? "ouvert·e à des missions q3 2026" : "open to select work in q3 2026"}`
+      );
     },
   },
   {
     name: "ls",
-    description: "list sections",
+    description: { en: "list sections", fr: "lister les sections" },
     run: (ctx, args) => {
       const target = args[0];
       if (target === "projects" || target === "work") {
-        for (const p of PROJECTS) ctx.print(`  ${p.year}  ${p.name}  ${p.blurb}`);
+        for (const p of PROJECTS) {
+          ctx.print(`  ${p.year}  ${p.id.padEnd(8)}  ${pick(p.blurb, ctx.locale)}`);
+        }
         return;
       }
       ctx.print(
         <>
-          work/  about/  experience/  tech/  contact/{"  "}
+          {ctx.t("ls.directories")}
+          {"  "}
           <span className="text-accent">surprise.sh</span>
         </>
       );
@@ -109,8 +131,8 @@ export const COMMANDS: Command[] = [
   },
   {
     name: "cd",
-    description: "scroll to a section",
-    usage: "cd <work|about|tech|contact|/>",
+    description: { en: "scroll to a section", fr: "défiler jusqu'à une section" },
+    usage: "cd <work|about|experience|tech|contact|/>",
     run: (ctx, args) => {
       const target = (args[0] ?? "").replace(/\/$/, "");
       const map: Record<string, "top" | "work" | "about" | "experience" | "tech" | "contact"> = {
@@ -126,7 +148,7 @@ export const COMMANDS: Command[] = [
       };
       const id = map[target];
       if (!id) {
-        ctx.print(`cd: no such section: ${target}`);
+        ctx.print(ctx.t("cd.noSuch", { target }));
         return;
       }
       ctx.navigate(id);
@@ -134,119 +156,130 @@ export const COMMANDS: Command[] = [
   },
   {
     name: "projects",
-    description: "list selected work",
+    description: { en: "list selected work", fr: "lister les projets sélectionnés" },
     aliases: ["work"],
     run: (ctx) => {
-      ctx.print("selected work:");
-      for (const p of PROJECTS) ctx.print(`  ${p.year}  ${p.name.padEnd(8)}  ${p.blurb}`);
+      ctx.print(ctx.t("projects.header"));
+      for (const p of PROJECTS) {
+        ctx.print(`  ${p.year}  ${p.id.padEnd(8)}  ${pick(p.blurb, ctx.locale)}`);
+      }
       ctx.print("");
-      ctx.print("→ `open <name>` to view, or `cd work` to scroll");
+      ctx.print(ctx.t("projects.hint"));
     },
   },
   {
     name: "open",
-    description: "open a project or social link",
+    description: { en: "open a project or social link", fr: "ouvrir un projet ou un lien social" },
     usage: "open <project|gh|li|x>",
     run: (ctx, args) => {
       const target = args[0];
       if (!target) {
-        ctx.print("usage: open <project|gh|li|x>");
+        ctx.print(ctx.t("open.usage"));
         return;
       }
-      const project = PROJECTS.find((p) => p.name === target);
+      const project = PROJECTS.find((p) => p.id === target);
       if (project) {
         ctx.open(project.href);
-        ctx.print(`→ opening ${project.name}`);
+        ctx.print(ctx.t("open.opening", { target: project.id }));
         return;
       }
-      const social = SOCIALS[target];
-      if (social) {
-        ctx.open(social);
-        ctx.print(`→ opening ${target}`);
+      const url = OPEN_TARGETS[target];
+      if (url) {
+        ctx.open(url);
+        ctx.print(ctx.t("open.opening", { target }));
         return;
       }
-      ctx.print(`open: unknown target '${target}'`);
+      ctx.print(ctx.t("open.unknown", { target }));
     },
   },
   {
     name: "cat",
-    description: "print a file",
+    description: { en: "print a file", fr: "afficher un fichier" },
     usage: "cat <bio|about.md|currently|stack|surprise.sh>",
     run: (ctx, args) => {
       const file = args[0];
       if (!file) {
-        ctx.print(`available: ${Object.keys(FILES).join("  ")}`);
+        ctx.print(ctx.t("cat.available", { list: FILE_KEYS.join("  ") }));
         return;
       }
-      const lines = FILES[file];
-      if (!lines) {
-        ctx.print(`cat: ${file}: no such file`);
+      if (!(FILE_KEYS as readonly string[]).includes(file)) {
+        ctx.print(ctx.t("cat.noSuch", { file }));
         return;
       }
-      for (const line of lines) ctx.print(line);
+      for (const line of fileContent(file as FileKey, ctx.locale)) ctx.print(line);
     },
   },
   {
     name: "contact",
-    description: "email me",
+    description: { en: "email me", fr: "m'envoyer un email" },
     aliases: ["email"],
     run: async (ctx) => {
-      const email = "hello@kairenner.dev";
-      ctx.print(email);
-      const ok = await ctx.copy(email);
-      if (ok) ctx.toast("copied — drop me a line.");
-    },
-  },
-  {
-    name: "timeline",
-    description: "jump to the experience timeline",
-    aliases: ["experience"],
-    run: (ctx) => {
-      ctx.navigate("experience");
-      ctx.print("→ scrubbing through history");
+      ctx.print(SITE.email);
+      const ok = await ctx.copy(SITE.email);
+      if (ok) ctx.toast(ctx.t("contactToast"));
     },
   },
   {
     name: "cv",
-    description: "open cv",
+    description: { en: "open cv", fr: "ouvrir le cv" },
     run: (ctx) => {
       ctx.open("/cv.txt");
-      ctx.print("→ opening cv");
+      ctx.print(ctx.t("cv.opening"));
     },
   },
   {
     name: "theme",
-    description: "toggle or set theme",
+    description: { en: "toggle or set theme", fr: "basculer ou choisir le thème" },
     usage: "theme [dark|light]",
     run: (ctx, args) => {
       const t = args[0];
       if (t === "dark" || t === "light") {
         ctx.setTheme(t);
-        ctx.print(`theme: ${t}`);
+        ctx.print(ctx.t(t === "dark" ? "theme.setDark" : "theme.setLight"));
         return;
       }
       const isDark = document.documentElement.classList.contains("dark");
       const next = isDark ? "light" : "dark";
       ctx.setTheme(next);
-      ctx.print(`theme: ${next}`);
+      ctx.print(ctx.t(next === "dark" ? "theme.setDark" : "theme.setLight"));
+    },
+  },
+  {
+    name: "lang",
+    description: { en: "switch language", fr: "changer de langue" },
+    aliases: ["language", "lng"],
+    usage: "lang [en|fr]",
+    run: (ctx, args) => {
+      const target = args[0];
+      if (!target) {
+        ctx.print(ctx.t("lang.current", { locale: ctx.locale }));
+        ctx.print(ctx.t("lang.usage"));
+        return;
+      }
+      if (!(LOCALES as readonly string[]).includes(target)) {
+        ctx.print(ctx.t("lang.unsupported", { target }));
+        return;
+      }
+      ctx.setLocale(target as Locale);
+      ctx.print(ctx.t("lang.switched", { target }));
     },
   },
   {
     name: "date",
-    description: "current date",
-    run: (ctx) => ctx.print(new Date().toString()),
+    description: { en: "current date", fr: "date actuelle" },
+    run: (ctx) => ctx.print(new Date().toLocaleString(ctx.locale)),
   },
   {
     name: "echo",
-    description: "print arguments",
+    description: { en: "print arguments", fr: "afficher les arguments" },
     run: (ctx, args) => ctx.print(args.join(" ")),
   },
   {
     name: "history",
-    description: "show recent commands",
+    description: { en: "show recent commands", fr: "afficher les commandes récentes" },
     run: (ctx) => {
       if (ctx.history.length === 0) {
-        ctx.print("(no history)");
+        ctx.print(ctx.t("history.empty"));
         return;
       }
       const recent = ctx.history.slice(-20);
@@ -258,69 +291,81 @@ export const COMMANDS: Command[] = [
     },
   },
   {
+    name: "timeline",
+    description: { en: "jump to the experience timeline", fr: "aller à la timeline du parcours" },
+    aliases: ["experience"],
+    run: (ctx) => {
+      ctx.navigate("experience");
+      ctx.print(ctx.t("timeline.scrubbing"));
+    },
+  },
+  {
     name: "clear",
-    description: "clear scrollback",
+    description: { en: "clear scrollback", fr: "effacer le scrollback" },
     aliases: ["cls"],
     run: (ctx) => ctx.clear(),
   },
   {
     name: "sudo",
-    description: "do something with elevated privileges",
+    description: {
+      en: "do something with elevated privileges",
+      fr: "faire quelque chose avec les privilèges élevés",
+    },
     hidden: true,
     run: (ctx) => {
-      ctx.print("permission denied: kai is not in the sudoers file.");
-      ctx.print("this incident will be reported.");
+      ctx.print(ctx.t("sudo.line1"));
+      ctx.print(ctx.t("sudo.line2"));
     },
   },
   {
     name: "rm",
-    description: "remove files",
+    description: { en: "remove files", fr: "supprimer des fichiers" },
     hidden: true,
     run: (ctx, args) => {
       if (args.includes("-rf") && args.includes("/")) {
-        ctx.print("nice try.");
+        ctx.print(ctx.t("rm.niceTry"));
         return;
       }
-      ctx.print("rm: refusing to remove your portfolio.");
+      ctx.print(ctx.t("rm.refuse"));
     },
   },
   {
     name: "vim",
-    description: "open editor",
+    description: { en: "open editor", fr: "ouvrir l'éditeur" },
     hidden: true,
-    run: (ctx) => ctx.print("to exit vim, simply restart your computer."),
+    run: (ctx) => ctx.print(ctx.t("vim")),
   },
   {
     name: "exit",
-    description: "leave",
+    description: { en: "leave", fr: "partir" },
     aliases: ["logout", "quit"],
     hidden: true,
-    run: (ctx) => ctx.print("you can't leave. this is your portfolio."),
+    run: (ctx) => ctx.print(ctx.t("exit")),
   },
   {
     name: "fortune",
-    description: "print a fortune",
+    description: { en: "print a fortune", fr: "afficher une fortune" },
     hidden: true,
     run: (ctx) => {
       if (!ctx.features.fortune) {
-        ctx.print(`command not found: fortune`);
+        ctx.print(ctx.t("errors.notFound", { name: "fortune" }));
         return;
       }
-      ctx.print(randomFortune());
+      ctx.print(randomFortune(ctx.locale));
     },
   },
   {
     name: "./surprise.sh",
     aliases: ["surprise.sh", "surprise", "./surprise"],
-    description: "run a small ascii animation",
+    description: { en: "run a small ascii animation", fr: "lancer une petite animation ascii" },
     usage: `./surprise.sh [${ANIMATIONS.map((a) => a.name).join("|")}]`,
     hidden: true,
     run: (ctx, args) => {
       const requested = args[0];
       const anim = requested ? findAnimation(requested) : randomAnimation();
       if (!anim) {
-        ctx.print(`./surprise.sh: unknown animation: ${requested}`);
-        ctx.print(`available: ${ANIMATIONS.map((a) => a.name).join("  ")}`);
+        ctx.print(ctx.t("surprise.unknown", { name: requested ?? "" }));
+        ctx.print(ctx.t("surprise.available", { list: ANIMATIONS.map((a) => a.name).join("  ") }));
         return;
       }
       ctx.print(<AsciiAnimation frames={anim.frames} intervalMs={anim.intervalMs} />);
@@ -330,6 +375,5 @@ export const COMMANDS: Command[] = [
 
 function isUnlocked(ctx: { features: { fortune: boolean } }, c: Command): boolean {
   if (c.name === "fortune") return ctx.features.fortune;
-  // Easter-egg commands like sudo/vim/rm are hidden from `help` but always runnable.
   return false;
 }

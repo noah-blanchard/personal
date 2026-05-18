@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "title": "{name} — {role}",
+    "titleTemplate": "%s · {name}"
+  },
+  "nav": {
+    "tagline": "ingénieur·e fullstack",
+    "work": "Projets",
+    "about": "À propos",
+    "experience": "Parcours",
+    "contact": "Contact"
+  },
+  "drawer": {
+    "navigate": "Naviguer"
+  },
+  "hero": {
+    "availability": "Disponible pour de nouveaux projets",
+    "ctaWork": "Voir les projets",
+    "ctaCv": "Télécharger CV",
+    "terminalHint": "→ le terminal fonctionne. essaie <cmd>help</cmd>.",
+    "skipLink": "Aller au contenu"
+  },
+  "scroll": "défiler",
+  "work": {
+    "sectionLabel": "Projets sélectionnés",
+    "count": "{count, plural, one {# projet} other {# projets}}",
+    "projectN": "Projet {index}",
+    "whatIBuilt": "Ce que j'ai construit",
+    "viewProject": "Voir le projet",
+    "viewLabel": "↗ voir"
+  },
+  "about": {
+    "sectionLabel": "À propos",
+    "factsLabel": "Faits",
+    "currentlyLabel": "En ce moment",
+    "facts": {
+      "basedIn": "Basé·e à",
+      "experience": "Expérience",
+      "currentStack": "Stack actuelle",
+      "languages": "Langues",
+      "availability": "Disponibilité"
+    },
+    "terminalPath": "~/a-propos"
+  },
+  "tech": {
+    "sectionLabel": "Tech & outils",
+    "subtitle": "ce que j'utilise vraiment"
+  },
+  "contact": {
+    "sectionLabel": "Contact",
+    "headline": "Un projet qui vaut le coup ?",
+    "copy": "Je lis chaque message. Le plus rapide, c'est l'email — pas de formulaire, pas d'entonnoir.",
+    "copiedToast": "copié — écris-moi."
+  },
+  "footer": {
+    "copyright": "© {year} {name}. Fait au café et au TypeScript.",
+    "version": "v1.0 — tous les systèmes en marche"
+  },
+  "experience": {
+    "sectionLabel": "Parcours",
+    "summary": "{count, plural, one {# entrée} other {# entrées}} · {lanes} pistes",
+    "today": "aujourd'hui",
+    "lanes": {
+      "work": "TRAVAIL",
+      "education": "ÉTUDES",
+      "internship": "STAGE",
+      "side": "PERSO"
+    },
+    "scrub": {
+      "on": "en",
+      "active": "{count} actif·s",
+      "hint": "→ clique une barre pour voir ce que j'ai fait & appris",
+      "empty": "(rien pour l'instant — fais glisser la tête de lecture à droite)",
+      "durationMonths": "{months} mois dedans",
+      "durationYears": "{years} an dedans",
+      "durationYearsMonths": "{years} an {months} mois dedans"
+    },
+    "pinned": {
+      "ongoing": "en cours",
+      "unpin": "esc · détacher",
+      "built": "construit",
+      "learned": "appris",
+      "stack": "stack",
+      "view": "Voir les projets liés"
+    },
+    "legend": {
+      "playhead": "tête de lecture",
+      "stepMonth": "pas d'un mois",
+      "stepYear": "pas d'un an",
+      "cycleEntries": "parcourir les entrées",
+      "unpin": "détacher"
+    },
+    "drag": "glisser"
+  },
+  "keyboardNav": {
+    "top": "Haut",
+    "work": "Projets",
+    "about": "À propos",
+    "experience": "Parcours",
+    "tech": "Tech",
+    "contact": "Contact",
+    "title": "Raccourcis clavier",
+    "palette": "Palette de commandes",
+    "thisSheet": "Cette aide",
+    "closeHint": "appuie sur esc ou ? pour fermer"
+  },
+  "palette": {
+    "placeholder": "lance une commande…",
+    "noMatch": "aucune commande ne correspond",
+    "footerNav": "↑↓ naviguer · ↵ lancer",
+    "footerOutput": "la sortie apparaît dans le terminal",
+    "trigger": "palette"
+  },
+  "langSwitch": {
+    "label": "Langue",
+    "en": "EN",
+    "fr": "FR"
+  },
+  "notFound": {
+    "tag": "404",
+    "headline": "Égaré·e",
+    "copy": "Pas de route à ce nom. Le terminal fonctionne toujours — essaie <a>cd /</a> ou <b>help</b>.",
+    "home": "← Retour à l'accueil",
+    "terminalTitle": "kai@berlin : /inconnu",
+    "terminalGreeting": [
+      "> cd /inconnu",
+      "> erreur : ENOENT — répertoire inexistant.",
+      "> indice : essaie `cd /` ou `help`."
+    ]
+  },
+  "terminal": {
+    "title": "kai@berlin : ~/",
+    "boot": "kai-os 1.0.0 — tape `help` pour les commandes",
+    "ariaLabel": "Entrée du terminal",
+    "errors": {
+      "notFound": "commande introuvable : {name}. tape `help`."
+    },
+    "help": {
+      "header": "commandes disponibles :",
+      "noSuch": "help : commande inconnue '{target}'",
+      "aliases": "alias : {list}",
+      "usagePrefix": "usage :"
+    },
+    "ls": {
+      "directories": "travail/  a-propos/  parcours/  tech/  contact/"
+    },
+    "cd": {
+      "noSuch": "cd : section introuvable : {target}"
+    },
+    "projects": {
+      "header": "projets sélectionnés :",
+      "hint": "→ `open <nom>` pour ouvrir, ou `cd work` pour défiler"
+    },
+    "open": {
+      "usage": "usage : open <projet|gh|li|x>",
+      "opening": "→ ouverture de {target}",
+      "unknown": "open : cible inconnue '{target}'"
+    },
+    "cat": {
+      "available": "disponible : {list}",
+      "noSuch": "cat : {file} : fichier introuvable"
+    },
+    "cv": {
+      "opening": "→ ouverture du cv"
+    },
+    "theme": {
+      "setLight": "thème : clair",
+      "setDark": "thème : sombre"
+    },
+    "history": {
+      "empty": "(pas d'historique)"
+    },
+    "sudo": {
+      "line1": "permission refusée : kai n'est pas dans le fichier sudoers.",
+      "line2": "cet incident sera signalé."
+    },
+    "contactToast": "copié — écris-moi.",
+    "rm": {
+      "niceTry": "bien essayé.",
+      "refuse": "rm : refus de supprimer ton portfolio."
+    },
+    "vim": "pour quitter vim, redémarre simplement ton ordinateur.",
+    "exit": "tu ne peux pas partir. c'est ton portfolio.",
+    "lang": {
+      "current": "actuel : {locale}",
+      "usage": "usage : lang [en|fr]",
+      "unsupported": "lang : non supporté '{target}'",
+      "switched": "→ langue : {target}"
+    },
+    "timeline": {
+      "scrubbing": "→ exploration de l'historique"
+    },
+    "konami": {
+      "unlock": "tu l'as trouvé. essaie `fortune` dans le terminal."
+    },
+    "surprise": {
+      "unknown": "./surprise.sh : animation inconnue : {name}",
+      "available": "disponible : {list}"
+    }
+  }
+}

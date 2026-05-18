@@ -2,11 +2,14 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { SectionId } from "./ActiveSectionProvider";
+import { SITE } from "@/content/site";
 
 type Link = { id: SectionId; label: string };
 
 export function MobileDrawer({ links, active }: { links: Link[]; active: SectionId | null }) {
+  const t = useTranslations("drawer");
   const [open, setOpen] = useState(false);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
@@ -31,7 +34,7 @@ export function MobileDrawer({ links, active }: { links: Link[]; active: Section
     <>
       <button
         type="button"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={t("navigate")}
         aria-expanded={open}
         aria-controls="mobile-drawer"
         onClick={() => setOpen((v) => !v)}
@@ -75,7 +78,7 @@ export function MobileDrawer({ links, active }: { links: Link[]; active: Section
               transition={{ type: "spring", stiffness: 320, damping: 34 }}
             >
               <p className="font-mono text-xs uppercase tracking-widest text-ink-500 dark:text-ink-400">
-                Navigate
+                {t("navigate")}
               </p>
               <ul className="mt-6 flex flex-col gap-1">
                 {links.map((link, i) => (
@@ -98,7 +101,7 @@ export function MobileDrawer({ links, active }: { links: Link[]; active: Section
               </ul>
               <div className="mt-auto border-t hairline pt-6">
                 <p className="font-mono text-xs text-ink-500 dark:text-ink-400">
-                  hello@kairenner.dev
+                  {SITE.email}
                 </p>
               </div>
             </motion.div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Entry } from "./types";
+import type { Entry } from "@/content/experience";
 
 // Time math is all in "month integers" (year * 12 + month-index)
 // to avoid Date object pitfalls with timezones / DST.
@@ -18,14 +18,11 @@ export function todayIndex(): number {
   return d.getFullYear() * 12 + d.getMonth();
 }
 
-export function indexToLabel(idx: number): string {
+/** Convert a month index → a Date (first of that month). Consumers format with next-intl. */
+export function indexToDate(idx: number): Date {
   const y = Math.floor(idx / 12);
   const m = idx % 12;
-  const MONTHS = [
-    "jan", "feb", "mar", "apr", "may", "jun",
-    "jul", "aug", "sep", "oct", "nov", "dec",
-  ];
-  return `${MONTHS[m]} ${y}`;
+  return new Date(Date.UTC(y, m, 1));
 }
 
 export type GanttDomain = {

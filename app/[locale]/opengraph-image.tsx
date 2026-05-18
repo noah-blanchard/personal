@@ -1,10 +1,21 @@
 import { ImageResponse } from "next/og";
+import { SITE } from "@/content/site";
+import { pick, type Locale } from "@/content/types";
 
-export const alt = "Kai Renner — Senior Fullstack Engineer";
+export const alt = SITE.name;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpengraphImage() {
+export default async function OpengraphImage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const safeLocale: Locale = locale === "fr" ? "fr" : "en";
+  const role = pick(SITE.roleShort, safeLocale);
+  const description = pick(SITE.description, safeLocale);
+
   return new ImageResponse(
     (
       <div
@@ -20,7 +31,6 @@ export default function OpengraphImage() {
           fontFamily: "system-ui, sans-serif",
         }}
       >
-        {/* Background grid */}
         <div
           style={{
             position: "absolute",
@@ -31,7 +41,6 @@ export default function OpengraphImage() {
           }}
         />
 
-        {/* Top row */}
         <div
           style={{
             display: "flex",
@@ -55,11 +64,10 @@ export default function OpengraphImage() {
             <span>kairenner.dev</span>
           </div>
           <div style={{ fontSize: 18, color: "#94a3b8", letterSpacing: "0.2em" }}>
-            §01
+            §01 · {safeLocale.toUpperCase()}
           </div>
         </div>
 
-        {/* Headline */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 24 }}>
           <div
             style={{
@@ -71,15 +79,14 @@ export default function OpengraphImage() {
               alignItems: "baseline",
             }}
           >
-            Kai Renner
+            {SITE.name}
             <span style={{ color: "#a3e635" }}>.</span>
           </div>
           <div style={{ fontSize: 36, color: "#cbd5e1", maxWidth: 900 }}>
-            Senior fullstack engineer. I build the full stack — fast UIs, clean APIs, and the infrastructure that ties them together.
+            {role}. {description}
           </div>
         </div>
 
-        {/* Bottom row */}
         <div
           style={{
             position: "relative",
@@ -92,7 +99,10 @@ export default function OpengraphImage() {
           }}
         >
           <span>typescript · go · postgres · k8s</span>
-          <span>berlin · open to opportunities</span>
+          <span>
+            {pick(SITE.location, safeLocale).toLowerCase()} ·{" "}
+            {safeLocale === "fr" ? "ouvert·e aux opportunités" : "open to opportunities"}
+          </span>
         </div>
       </div>
     ),

@@ -2,8 +2,10 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { forwardRef } from "react";
-import type { Entry } from "./types";
-import { LANE_META, LANE_ORDER } from "./types";
+import { useLocale, useTranslations } from "next-intl";
+import type { Entry } from "@/content/experience";
+import { LANE_META, LANE_ORDER } from "@/content/experience";
+import { pick, type Locale } from "@/content/types";
 import {
   indexToX,
   monthIndex,
@@ -28,6 +30,8 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
   surfaceRef
 ) {
   const reduced = useReducedMotion();
+  const locale = useLocale() as Locale;
+  const t = useTranslations("experience");
   const playheadX = indexToX(playhead, domain) * 100;
   const todayYear = Math.floor(domain.end / 12);
 
@@ -73,7 +77,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
                   aria-hidden
                 />
                 <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
-                  today
+                  {t("today")}
                 </span>
               </div>
             </div>
@@ -89,7 +93,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
                   className="flex h-10 items-center pl-1 sm:h-12"
                 >
                   <span className="font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
-                    {LANE_META[lane].label}
+                    {pick(LANE_META[lane].label, locale)}
                   </span>
                 </div>
               ))}

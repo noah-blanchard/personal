@@ -3,7 +3,11 @@
     "allow": [
       "Bash(bun pm *)",
       "Bash(bun install *)",
-      "Bash(bun run *)"
+      "Bash(bun run *)",
+      "Bash(mkdir -p app/\\\\[locale\\\\])",
+      "Bash(mv app/page.tsx app/\\\\[locale\\\\]/page.tsx)",
+      "Bash(mv app/not-found.tsx app/\\\\[locale\\\\]/not-found.tsx)",
+      "Bash(mv app/opengraph-image.tsx app/\\\\[locale\\\\]/opengraph-image.tsx)"
     ]
   }
 }

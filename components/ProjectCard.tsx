@@ -1,19 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import { Tag } from "./ui/Tag";
-
-export type Project = {
-  index: string;       // "01", "02", ...
-  title: string;
-  year: string;
-  blurb: string;       // one sentence
-  built: string;       // "what I actually built"
-  stack: string[];
-  href: string;
-  align: "left" | "right"; // text alignment within the row
-  glyph: string;       // ASCII/unicode mark used in the visual layer
-};
+import type { Project } from "@/content/work";
+import { pick, type Locale } from "@/content/types";
 
 const card = {
   hidden: { opacity: 0, y: 30 },
@@ -21,20 +12,16 @@ const card = {
 };
 
 export function ProjectCard({ project }: { project: Project }) {
+  const locale = useLocale() as Locale;
+  const t = useTranslations("work");
   const textRight = project.align === "right";
 
+  const blurb = pick(project.blurb, locale);
+  const built = pick(project.built, locale);
+
   return (
-    <motion.article
-      variants={card}
-      className="group relative"
-    >
-      <div
-        className={[
-          "grid items-center gap-8 md:gap-12 lg:gap-16",
-          "md:grid-cols-12",
-        ].join(" ")}
-      >
-        {/* Visual layer */}
+    <motion.article variants={card} className="group relative">
+      <div className={["grid items-center gap-8 md:gap-12 lg:gap-16", "md:grid-cols-12"].join(" ")}>
         <div
           className={[
             "order-1 md:col-span-7",
@@ -45,28 +32,23 @@ export function ProjectCard({ project }: { project: Project }) {
             href={project.href}
             data-magnet
             className="relative block aspect-[16/10] overflow-hidden rounded-xl border hairline bg-ink-100/60 transition-colors hover:border-ink-300 dark:bg-ink-900/40 dark:hover:border-ink-700"
-            aria-label={`${project.title} — view project`}
+            aria-label={`${project.title} — ${t("viewProject")}`}
           >
-            {/* Background grid */}
             <div
               aria-hidden
               className="absolute inset-0 opacity-[0.5] [background-image:linear-gradient(to_right,theme(colors.ink.200/0.5)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.ink.200/0.5)_1px,transparent_1px)] [background-size:32px_32px] dark:opacity-30 dark:[background-image:linear-gradient(to_right,theme(colors.ink.800/0.7)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.ink.800/0.7)_1px,transparent_1px)]"
             />
-            {/* Title mark */}
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="select-none font-serif text-[clamp(4rem,12vw,9rem)] leading-none text-ink-300 transition-colors group-hover:text-ink-400 dark:text-ink-700 dark:group-hover:text-ink-600">
                 {project.glyph}
               </span>
             </div>
-
-            {/* Top-left meta */}
             <div className="absolute left-4 top-4 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-ink-500 dark:text-ink-400">
               <span>{project.index}</span>
               <span aria-hidden>/</span>
               <span>{project.year}</span>
             </div>
 
-            {/* Hover-only overlay: contained clip-path reveal of "what I built" */}
             <motion.div
               aria-hidden
               initial={false}
@@ -81,37 +63,33 @@ export function ProjectCard({ project }: { project: Project }) {
             >
               <div className="max-w-md">
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent">
-                  What I built
+                  {t("whatIBuilt")}
                 </p>
                 <p className="mt-2 text-balance text-sm leading-relaxed text-ink-200 md:text-base">
-                  {project.built}
+                  {built}
                 </p>
               </div>
             </motion.div>
 
-            {/* Accent corner mark */}
             <div className="absolute bottom-4 right-4 font-mono text-[10px] text-ink-400 transition-colors group-hover:text-accent dark:text-ink-500">
-              ↗ view
+              {t("viewLabel")}
             </div>
           </a>
         </div>
 
-        {/* Text block */}
         <div
           className={[
             "order-2 md:col-span-5",
             textRight ? "md:order-2 md:text-right" : "md:order-1",
           ].join(" ")}
         >
-          <p className={`font-mono text-xs uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400`}>
-            <span className="text-accent">●</span> Project {project.index}
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400">
+            <span className="text-accent">●</span> {t("projectN", { index: project.index })}
           </p>
           <h3 className="mt-3 font-serif text-4xl leading-tight tracking-tight text-ink-900 dark:text-ink-50 md:text-5xl">
             {project.title}
           </h3>
-          <p className="mt-4 text-balance text-ink-600 dark:text-ink-300">
-            {project.blurb}
-          </p>
+          <p className="mt-4 text-balance text-ink-600 dark:text-ink-300">{blurb}</p>
           <ul
             className={[
               "mt-5 flex flex-wrap gap-1.5",
@@ -129,7 +107,7 @@ export function ProjectCard({ project }: { project: Project }) {
             data-magnet
             className="mt-6 inline-flex items-center gap-2 text-sm text-ink-900 underline decoration-ink-300 decoration-1 underline-offset-4 transition-colors hover:decoration-accent dark:text-ink-50 dark:decoration-ink-700"
           >
-            View project
+            {t("viewProject")}
             <span aria-hidden>→</span>
           </a>
         </div>

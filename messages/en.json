@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "title": "{name} — {role}",
+    "titleTemplate": "%s · {name}"
+  },
+  "nav": {
+    "tagline": "fullstack engineer",
+    "work": "Work",
+    "about": "About",
+    "experience": "Experience",
+    "contact": "Contact"
+  },
+  "drawer": {
+    "navigate": "Navigate"
+  },
+  "hero": {
+    "availability": "Open to opportunities",
+    "ctaWork": "View Work",
+    "ctaCv": "Download CV",
+    "terminalHint": "→ the terminal works. try <cmd>help</cmd>.",
+    "skipLink": "Skip to content"
+  },
+  "scroll": "scroll",
+  "work": {
+    "sectionLabel": "Selected work",
+    "count": "{count, plural, one {# project} other {# projects}}",
+    "projectN": "Project {index}",
+    "whatIBuilt": "What I built",
+    "viewProject": "View project",
+    "viewLabel": "↗ view"
+  },
+  "about": {
+    "sectionLabel": "About",
+    "factsLabel": "Facts",
+    "currentlyLabel": "Currently",
+    "facts": {
+      "basedIn": "Based in",
+      "experience": "Experience",
+      "currentStack": "Current stack",
+      "languages": "Languages",
+      "availability": "Availability"
+    },
+    "terminalPath": "~/about"
+  },
+  "tech": {
+    "sectionLabel": "Tech & tools",
+    "subtitle": "things i actually use"
+  },
+  "contact": {
+    "sectionLabel": "Contact",
+    "headline": "Have something worth building?",
+    "copy": "I read every message. The fastest way to reach me is email — no form, no funnel.",
+    "copiedToast": "copied — drop me a line."
+  },
+  "footer": {
+    "copyright": "© {year} {name}. Built with caffeine and TypeScript.",
+    "version": "v1.0 — all systems nominal"
+  },
+  "experience": {
+    "sectionLabel": "Experience",
+    "summary": "{count, plural, one {# entry} other {# entries}} · {lanes} lanes",
+    "today": "today",
+    "lanes": {
+      "work": "WORK",
+      "education": "EDU",
+      "internship": "INT",
+      "side": "SIDE"
+    },
+    "scrub": {
+      "on": "on",
+      "active": "{count} active",
+      "hint": "→ click a bar for what i did & learned",
+      "empty": "(nothing yet — drag the playhead right)",
+      "durationMonths": "{months}mo in",
+      "durationYears": "{years}y in",
+      "durationYearsMonths": "{years}y {months}mo in"
+    },
+    "pinned": {
+      "ongoing": "ongoing",
+      "unpin": "esc · unpin",
+      "built": "built",
+      "learned": "learned",
+      "stack": "stack",
+      "view": "View related work"
+    },
+    "legend": {
+      "playhead": "playhead",
+      "stepMonth": "step month",
+      "stepYear": "step year",
+      "cycleEntries": "cycle entries",
+      "unpin": "unpin"
+    },
+    "drag": "drag"
+  },
+  "keyboardNav": {
+    "top": "Top",
+    "work": "Work",
+    "about": "About",
+    "experience": "Experience",
+    "tech": "Tech",
+    "contact": "Contact",
+    "title": "Keyboard shortcuts",
+    "palette": "Command palette",
+    "thisSheet": "This sheet",
+    "closeHint": "press esc or ? to close"
+  },
+  "palette": {
+    "placeholder": "run a command…",
+    "noMatch": "no commands match",
+    "footerNav": "↑↓ navigate · ↵ run",
+    "footerOutput": "output appears in the terminal",
+    "trigger": "palette"
+  },
+  "langSwitch": {
+    "label": "Language",
+    "en": "EN",
+    "fr": "FR"
+  },
+  "notFound": {
+    "tag": "404",
+    "headline": "Wandered off",
+    "copy": "No route by that name. The terminal still works — try <a>cd /</a> or <b>help</b>.",
+    "home": "← Head home",
+    "terminalTitle": "kai@berlin: /unknown",
+    "terminalGreeting": [
+      "> cd /unknown",
+      "> error: ENOENT — no such directory.",
+      "> hint: try `cd /` or `help`."
+    ]
+  },
+  "terminal": {
+    "title": "kai@berlin: ~/",
+    "boot": "kai-os 1.0.0 — type `help` for commands",
+    "ariaLabel": "Terminal input",
+    "errors": {
+      "notFound": "command not found: {name}. type `help`."
+    },
+    "help": {
+      "header": "available commands:",
+      "noSuch": "help: no such command '{target}'",
+      "aliases": "aliases: {list}",
+      "usagePrefix": "usage:"
+    },
+    "ls": {
+      "directories": "work/  about/  experience/  tech/  contact/"
+    },
+    "cd": {
+      "noSuch": "cd: no such section: {target}"
+    },
+    "projects": {
+      "header": "selected work:",
+      "hint": "→ `open <name>` to view, or `cd work` to scroll"
+    },
+    "open": {
+      "usage": "usage: open <project|gh|li|x>",
+      "opening": "→ opening {target}",
+      "unknown": "open: unknown target '{target}'"
+    },
+    "cat": {
+      "available": "available: {list}",
+      "noSuch": "cat: {file}: no such file"
+    },
+    "cv": {
+      "opening": "→ opening cv"
+    },
+    "theme": {
+      "setLight": "theme: light",
+      "setDark": "theme: dark"
+    },
+    "history": {
+      "empty": "(no history)"
+    },
+    "sudo": {
+      "line1": "permission denied: kai is not in the sudoers file.",
+      "line2": "this incident will be reported."
+    },
+    "contactToast": "copied — drop me a line.",
+    "rm": {
+      "niceTry": "nice try.",
+      "refuse": "rm: refusing to remove your portfolio."
+    },
+    "vim": "to exit vim, simply restart your computer.",
+    "exit": "you can't leave. this is your portfolio.",
+    "lang": {
+      "current": "current: {locale}",
+      "usage": "usage: lang [en|fr]",
+      "unsupported": "lang: unsupported '{target}'",
+      "switched": "→ language: {target}"
+    },
+    "timeline": {
+      "scrubbing": "→ scrubbing through history"
+    },
+    "konami": {
+      "unlock": "you found it. try `fortune` in the terminal."
+    },
+    "surprise": {
+      "unknown": "./surprise.sh: unknown animation: {name}",
+      "available": "available: {list}"
+    }
+  }
+}

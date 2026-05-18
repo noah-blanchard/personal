@@ -1,10 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import { ScrambleText } from "./ScrambleText";
 import { ScrollIndicator } from "./ScrollIndicator";
 import { CopyableEmail } from "./CopyableEmail";
 import { Terminal } from "./terminal/Terminal";
+import { SITE } from "@/content/site";
+import { HERO } from "@/content/hero";
+import { pick, type Locale } from "@/content/types";
 
 const enter = {
   hidden: { opacity: 0, y: 18 },
@@ -12,6 +16,9 @@ const enter = {
 };
 
 export function Hero() {
+  const t = useTranslations("hero");
+  const locale = useLocale() as Locale;
+
   return (
     <section
       aria-label="Introduction"
@@ -19,7 +26,6 @@ export function Hero() {
     >
       <div className="container-grid">
         <div className="grid items-center gap-10 md:grid-cols-12 md:gap-12">
-          {/* Left column: name + CTAs */}
           <div className="md:col-span-5">
             <motion.p
               initial="hidden"
@@ -32,7 +38,7 @@ export function Hero() {
                   <span className="absolute inset-0 animate-pulse-soft rounded-full bg-accent" />
                   <span className="absolute inset-0 rounded-full bg-accent/40 blur-[3px]" />
                 </span>
-                Open to opportunities
+                {t("availability")}
               </span>
             </motion.p>
 
@@ -42,7 +48,7 @@ export function Hero() {
               variants={{ ...enter, show: { ...enter.show, transition: { ...enter.show.transition, delay: 0.05 } } }}
               className="mt-8 font-serif text-[clamp(2.75rem,8vw,6rem)] leading-[0.95] tracking-tightest text-ink-900 dark:text-ink-50"
             >
-              <ScrambleText text="Kai Renner" />
+              <ScrambleText text={HERO.scrambleName} />
               <span className="text-accent">.</span>
             </motion.h1>
 
@@ -57,15 +63,15 @@ export function Hero() {
                 data-magnet
                 className="group inline-flex items-center gap-2 rounded-full bg-ink-900 px-5 py-2.5 text-sm font-medium text-ink-50 transition-colors hover:bg-ink-800 dark:bg-ink-50 dark:text-ink-950 dark:hover:bg-ink-200"
               >
-                View Work
+                {t("ctaWork")}
                 <ArrowIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </a>
               <a
-                href="/cv.txt"
+                href={HERO.cvHref}
                 data-magnet
                 className="inline-flex items-center gap-2 rounded-full border border-ink-300/80 px-5 py-2.5 text-sm font-medium text-ink-700 transition-colors hover:border-ink-500 hover:text-ink-900 dark:border-ink-700/80 dark:text-ink-300 dark:hover:border-ink-500 dark:hover:text-ink-50"
               >
-                Download CV
+                {t("ctaCv")}
                 <DownloadIcon className="h-3.5 w-3.5" />
               </a>
             </motion.div>
@@ -76,9 +82,12 @@ export function Hero() {
               variants={{ ...enter, show: { ...enter.show, transition: { ...enter.show.transition, delay: 0.35 } } }}
               className="mt-8 font-mono text-xs text-ink-500 dark:text-ink-400"
             >
-              Berlin · UTC+1 ·{" "}
+              {pick(SITE.location, locale)}
+              {" · "}
+              {SITE.timezone}
+              {" · "}
               <CopyableEmail
-                email="hello@kairenner.dev"
+                email={SITE.email}
                 className="underline decoration-ink-300 decoration-1 underline-offset-2 transition-colors hover:text-ink-900 hover:decoration-accent dark:decoration-ink-700 dark:hover:text-ink-50"
               />
             </motion.p>
@@ -89,11 +98,12 @@ export function Hero() {
               variants={{ ...enter, show: { ...enter.show, transition: { ...enter.show.transition, delay: 0.5 } } }}
               className="mt-6 hidden font-mono text-[11px] uppercase tracking-widest text-ink-400 dark:text-ink-500 md:block"
             >
-              → the terminal works. try <span className="text-accent">help</span>.
+              {t.rich("terminalHint", {
+                cmd: (chunks) => <span className="text-accent">{chunks}</span>,
+              })}
             </motion.p>
           </div>
 
-          {/* Right column: terminal */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -104,7 +114,9 @@ export function Hero() {
           </motion.div>
         </div>
       </div>
-      
+
+      {/* <ScrollIndicator /> */}
+
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-ink-200/80 to-transparent dark:via-ink-800/80"
