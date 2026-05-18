@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -17,12 +17,11 @@ const sans = Inter({
   weight: ["400", "500", "600"],
 });
 
-const serif = Instrument_Serif({
+const serif = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-serif",
-  weight: ["400"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const mono = JetBrains_Mono({
