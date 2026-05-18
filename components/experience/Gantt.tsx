@@ -38,7 +38,7 @@ export const Gantt = forwardRef<HTMLDivElement, Props>(function Gantt(
   return (
     <div className="rounded-lg border hairline bg-ink-50/50 p-4 dark:bg-ink-900/30 sm:p-6">
       <div className="overflow-x-auto">
-        <div className="min-w-[680px]">
+        <div className="min-w-[680px] overflow-x-clip">
           {/* Axis row — gutter spacer + scrub-aligned ticks */}
           <div className="flex h-7 select-none">
             <div className={`${GUTTER} shrink-0`} />

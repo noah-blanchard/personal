@@ -53,6 +53,7 @@ export function Experience() {
             entries={ENTRIES}
             playhead={playhead}
             pinnedId={pinnedId}
+            onPin={setPinnedId}
             onUnpin={() => setPinnedId(null)}
           />
         </motion.div>

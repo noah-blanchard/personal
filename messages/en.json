@@ -73,7 +73,8 @@
       "empty": "(nothing yet — drag the playhead right)",
       "durationMonths": "{months}mo in",
       "durationYears": "{years}y in",
-      "durationYearsMonths": "{years}y {months}mo in"
+      "durationYearsMonths": "{years}y {months}mo in",
+      "expand": "expand"
     },
     "pinned": {
       "ongoing": "ongoing",

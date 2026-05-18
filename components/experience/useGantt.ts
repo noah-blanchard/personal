@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Entry } from "@/content/experience";
 
 // Time math is all in "month integers" (year * 12 + month-index)
@@ -92,6 +92,7 @@ export function useGanttScrub({ entries, surfaceRef }: Options) {
   const [playhead, setPlayhead] = useState<number>(domain.end);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
 
   // Keep playhead inside the domain if data changes.
   useEffect(() => {
@@ -121,16 +122,18 @@ export function useGanttScrub({ entries, surfaceRef }: Options) {
       // click never fires (especially on touch).
       const target = e.target as HTMLElement | null;
       if (target?.closest("[data-gantt-bar]")) return;
+      draggingRef.current = true;
       setDragging(true);
       setPinnedId(null);
       el.setPointerCapture(e.pointerId);
       setFromClientX(e.clientX);
     };
     const onMove = (e: PointerEvent) => {
-      if (!dragging) return;
+      if (!draggingRef.current) return;
       setFromClientX(e.clientX);
     };
     const onUp = (e: PointerEvent) => {
+      draggingRef.current = false;
       setDragging(false);
       if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
     };
@@ -146,7 +149,7 @@ export function useGanttScrub({ entries, surfaceRef }: Options) {
       el.removeEventListener("pointerup", onUp);
       el.removeEventListener("pointercancel", onUp);
     };
-  }, [surfaceRef, setFromClientX, dragging]);
+  }, [surfaceRef, setFromClientX]);
 
   // Keyboard nav when the surface (or any of its children) has focus.
   useEffect(() => {

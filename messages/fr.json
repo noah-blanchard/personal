@@ -73,7 +73,8 @@
       "empty": "(rien pour l'instant — fais glisser la tête de lecture à droite)",
       "durationMonths": "{months} mois dedans",
       "durationYears": "{years} an dedans",
-      "durationYearsMonths": "{years} an {months} mois dedans"
+      "durationYearsMonths": "{years} an {months} mois dedans",
+      "expand": "développer"
     },
     "pinned": {
       "ongoing": "en cours",

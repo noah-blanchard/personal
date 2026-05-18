@@ -12,10 +12,11 @@ type Props = {
   entries: Entry[];
   playhead: number;
   pinnedId: string | null;
+  onPin: (id: string) => void;
   onUnpin: () => void;
 };
 
-export function DetailsPanel({ entries, playhead, pinnedId, onUnpin }: Props) {
+export function DetailsPanel({ entries, playhead, pinnedId, onPin, onUnpin }: Props) {
   const pinned = pinnedId ? entries.find((e) => e.id === pinnedId) ?? null : null;
 
   return (
@@ -24,14 +25,14 @@ export function DetailsPanel({ entries, playhead, pinnedId, onUnpin }: Props) {
         {pinned ? (
           <PinnedView key={pinned.id} entry={pinned} onUnpin={onUnpin} />
         ) : (
-          <ScrubView key={`scrub-${playhead}`} entries={entries} playhead={playhead} />
+          <ScrubView key={`scrub-${playhead}`} entries={entries} playhead={playhead} onPin={onPin} />
         )}
       </AnimatePresence>
     </div>
   );
 }
 
-function ScrubView({ entries, playhead }: { entries: Entry[]; playhead: number }) {
+function ScrubView({ entries, playhead, onPin }: { entries: Entry[]; playhead: number; onPin: (id: string) => void }) {
   const t = useTranslations("experience");
   const formatter = useFormatter();
   const active = entriesAt(entries, playhead);
@@ -68,7 +69,7 @@ function ScrubView({ entries, playhead }: { entries: Entry[]; playhead: number }
       ) : (
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           {active.map((e) => (
-            <ActiveCard key={e.id} entry={e} playhead={playhead} />
+            <ActiveCard key={e.id} entry={e} playhead={playhead} onPin={onPin} />
           ))}
         </div>
       )}
@@ -76,7 +77,7 @@ function ScrubView({ entries, playhead }: { entries: Entry[]; playhead: number }
   );
 }
 
-function ActiveCard({ entry, playhead }: { entry: Entry; playhead: number }) {
+function ActiveCard({ entry, playhead, onPin }: { entry: Entry; playhead: number; onPin: (id: string) => void }) {
   const t = useTranslations("experience");
   const locale = useLocale() as Locale;
 
@@ -92,7 +93,12 @@ function ActiveCard({ entry, playhead }: { entry: Entry; playhead: number }) {
         : t("scrub.durationYearsMonths", { years, months });
 
   return (
-    <div className="rounded-md border hairline bg-ink-100/40 p-4 dark:bg-ink-900/30">
+    <button
+      type="button"
+      onClick={() => onPin(entry.id)}
+      aria-label={`${t("scrub.expand")} ${entry.label}`}
+      className="w-full rounded-md border hairline bg-ink-100/40 p-4 text-left transition-colors hover:border-accent/50 hover:bg-ink-100/70 dark:bg-ink-900/30 dark:hover:border-accent/40 dark:hover:bg-ink-900/50"
+    >
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
           {pick(LANE_META[entry.lane].label, locale).toLowerCase()}
@@ -125,7 +131,7 @@ function ActiveCard({ entry, playhead }: { entry: Entry; playhead: number }) {
           ))}
         </ul>
       )}
-    </div>
+    </button>
   );
 }
 
