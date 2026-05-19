@@ -28,7 +28,7 @@ export type Skin = {
     bg: string; borderMid: string; borderTop: string; borderBottom: string
     shadowOuter: string; shadowInner: string; color: string
   }
-  tracks: [string, string, string, string, string, string, string]
+  tracks: [string, string, string, string, string]
   silkscreen: string
   preview: { chassis: string; dot: string }
 }
@@ -95,7 +95,7 @@ export const ELECTRON: Skin = {
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.4)",
     color: "#5a5a56",
   },
-  tracks: ["#f59e0b", "#22d3ee", "#f472b6", "#2dd4bf", "#60a5fa", "#a3e635", "#a78bfa"],
+  tracks: ["#f59e0b", "#22d3ee", "#f472b6", "#2dd4bf", "#60a5fa"],
   silkscreen: "rgba(255,255,255,0.14)",
   preview: { chassis: "#141412", dot: "#a3e635" },
 }
@@ -160,10 +160,10 @@ export const CREAM: Skin = {
     borderMid: "#b0a080", borderTop: "#d8ccb0", borderBottom: "#787060",
     shadowOuter: "0 2px 0 rgba(0,0,0,0.3), 0 3px 6px rgba(0,0,0,0.15)",
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 2px rgba(0,0,0,0.12)",
-    color: "#786850",
+    color: "#4a3820",
   },
-  tracks: ["#e05a20", "#d4a030", "#98b828", "#28a868", "#2878b8", "#b82060", "#7040a8"],
-  silkscreen: "rgba(60,45,25,0.45)",
+  tracks: ["#e05a20", "#d4a030", "#98b828", "#28a868", "#2878b8"],
+  silkscreen: "rgba(60,45,25,0.72)",
   preview: { chassis: "#d0c2a8", dot: "#e05a20" },
 }
 
@@ -175,23 +175,23 @@ export const ARCTIC: Skin = {
   bgBase: "#05080e",
 
   chassis: {
-    bg: "linear-gradient(160deg, #f0f0ec 0%, #e8e8e4 40%, #e0e0dc 100%)",
-    borderTop: "#fafaf8",
-    borderBottom: "#c4c4c0",
-    outerShadow: "0 0 0 1px rgba(0,0,0,0.15), 0 40px 100px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,0,0,0.08)",
+    bg: "linear-gradient(160deg, #ffffff 0%, #f8f8f6 40%, #f4f4f2 100%)",
+    borderTop: "#ffffff",
+    borderBottom: "#d8d8d4",
+    outerShadow: "0 0 0 1px rgba(0,0,0,0.12), 0 40px 100px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,1.0), inset 0 -1px 0 rgba(0,0,0,0.06)",
   },
   panel: {
-    bg: "linear-gradient(160deg, #d8d8d4 0%, #d0d0cc 60%, #c8c8c4 100%)",
+    bg: "linear-gradient(160deg, #ebebeb 0%, #e4e4e0 60%, #dcdcd8 100%)",
     borderTop: "#bcbcb8",
-    borderBottom: "#e0e0dc",
+    borderBottom: "#f0f0ec",
   },
-  groove: { dark: "rgba(0,0,0,0.12)", light: "rgba(255,255,255,0.7)" },
-  screw: { fill: "#d8d8d4", strokeOuter: "#e8e8e4", strokeInner: "#c0c0bc", slot: "#a0a09c", glint: "rgba(255,255,255,0.6)" },
+  groove: { dark: "rgba(0,0,0,0.15)", light: "rgba(255,255,255,0.9)" },
+  screw: { fill: "#b0b0ac", strokeOuter: "#c8c8c4", strokeInner: "#989894", slot: "#707070", glint: "rgba(255,255,255,0.7)" },
   brand: {
     name: "#ff5500",
-    sub: "rgba(255,85,0,0.45)",
-    plateBg: "linear-gradient(160deg, #dcdcda 0%, #d4d4d0 100%)",
-    plateBorderTop: "#e4e4e0",
+    sub: "rgba(255,85,0,0.55)",
+    plateBg: "linear-gradient(160deg, #efefed 0%, #e8e8e4 100%)",
+    plateBorderTop: "#f8f8f6",
   },
   led: { on: "#ff5500", off: "#e0d8cc", onGlow: "0 0 4px 1px #ff5500, 0 0 8px 3px rgba(255,85,0,0.4)", textOn: "rgba(255,85,0,0.9)", textOff: "rgba(100,90,80,0.4)" },
   lcd: {
@@ -199,11 +199,11 @@ export const ARCTIC: Skin = {
     screenBg: "linear-gradient(180deg, #f5f0e8 0%, #f0eae0 60%, #ece4d8 100%)",
     textColor: "#cc4400",
     textGlow: "0 0 4px rgba(204,68,0,0.4)",
-    labelColor: "#b87850",
+    labelColor: "#9a7458",
     statusActiveColor: "#cc4400",
     statusActiveBg: "rgba(204,68,0,0.06)",
     statusActiveBorder: "#cc440030",
-    statusInactiveColor: "#c0a888",
+    statusInactiveColor: "#a89880",
     stepBarActive: "#cc4400",
     stepBarBeat: "#d8c8b0",
     stepBarOff: "#e8e0d4",
@@ -216,22 +216,22 @@ export const ARCTIC: Skin = {
     trackColor: "#c0c0bc",
   },
   pad: {
-    bg: "linear-gradient(145deg, #dcdcd8 0%, #d4d4d0 50%, #ccccca 100%)",
-    borderMid: "#bcbcb8", borderTop: "#e8e8e4", borderLeft: "#e0e0dc",
+    bg: "linear-gradient(145deg, #f0f0ec 0%, #e8e8e4 50%, #e0e0dc 100%)",
+    borderMid: "#c8c8c4", borderTop: "#fafaf8", borderLeft: "#f4f4f0",
     borderBottom: "#8c8c88", borderRight: "#989894",
     shadowOuter: "0 3px 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.12)",
-    shadowInner: "inset 0 1px 0 rgba(255,255,255,0.7), inset 0 -2px 3px rgba(0,0,0,0.08)",
+    shadowInner: "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -2px 3px rgba(0,0,0,0.08)",
   },
   btn: {
-    bg: "linear-gradient(180deg, #e0e0dc 0%, #d4d4d0 50%, #ccccca 100%)",
-    borderMid: "#bcbcb8", borderTop: "#ececea", borderBottom: "#8c8c88",
+    bg: "linear-gradient(180deg, #f4f4f0 0%, #e8e8e4 50%, #e0e0dc 100%)",
+    borderMid: "#c8c8c4", borderTop: "#ffffff", borderBottom: "#8c8c88",
     shadowOuter: "0 2px 0 rgba(0,0,0,0.18), 0 3px 6px rgba(0,0,0,0.1)",
-    shadowInner: "inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.07)",
-    color: "#787874",
+    shadowInner: "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 2px rgba(0,0,0,0.07)",
+    color: "#1e1c18",
   },
-  tracks: ["#ff5500", "#ff9900", "#ddcc00", "#44cc00", "#00aaff", "#cc00ff", "#ff0055"],
-  silkscreen: "rgba(40,36,30,0.35)",
-  preview: { chassis: "#e8e8e4", dot: "#ff5500" },
+  tracks: ["#c44000", "#b87200", "#6a8000", "#0a7a44", "#0060b0"],
+  silkscreen: "rgba(15,12,8,0.80)",
+  preview: { chassis: "#f8f8f6", dot: "#ff5500" },
 }
 
 // ─── VAPOR ───────────────────────────────────────────────────────────────────
@@ -266,11 +266,11 @@ export const VAPOR: Skin = {
     screenBg: "linear-gradient(180deg, #0c0420 0%, #090318 60%, #070212 100%)",
     textColor: "#ff2d78",
     textGlow: "0 0 5px rgba(255,45,120,0.7)",
-    labelColor: "#4a1840",
+    labelColor: "#7a4880",
     statusActiveColor: "#ff2d78",
     statusActiveBg: "rgba(255,45,120,0.06)",
     statusActiveBorder: "#ff2d7830",
-    statusInactiveColor: "#2a0820",
+    statusInactiveColor: "#5a2860",
     stepBarActive: "#ff2d78",
     stepBarBeat: "#2a0820",
     stepBarOff: "#180514",
@@ -294,10 +294,10 @@ export const VAPOR: Skin = {
     borderMid: "#281838", borderTop: "#321e42", borderBottom: "#0a0610",
     shadowOuter: "0 2px 0 rgba(0,0,0,0.8), 0 3px 6px rgba(0,0,0,0.5)",
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 2px rgba(0,0,0,0.4)",
-    color: "#5a3878",
+    color: "#b090d4",
   },
-  tracks: ["#ff2d78", "#ff6b1a", "#ffea00", "#20ff80", "#00d4ff", "#be00ff", "#ff00aa"],
-  silkscreen: "rgba(255,255,255,0.12)",
+  tracks: ["#e8245e", "#e85c14", "#d4a000", "#14b85a", "#0098c8"],
+  silkscreen: "rgba(255,255,255,0.40)",
   preview: { chassis: "#120818", dot: "#ff2d78" },
 }
 
