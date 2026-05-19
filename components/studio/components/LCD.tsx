@@ -59,7 +59,7 @@ export function LCD({ pattern, isPlaying, currentStep }: LCDProps) {
               <LCDField label="STEPS" value={String(pattern.stepCount)} lcd={lcd} />
               <LCDField label="STEP"  value={currentStep >= 0 ? String(currentStep + 1).padStart(2, "0") : "--"} lcd={lcd} />
               <div
-                className="text-[10px] tracking-[0.15em] px-1.5 py-0.5 rounded-sm"
+                className="text-[12px] tracking-[0.15em] px-1.5 py-0.5 rounded-sm"
                 style={{
                   color: isPlaying ? lcd.statusActiveColor : lcd.statusInactiveColor,
                   border: `1px solid ${isPlaying ? lcd.statusActiveBorder : "transparent"}`,
@@ -97,10 +97,10 @@ export function LCD({ pattern, isPlaying, currentStep }: LCDProps) {
 function LCDField({ label, value, lcd, large }: { label: string; value: string; lcd: ReturnType<typeof useSkin>["lcd"]; large?: boolean }) {
   return (
     <div className="flex items-baseline gap-1">
-      <span style={{ color: lcd.labelColor, fontFamily: "var(--font-mono)", fontSize: "8px", letterSpacing: "0.18em", textTransform: "uppercase" }}>
+      <span style={{ color: lcd.labelColor, fontFamily: "var(--font-mono)", fontSize: "10px", letterSpacing: "0.18em", textTransform: "uppercase" }}>
         {label}
       </span>
-      <span style={{ color: lcd.textColor, textShadow: lcd.textGlow, fontSize: large ? "15px" : "12px", letterSpacing: "0.06em", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ color: lcd.textColor, textShadow: lcd.textGlow, fontSize: large ? "17px" : "14px", letterSpacing: "0.06em", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>
         {value}
       </span>
     </div>

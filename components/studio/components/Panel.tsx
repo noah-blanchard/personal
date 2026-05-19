@@ -8,7 +8,7 @@ export function Panel({ label, children, className = "" }: { label?: string; chi
     <div className={`flex flex-col gap-2 ${className}`}>
       {label && (
         <span
-          className="text-[8px] font-mono tracking-[0.25em] uppercase pl-0.5"
+          className="text-[10px] font-mono tracking-[0.25em] uppercase pl-0.5"
           style={{ color: skin.silkscreen, letterSpacing: "0.28em" }}
         >
           {label}

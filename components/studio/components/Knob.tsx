@@ -54,7 +54,7 @@ export function Knob({ label, value, min, max, unit = "", color, onChange }: Kno
 
   return (
     <div className="flex flex-col items-center gap-2 select-none">
-      <span className="text-[9px] font-mono tracking-[0.2em] uppercase" style={{ color: skin.silkscreen }}>
+      <span className="text-[11px] font-mono tracking-[0.2em] uppercase" style={{ color: skin.silkscreen }}>
         {label}
       </span>
 
@@ -139,7 +139,7 @@ export function Knob({ label, value, min, max, unit = "", color, onChange }: Kno
         </svg>
       </div>
 
-      <span className="text-[12px] font-mono tabular-nums" style={{ color: skin.btn.color }}>
+      <span className="text-[14px] font-mono tabular-nums" style={{ color: skin.btn.color }}>
         {value}{unit}
       </span>
     </div>

@@ -67,7 +67,7 @@ export function PushButton({ label, sublabel, active, activeColor, onClick }: Pu
       >
         {label}
       </button>
-      <span className="text-[8px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>{sublabel}</span>
+      <span className="text-[10px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>{sublabel}</span>
     </div>
   )
 }

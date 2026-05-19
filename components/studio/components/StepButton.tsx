@@ -107,14 +107,14 @@ export function StepButton({ step, isPlaying, color, onToggle, onVelocityChange 
           }}
           onMouseLeave={() => setShowVelocity(false)}
         >
-          <span className="text-[9px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>VEL</span>
+          <span className="text-[11px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>VEL</span>
           <input
             type="range" min={1} max={127} value={step.velocity}
             onChange={(e) => onVelocityChange(Number(e.target.value))}
             className="h-16 cursor-ns-resize"
             style={{ writingMode: "vertical-lr", direction: "rtl", accentColor: color, width: "14px" }}
           />
-          <span className="text-[10px] font-mono tabular-nums" style={{ color }}>{step.velocity}</span>
+          <span className="text-[12px] font-mono tabular-nums" style={{ color }}>{step.velocity}</span>
         </div>
       )}
     </div>

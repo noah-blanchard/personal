@@ -57,7 +57,7 @@ export function SequencerInner() {
             }}
           >
             <div>
-              <div className="text-[8px] font-mono tracking-[0.3em] uppercase mb-0.5" style={{ color: skin.brand.sub }}>
+              <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-0.5" style={{ color: skin.brand.sub }}>
                 N.Blanchard
               </div>
               <div
@@ -103,7 +103,7 @@ export function SequencerInner() {
             <div className="self-stretch w-px hidden sm:block" style={{ background: `linear-gradient(180deg, transparent, ${skin.groove.light} 20%, ${skin.groove.light} 80%, transparent)` }} />
             <TapTempo onBpmChange={setBpm} />
             <div className="ml-auto flex flex-col items-center gap-1">
-              <span className="text-[8px] font-mono tracking-[0.22em] uppercase" style={{ color: skin.silkscreen }}>Export</span>
+              <span className="text-[10px] font-mono tracking-[0.22em] uppercase" style={{ color: skin.silkscreen }}>Export</span>
               <ShareButton />
             </div>
           </div>
@@ -123,10 +123,10 @@ export function SequencerInner() {
         </Panel>
 
         <div className="flex items-center justify-between px-0.5 pt-1">
-          <span className="text-[8px] font-mono tracking-widest uppercase" style={{ color: skin.silkscreen, opacity: 0.6 }}>
+          <span className="text-[10px] font-mono tracking-widest uppercase" style={{ color: skin.silkscreen, opacity: 0.6 }}>
             Click · R-click velocity · Drag knobs ↕
           </span>
-          <span className="text-[8px] font-mono tracking-widest uppercase" style={{ color: skin.silkscreen, opacity: 0.4 }}>
+          <span className="text-[10px] font-mono tracking-widest uppercase" style={{ color: skin.silkscreen, opacity: 0.4 }}>
             Tone.js · Web Audio
           </span>
         </div>

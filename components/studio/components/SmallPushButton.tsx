@@ -40,7 +40,7 @@ export function SmallPushButton({ label, sublabel, onClick, active, skin }: Smal
       >
         {label}
       </button>
-      <span className="text-[8px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>
+      <span className="text-[10px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>
         {sublabel}
       </span>
     </div>

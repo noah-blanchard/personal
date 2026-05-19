@@ -60,7 +60,7 @@ export function TrackRow({ track, currentStep, onToggleStep, onVelocityChange, o
           }}
         >
           <span
-            className="text-[9px] font-mono tracking-[0.12em] leading-none"
+            className="text-[11px] font-mono tracking-[0.12em] leading-none"
             style={{
               color: track.muted ? "rgba(255,255,255,0.2)" : `rgba(${r},${g},${b},0.85)`,
               textShadow: track.muted ? "none" : `0 0 6px rgba(${r},${g},${b},0.5)`,

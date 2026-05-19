@@ -41,7 +41,7 @@ export function StepGrid({ pattern, currentStep, onToggleStep, onVelocityChange,
             return (
               <div key={i} className="flex justify-center items-center" style={{ height: "14px" }}>
                 {isBeat ? (
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "8px", color: isActive ? skin.accent : skin.silkscreen, textShadow: isActive ? `0 0 6px ${skin.accent}` : "none", transition: "color 60ms", lineHeight: 1 }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: isActive ? skin.accent : skin.silkscreen, textShadow: isActive ? `0 0 6px ${skin.accent}` : "none", transition: "color 60ms", lineHeight: 1 }}>
                     {i + 1}
                   </span>
                 ) : (

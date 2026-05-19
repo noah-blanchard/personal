@@ -33,7 +33,7 @@ export function TapTempo({ onBpmChange }: TapTempoProps) {
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <span className="text-[8px] font-mono tracking-[0.22em] uppercase" style={{ color: skin.silkscreen }}>Tap</span>
+      <span className="text-[10px] font-mono tracking-[0.22em] uppercase" style={{ color: skin.silkscreen }}>Tap</span>
       <button
         onClick={handleTap}
         onMouseDown={() => setPressed(true)}
@@ -65,11 +65,11 @@ export function TapTempo({ onBpmChange }: TapTempoProps) {
           className="absolute rounded-full pointer-events-none"
           style={{ inset: "13px", border: "1px solid rgba(0,0,0,0.2)", background: "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.04), transparent)" }}
         />
-        <span className="relative z-10 text-[9px] font-mono tracking-[0.15em]" style={{ color: flash ? skin.accent : skin.btn.color }}>
+        <span className="relative z-10 text-[11px] font-mono tracking-[0.15em]" style={{ color: flash ? skin.accent : skin.btn.color }}>
           TAP
         </span>
       </button>
-      <span className="text-[8px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>TEMPO</span>
+      <span className="text-[10px] font-mono tracking-widest" style={{ color: skin.silkscreen }}>TEMPO</span>
     </div>
   )
 }

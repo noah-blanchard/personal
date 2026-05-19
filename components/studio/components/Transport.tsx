@@ -18,7 +18,7 @@ export function Transport({ isPlaying, stepCount, onPlay, onStop, onReset, onSet
   return (
     <div className="flex items-center gap-2.5">
       <div className="flex flex-col gap-1 items-start">
-        <span className="text-[8px] font-mono tracking-[0.22em] uppercase pl-0.5" style={{ color: skin.silkscreen }}>
+        <span className="text-[10px] font-mono tracking-[0.22em] uppercase pl-0.5" style={{ color: skin.silkscreen }}>
           Transport
         </span>
         <div className="flex items-center gap-2">
@@ -31,7 +31,7 @@ export function Transport({ isPlaying, stepCount, onPlay, onStop, onReset, onSet
       <div className="self-stretch w-px mx-1" style={{ background: `linear-gradient(180deg, transparent, ${skin.groove.light} 30%, ${skin.groove.light} 70%, transparent)` }} />
 
       <div className="flex flex-col gap-1 items-start">
-        <span className="text-[8px] font-mono tracking-[0.22em] uppercase pl-0.5" style={{ color: skin.silkscreen }}>
+        <span className="text-[10px] font-mono tracking-[0.22em] uppercase pl-0.5" style={{ color: skin.silkscreen }}>
           Steps
         </span>
         <div
@@ -48,7 +48,7 @@ export function Transport({ isPlaying, stepCount, onPlay, onStop, onReset, onSet
               <button
                 key={n}
                 onClick={() => onSetStepCount(n)}
-                className="px-3 py-1.5 font-mono text-[11px] tracking-widest outline-none focus-visible:ring-1 focus-visible:ring-white/20"
+                className="px-3 py-1.5 font-mono text-[13px] tracking-widest outline-none focus-visible:ring-1 focus-visible:ring-white/20"
                 style={{
                   background: active ? skin.panel.bg : skin.btn.bg,
                   color: active ? skin.accent : skin.btn.color,
