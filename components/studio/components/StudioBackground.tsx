@@ -52,7 +52,7 @@ function BackgroundLayers({ skinId }: { skinId: string }) {
   const reduced = useReducedMotion()
 
   const trackColors = skin.tracks
-  const blobColors = [skin.accent, trackColors[0], trackColors[1], trackColors[3], trackColors[4], trackColors[5], trackColors[6]]
+  const blobColors = [skin.accent, trackColors[0], trackColors[1], trackColors[2], trackColors[3], trackColors[4], skin.accent]
 
   return (
     <motion.div
