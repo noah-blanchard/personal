@@ -46,7 +46,7 @@ export function Hero() {
               initial="hidden"
               animate="show"
               variants={{ ...enter, show: { ...enter.show, transition: { ...enter.show.transition, delay: 0.05 } } }}
-              className="mt-8 font-serif text-[clamp(2.75rem,8vw,6rem)] leading-[0.95] tracking-tightest text-ink-900 dark:text-ink-50"
+              className="mt-8 font-serif text-[clamp(2.25rem,6.5vw,4.25rem)] leading-[1.02] tracking-tightest text-ink-900 dark:text-ink-50 max-w-full"
             >
               <ScrambleText text={HERO.scrambleName} />
               <span className="text-accent">.</span>
