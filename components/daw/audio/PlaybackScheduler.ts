@@ -22,6 +22,8 @@ export class PlaybackScheduler {
   private isPlaying = false
   private channels: DAWChannel[] = []
   private scheduleEventIds: number[] = []
+  private sampleCache = new Map<string, Tone.ToneAudioBuffer>()
+  private activePlayers: Tone.Player[] = []
 
   /**
    * Update the scheduler with current channel state
@@ -29,6 +31,9 @@ export class PlaybackScheduler {
    */
   public setChannels(channels: DAWChannel[]) {
     this.channels = channels
+    
+    // Preload samples when channels change
+    this.preloadSamples()
     
     // If currently playing, reschedule everything
     if (this.isPlaying) {
@@ -46,6 +51,9 @@ export class PlaybackScheduler {
     
     // Make sure Tone.js is started
     await Tone.start()
+    
+    // Preload samples for all clips
+    await this.preloadSamples()
     
     // Start the transport if it's not already running
     if (Tone.Transport.state !== "started") {
@@ -74,104 +82,51 @@ export class PlaybackScheduler {
     if (Tone.Transport.state === "started") {
       Tone.Transport.stop()
     }
+    
+    // Stop all active players
+    this.activePlayers.forEach(player => {
+      try {
+        player.stop()
+        player.dispose()
+      } catch (e) {
+        // Ignore errors
+      }
+    })
+    this.activePlayers = []
   }
 
   /**
-   * Set up lookahead scheduler using Tone.Transport
-   * Schedules events slightly ahead of time for tight timing
+   * Set up scheduler using Tone.Transport.schedule for precise timing
    */
   private setupLookaheadScheduler() {
     this.clearScheduledEvents()
     
-    const lookahead = 0.1 // 100ms lookahead
-    const scheduleInterval = 0.05 // Check every 50ms
+    console.log('[PlaybackScheduler] Setting up precise scheduler')
     
-    console.log('[PlaybackScheduler] Starting lookahead scheduler')
-    
-    // Create a repeating event that checks for clips to schedule
-    let callCount = 0
-    const scheduleCheck = () => {
-      callCount++
-      if (!this.isPlaying) {
-        if (callCount <= 5) console.log(`[PlaybackScheduler] scheduleCheck #${callCount}: returning - not playing`)
-        return
-      }
+    // Schedule each clip directly at its start time
+    for (const channel of this.channels) {
+      if (channel.muted) continue
       
-      const currentTime = Tone.now()
-      const transport = Tone.Transport
-      if (!transport) {
-        if (callCount <= 5) console.log(`[PlaybackScheduler] scheduleCheck #${callCount}: returning - no transport`)
-        return
-      }
-      if (transport.state !== "started") {
-        if (callCount <= 5) console.log(`[PlaybackScheduler] scheduleCheck #${callCount}: returning - transport state is ${transport.state}`)
-        return
-      }
-      
-      // Get current bar from transport position
-      const position = transport.position
-      const parts = position.split(":")
-      const currentBar = parseInt(parts[0]) + 1 // Convert 0-indexed to 1-indexed
-      
-      // Debug: log channel and clip info
-      if (callCount <= 20) {
-        console.log(`[PlaybackScheduler] scheduleCheck #${callCount}: bar=${currentBar}, transport.state=${transport.state}, channels=${this.channels.length}, totalClips=${this.channels.reduce((sum, ch) => sum + ch.clips.length, 0)}`)
-      }
-      
-      // Look ahead for clips that should play
-      for (const channel of this.channels) {
-        if (channel.muted) continue
+      for (const clip of channel.clips) {
+        const clipKey = `${channel.id}:${clip.id}`
         
-        for (const clip of channel.clips) {
-          const clipKey = `${channel.id}:${clip.id}`
-          
-          // Skip if already triggered
-          if (this.triggeredClips.has(clipKey)) continue
-          
-          // Check if this clip should play soon (within lookahead window)
-          const clipBar = clip.startBar
-          const barIndex = clipBar - 1
-          const clipTimeStr = `${barIndex}:0:0`
-          const clipTime = Tone.Time(clipTimeStr).toSeconds()
-          
-          if (clipTime >= currentTime && clipTime <= currentTime + lookahead) {
-            console.log(`[PlaybackScheduler] Triggering clip ${clipKey} at bar ${clipBar} (file: ${clip.file.id})`)
-            // Play the sample directly
-            this.playSampleDirectly(clip.file.id, channel.volume, channel.muted)
-            
-            // Mark as triggered
-            this.triggeredClips.add(clipKey)
-          }
-        }
-      }
-    }
-    
-    // Schedule the check to run repeatedly
-    try {
-      const intervalId = Tone.Transport.scheduleRepeat(scheduleCheck, scheduleInterval)
-      this.scheduleEventIds.push(intervalId)
-      console.log(`[PlaybackScheduler] Scheduled check every ${scheduleInterval}s, event ID: ${intervalId}`)
-    } catch (err) {
-      console.error('[PlaybackScheduler] Failed to schedule repeat:', err)
-    }
-    
-    // Also schedule a check on every bar change for safety
-    try {
-      const barCheckId = Tone.Transport.scheduleRepeat(() => {
-        if (!this.isPlaying) return
-        const transport = Tone.Transport
-        if (!transport) return
+        // Don't reschedule if already scheduled
+        if (this.triggeredClips.has(clipKey)) continue
         
-        const position = transport.position
-        const parts = position.split(":")
-        const bar = parseInt(parts[0]) + 1
-        console.log(`[PlaybackScheduler] Bar check: ${bar}, triggered clips: ${this.triggeredClips.size}`)
-        this.triggerClipsAtBar(bar)
-      }, "1m")
-      this.scheduleEventIds.push(barCheckId)
-      console.log(`[PlaybackScheduler] Scheduled bar check, event ID: ${barCheckId}`)
-    } catch (err) {
-      console.error('[PlaybackScheduler] Failed to schedule bar check:', err)
+        const clipBar = clip.startBar
+        const barIndex = clipBar - 1
+        const clipTimeStr = `${barIndex}:0:0`
+        
+        // Schedule the clip to play at its exact musical time
+        const eventId = Tone.Transport.schedule((time) => {
+          console.log(`[PlaybackScheduler] Scheduled event firing for clip ${clipKey} at bar ${clipBar}`)
+          this.playSampleDirectly(clip.file.id, channel.volume, channel.muted)
+        }, clipTimeStr)
+        
+        this.scheduleEventIds.push(eventId)
+        this.triggeredClips.add(clipKey)
+        console.log(`[PlaybackScheduler] Scheduled clip ${clipKey} at bar ${clipBar} (time: ${clipTimeStr}), event ID: ${eventId}`)
+      }
     }
   }
 
@@ -185,34 +140,86 @@ export class PlaybackScheduler {
       return
     }
 
-    console.log(`[PlaybackScheduler] Playing sample: ${sampleUrl}`)
+    // Check cache first
+    const cachedBuffer = this.sampleCache.get(fileId)
+    if (cachedBuffer) {
+      this.playBuffer(cachedBuffer, volume, muted)
+      return
+    }
 
-    // Start Tone.js if needed
+    // Load and cache the sample
+    console.log(`[PlaybackScheduler] Loading and caching sample: ${sampleUrl}`)
     Tone.start().then(() => {
-      console.log(`[PlaybackScheduler] Loading buffer from: ${sampleUrl}`)
-      Tone.ToneAudioBuffer.fromUrl(sampleUrl).then(buffer => {
-        console.log(`[PlaybackScheduler] Buffer loaded, duration: ${buffer.duration}s`)
-        const player = new Tone.Player(buffer).connect(Tone.getDestination())
-        
-        if (volume !== undefined) {
-          player.volume.value = 20 * Math.log10(Math.max(0.001, volume / 100))
-        }
-        
-        if (muted) {
-          player.mute = true
-        }
-        
-        player.start()
-        console.log(`[PlaybackScheduler] Sample started`)
-        
-        // Dispose after playback
-        setTimeout(() => player.dispose(), buffer.duration * 1000 + 100)
-      }).catch(err => {
-        console.warn(`[PlaybackScheduler] Failed to load sample ${fileId}:`, err)
-      })
+      return Tone.ToneAudioBuffer.fromUrl(sampleUrl)
+    }).then(buffer => {
+      console.log(`[PlaybackScheduler] Sample loaded, duration: ${buffer.duration}s`)
+      this.sampleCache.set(fileId, buffer)
+      this.playBuffer(buffer, volume, muted)
     }).catch(err => {
-      console.warn(`[PlaybackScheduler] Failed to start Tone.js:`, err)
+      console.warn(`[PlaybackScheduler] Failed to load sample ${fileId}:`, err)
     })
+  }
+
+  /**
+   * Play a cached buffer immediately
+   */
+  private playBuffer(buffer: Tone.ToneAudioBuffer, volume?: number, muted?: boolean) {
+    const player = new Tone.Player(buffer).connect(Tone.getDestination())
+    
+    if (volume !== undefined) {
+      player.volume.value = 20 * Math.log10(Math.max(0.001, volume / 100))
+    }
+    
+    if (muted) {
+      player.mute = true
+    }
+    
+    player.start()
+    
+    // Track active player
+    this.activePlayers.push(player)
+    
+    // Remove from active list and dispose after playback
+    player.onended = () => {
+      const index = this.activePlayers.indexOf(player)
+      if (index > -1) {
+        this.activePlayers.splice(index, 1)
+      }
+      player.dispose()
+    }
+  }
+
+  /**
+   * Preload all samples for current clips
+   */
+  private async preloadSamples() {
+    const sampleIds = new Set<string>()
+    
+    // Collect all unique sample IDs from clips
+    for (const channel of this.channels) {
+      for (const clip of channel.clips) {
+        sampleIds.add(clip.file.id)
+      }
+    }
+    
+    // Load each sample into cache
+    const loadPromises = Array.from(sampleIds).map(fileId => {
+      const sampleUrl = this.getSampleUrl(fileId)
+      if (!sampleUrl) return Promise.resolve()
+      
+      // Check if already cached
+      if (this.sampleCache.has(fileId)) return Promise.resolve()
+      
+      return Tone.ToneAudioBuffer.fromUrl(sampleUrl).then(buffer => {
+        this.sampleCache.set(fileId, buffer)
+        console.log(`[PlaybackScheduler] Preloaded sample: ${fileId}`)
+      }).catch(err => {
+        console.warn(`[PlaybackScheduler] Failed to preload sample ${fileId}:`, err)
+      })
+    })
+    
+    await Promise.all(loadPromises)
+    console.log(`[PlaybackScheduler] Preloaded ${this.sampleCache.size} samples`)
   }
 
   /**
@@ -232,19 +239,8 @@ export class PlaybackScheduler {
    * Used as a safety net in case lookahead misses
    */
   private triggerClipsAtBar(bar: number) {
-    for (const channel of this.channels) {
-      if (channel.muted) continue
-      
-      for (const clip of channel.clips) {
-        if (clip.startBar === bar) {
-          const clipKey = `${channel.id}:${clip.id}`
-          if (!this.triggeredClips.has(clipKey)) {
-            this.playSampleDirectly(clip.file.id, channel.volume, channel.muted)
-            this.triggeredClips.add(clipKey)
-          }
-        }
-      }
-    }
+    // This is now handled by Tone.Transport.schedule directly
+    // No need for bar checking
   }
 
   /**
