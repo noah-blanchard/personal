@@ -120,7 +120,7 @@ export function useDR1() {
     }).toDestination()
     hhop.volume.value = -16
 
-    synthsRef.current = { kick, snare, clap, hhcl, hhop }
+    synthsRef.current = { kick, snare, clap, hhcl, hhop, reverb, snareFilter }
   }, [])
 
   const triggerTrack = useCallback((trackId: string, velocity: number) => {
@@ -136,7 +136,9 @@ export function useDR1() {
 
     if (seqRef.current) {
       seqRef.current.dispose()
+      seqRef.current = null
     }
+    Tone.getDraw().cancel(0)
 
     Tone.Transport.bpm.value = patternRef.current.bpm
     Tone.Transport.swing = patternRef.current.swing / 100
@@ -172,6 +174,7 @@ export function useDR1() {
     if (!Tone) return
     Tone.Transport.stop()
     seqRef.current?.stop()
+    Tone.getDraw().cancel(0)
     setIsPlaying(false)
     setCurrentStep(-1)
   }, [])
@@ -193,6 +196,7 @@ export function useDR1() {
       const Tone = toneRef.current
       if (Tone) {
         Tone.Transport.stop()
+        Tone.getDraw().cancel(0)
         seqRef.current?.dispose()
         Object.values(synthsRef.current).forEach((s) => {
           ;(s as { dispose?: () => void }).dispose?.()
