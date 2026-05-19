@@ -58,10 +58,10 @@ class SamplePreviewManager {
       player.start()
 
       // Clean up when done
-      player.onended = () => {
+      setTimeout(() => {
         this.currentPlayer = null
         this.updateState({ isPlaying: false, fileId: null })
-      }
+      }, buffer.duration * 1000 + 100)
     } catch (error) {
       console.warn(`[SamplePreview] Failed to play preview for ${fileId}:`, error)
       this.updateState({ isPlaying: false, fileId: null })

@@ -272,7 +272,6 @@ function ClipCard({
         isSelected ? "ring-2 ring-amber-500/70" : "border-black/10",
         isDragging ? "opacity-70" : "",
       ].join(" ")}
-      style={style}
     >
       <div className="truncate">
         {clip.file.name}

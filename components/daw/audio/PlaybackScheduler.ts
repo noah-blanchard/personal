@@ -180,13 +180,13 @@ export class PlaybackScheduler {
     this.activePlayers.push(player)
     
     // Remove from active list and dispose after playback
-    player.onended = () => {
+    setTimeout(() => {
       const index = this.activePlayers.indexOf(player)
       if (index > -1) {
         this.activePlayers.splice(index, 1)
       }
       player.dispose()
-    }
+    }, buffer.duration * 1000 + 100)
   }
 
   /**
@@ -256,8 +256,9 @@ export class PlaybackScheduler {
     if (!transport) return
     
     const position = transport.position
-    const parts = position.split(":")
-    const currentBar = parseInt(parts[0]) + 1
+    const positionStr = typeof position === 'string' ? position : `${Math.floor(position as number)}:0:0`
+    const parts = positionStr.split(":")
+    const currentBar = parseInt(parts[0] || "0") + 1
     
     const newTriggeredSet = new Set<TriggeredClipKey>()
     
