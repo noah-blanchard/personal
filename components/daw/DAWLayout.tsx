@@ -1,19 +1,17 @@
 "use client"
 
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core"
-import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from "react-resizable-panels"
-import { useState } from "react"
+import { Panel, Group as PanelGroup, Separator as PanelResizeHandle, type PanelImperativeHandle } from "react-resizable-panels"
+import { useEffect, useRef, useState } from "react"
 import { useDAW } from "./DAWProvider"
 import { DAWToolbar } from "./DAWToolbar"
 import { DAWBrowser } from "./DAWBrowser"
 import { DAWPlaylist } from "./DAWPlaylist"
 import { DAWDetailPanel } from "./DAWDetailPanel"
-import { useDAWAudio } from "./audio/useDAWAudio"
 import type { DAWFile } from "./types"
 
 export function DAWLayout() {
-  const { panels, detailOpen, addToPlaylist } = useDAW()
-  const audio = useDAWAudio()
+  const { panels, detailOpen } = useDAW()
   const [activeDragFile, setActiveDragFile] = useState<DAWFile | null>(null)
 
   const sensors = useSensors(
@@ -26,13 +24,8 @@ export function DAWLayout() {
     if (file) setActiveDragFile(file)
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  function handleDragEnd(_: DragEndEvent) {
     setActiveDragFile(null)
-    const file = event.active.data.current?.file as DAWFile | undefined
-    if (file && event.over?.id === "playlist-drop") {
-      audio.playDrop()
-      addToPlaylist(file)
-    }
   }
 
   return (
@@ -66,32 +59,55 @@ export function DAWLayout() {
 }
 
 function MainArea({ showPlaylist, showDetail }: { showPlaylist: boolean; showDetail: boolean }) {
-  if (showPlaylist && showDetail) {
+  const playlistRef = useRef<PanelImperativeHandle | null>(null)
+  const detailRef = useRef<PanelImperativeHandle | null>(null)
+
+  useEffect(() => {
+    if (!playlistRef.current) return
+    if (showPlaylist) playlistRef.current.expand()
+    else playlistRef.current.collapse()
+  }, [showPlaylist])
+
+  useEffect(() => {
+    if (!detailRef.current) return
+    if (showDetail) detailRef.current.expand()
+    else detailRef.current.collapse()
+  }, [showDetail])
+
+  if (!showPlaylist && !showDetail) {
     return (
-      <PanelGroup orientation="vertical" className="h-full">
-        <Panel id="playlist" minSize="25%" className="min-h-0">
-          <DAWPlaylist />
-        </Panel>
-        <ResizeHandleH />
-        <Panel id="detail" defaultSize="38%" minSize="18%" maxSize="72%" className="min-h-0">
-          <DAWDetailPanel />
-        </Panel>
-      </PanelGroup>
+      <div className="flex h-full items-center justify-center text-[11px] text-stone-400 dark:text-zinc-600">
+        open a panel — [B] browser · [P] playlist · [D] detail
+      </div>
     )
   }
 
-  if (showPlaylist) {
-    return <div className="h-full"><DAWPlaylist /></div>
-  }
-
-  if (showDetail) {
-    return <div className="h-full"><DAWDetailPanel /></div>
-  }
-
   return (
-    <div className="flex h-full items-center justify-center text-[11px] text-stone-400 dark:text-zinc-600">
-      open a panel — [B] browser · [P] playlist · [D] detail
-    </div>
+    <PanelGroup orientation="vertical" className="h-full">
+      <Panel
+        panelRef={playlistRef}
+        id="playlist"
+        minSize="25%"
+        collapsible
+        collapsedSize={0}
+        className="min-h-0"
+      >
+        <DAWPlaylist />
+      </Panel>
+      {showPlaylist && showDetail && <ResizeHandleH />}
+      <Panel
+        panelRef={detailRef}
+        id="detail"
+        defaultSize="38%"
+        minSize="18%"
+        maxSize="72%"
+        collapsible
+        collapsedSize={0}
+        className="min-h-0"
+      >
+        <DAWDetailPanel />
+      </Panel>
+    </PanelGroup>
   )
 }
 

@@ -4,11 +4,14 @@ import { useDraggable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 import { useDAW } from "./DAWProvider"
 import { useDAWAudio } from "./audio/useDAWAudio"
-import { DAW_FILES } from "./files"
-import type { DAWFile } from "./types"
+import { DAW_FOLDERS } from "./files"
+import { useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import type { DAWFile, DAWFolder, DAWFolderId } from "./types"
 
 export function DAWBrowser() {
   const { locale } = useDAW()
+  const [expandedFolder, setExpandedFolder] = useState<DAWFolderId | null>(null)
   const folderLabel = locale === "fr" ? "Noah Blanchard" : "Noah Blanchard"
 
   return (
@@ -23,8 +26,13 @@ export function DAWBrowser() {
       {/* Tree */}
       <div className="flex-1 overflow-y-auto p-2 text-xs">
         <FolderRow label={folderLabel}>
-          {DAW_FILES.map((file) => (
-            <FileRow key={file.id} file={file} />
+          {DAW_FOLDERS.map((folder) => (
+            <SubFolderRow
+              key={folder.id}
+              folder={folder}
+              isExpanded={expandedFolder === folder.id}
+              onToggle={() => setExpandedFolder((prev) => (prev === folder.id ? null : folder.id))}
+            />
           ))}
         </FolderRow>
       </div>
@@ -59,8 +67,56 @@ function FolderRow({
   )
 }
 
+function SubFolderRow({
+  folder,
+  isExpanded,
+  onToggle,
+}: {
+  folder: DAWFolder
+  isExpanded: boolean
+  onToggle: () => void
+}) {
+  return (
+    <div className="py-0.5">
+      <button
+        onClick={onToggle}
+        className="flex w-full items-center gap-1.5 rounded px-2 py-1 text-stone-500 dark:text-zinc-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors"
+      >
+        <motion.span
+          className="text-[10px] text-amber-500 dark:text-amber-400"
+          animate={{ rotate: isExpanded ? 0 : -90 }}
+          transition={{ duration: 0.2 }}
+        >
+          ▾
+        </motion.span>
+        <span className="text-[11px] uppercase tracking-wider">{folder.name}</span>
+        <span className="ml-auto text-[9px] text-stone-400 dark:text-zinc-600">
+          {folder.files.length}
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="ml-3 border-l border-stone-300 dark:border-zinc-800 pl-2">
+              {folder.files.map((file) => (
+                <FileRow key={file.id} file={file} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 function FileRow({ file }: { file: DAWFile }) {
-  const { addToPlaylist } = useDAW()
+  const { channels, addClip, openFileDetail } = useDAW()
   const audio = useDAWAudio()
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -74,7 +130,13 @@ function FileRow({ file }: { file: DAWFile }) {
 
   function handleDoubleClick() {
     audio.playOpen()
-    addToPlaylist(file)
+    if (!channels[0]) return
+    addClip(channels[0].id, file, 1)
+  }
+
+  function handleClick() {
+    audio.playClick()
+    openFileDetail(file.id)
   }
 
   return (
@@ -84,6 +146,7 @@ function FileRow({ file }: { file: DAWFile }) {
       {...listeners}
       {...attributes}
       onDoubleClick={handleDoubleClick}
+      onClick={handleClick}
       className={[
         "group flex cursor-grab items-center gap-2 rounded px-2 py-1.5 transition-colors select-none",
         "hover:bg-stone-200 dark:hover:bg-zinc-800",

@@ -2,19 +2,25 @@
 
 import { useDAW } from "./DAWProvider"
 import { useDAWAudio } from "./audio/useDAWAudio"
+import { useToneEngine } from "./audio/useToneEngine"
 
 export function DAWToolbar() {
   const { panels, togglePanel, isPlaying, togglePlay, bpm, setDetailOpen, detailOpen } = useDAW()
   const audio = useDAWAudio()
+  const toneEngine = useToneEngine()
 
   function handleTogglePanel(panel: "browser" | "playlist") {
     audio.playClick()
     togglePanel(panel)
   }
 
-  function handlePlay() {
+  async function handlePlay() {
     audio.playClick()
-    togglePlay()
+    if (toneEngine.isReady) {
+      await toneEngine.togglePlay()
+    } else {
+      togglePlay()
+    }
   }
 
   return (
@@ -24,7 +30,17 @@ export function DAWToolbar() {
         <TransportBtn onClick={handlePlay} active={isPlaying} title={isPlaying ? "Pause" : "Play"}>
           {isPlaying ? "⏸" : "▶"}
         </TransportBtn>
-        <TransportBtn onClick={() => { audio.playClick(); togglePlay() }} title="Stop">
+        <TransportBtn 
+          onClick={async () => { 
+            audio.playClick()
+            if (toneEngine.isReady) {
+              toneEngine.stop()
+            } else {
+              togglePlay()
+            }
+          }} 
+          title="Stop"
+        >
           ⏹
         </TransportBtn>
       </div>
