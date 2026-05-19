@@ -19,7 +19,7 @@ export function LineRow({ line, prompt }: { line: OutputLine; prompt: ReactNode 
   return (
     <div className={`flex items-baseline ${color}`}>
       <span className="select-none text-ink-400 dark:text-ink-600">&gt;&nbsp;</span>
-      <span className="whitespace-pre-wrap">{line.content as ReactNode}</span>
+      <span className="whitespace-pre">{line.content as ReactNode}</span>
     </div>
   )
 }

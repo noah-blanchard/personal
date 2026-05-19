@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { Providers } from "@/components/providers/Providers";
@@ -58,10 +58,7 @@ export async function generateMetadata({
     creator: SITE.name,
     alternates: {
       canonical: `/${safeLocale}`,
-      languages: {
-        en: "/en",
-        fr: "/fr",
-      },
+      languages: { en: "/en", fr: "/fr" },
     },
     openGraph: {
       type: "website",
@@ -101,24 +98,17 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: "hero" });
   const cookieStore = await cookies();
   const themeCookie = cookieStore.get("theme")?.value;
-  const themeClass = themeCookie === "dark" ? "dark" : "";
+  const themeClass = themeCookie === "dark" ? "dark" : themeCookie === "light" ? "" : undefined;
 
   return (
     <html
       lang={locale}
-      className={`${sans.variable} ${serif.variable} ${mono.variable} ${themeClass}`}
+      className={`${sans.variable} ${serif.variable} ${mono.variable}${themeClass !== undefined ? ` ${themeClass}` : ""}`}
       suppressHydrationWarning
     >
       <body>
-        <a
-          href="#work"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-ink-900 focus:px-3 focus:py-2 focus:text-ink-50 dark:focus:bg-ink-100 dark:focus:text-ink-900"
-        >
-          {t("skipLink")}
-        </a>
         <NextIntlClientProvider>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
