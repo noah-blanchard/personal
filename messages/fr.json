@@ -122,7 +122,7 @@
     "headline": "Égaré·e",
     "copy": "Pas de route à ce nom. Le terminal fonctionne toujours,  essaie <a>cd /</a> ou <b>help</b>.",
     "home": "← Retour à l'accueil",
-    "terminalTitle": "noah@mtl : /inconnu",
+    "terminalTitle": "noah@blanchard: ~/inconnu",
     "terminalGreeting": [
       "> cd /inconnu",
       "> erreur : ENOENT,  répertoire inexistant.",
@@ -130,7 +130,7 @@
     ]
   },
   "terminal": {
-    "title": "noah@mtl : ~/",
+    "title": "noah@blanchard: ~/développeur fullstack",
     "boot": "noah-os 1.0.0,  tape `help` pour les commandes",
     "ariaLabel": "Entrée du terminal",
     "errors": {
@@ -142,24 +142,8 @@
       "aliases": "alias : {list}",
       "usagePrefix": "usage :"
     },
-    "ls": {
-      "directories": "travail/  a-propos/  parcours/  tech/  contact/"
-    },
-    "cd": {
-      "noSuch": "cd : section introuvable : {target}"
-    },
     "projects": {
-      "header": "projets sélectionnés :",
-      "hint": "→ `open <nom>` pour ouvrir, ou `cd work` pour défiler"
-    },
-    "open": {
-      "usage": "usage : open <projet|gh|li|x>",
-      "opening": "→ ouverture de {target}",
-      "unknown": "open : cible inconnue '{target}'"
-    },
-    "cat": {
-      "available": "disponible : {list}",
-      "noSuch": "cat : {file} : fichier introuvable"
+      "header": "projets sélectionnés :"
     },
     "cv": {
       "opening": "→ ouverture du cv"
@@ -168,35 +152,15 @@
       "setLight": "thème : clair",
       "setDark": "thème : sombre"
     },
-    "history": {
-      "empty": "(pas d'historique)"
-    },
-    "sudo": {
-      "line1": "permission refusée : noah n'est pas dans le fichier sudoers.",
-      "line2": "cet incident sera signalé."
-    },
     "contactToast": "copié,  écris-moi.",
-    "rm": {
-      "niceTry": "bien essayé.",
-      "refuse": "rm : refus de supprimer ton portfolio."
-    },
-    "vim": "pour quitter vim, redémarre simplement ton ordinateur.",
-    "exit": "tu ne peux pas partir. c'est ton portfolio.",
     "lang": {
       "current": "actuel : {locale}",
       "usage": "usage : lang [en|fr]",
       "unsupported": "lang : non supporté '{target}'",
       "switched": "→ langue : {target}"
     },
-    "timeline": {
-      "scrubbing": "→ exploration de l'historique"
-    },
-    "konami": {
-      "unlock": "tu l'as trouvé. essaie `fortune` dans le terminal."
-    },
-    "surprise": {
-      "unknown": "./surprise.sh : animation inconnue : {name}",
-      "available": "disponible : {list}"
+    "noahStudio": {
+      "description": "ouvrir le studio"
     }
   }
 }

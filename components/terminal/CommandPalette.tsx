@@ -7,7 +7,7 @@ import { useTerminal } from "./TerminalProvider";
 import { pick, type Locale } from "@/content/types";
 
 export function CommandPalette() {
-  const { commands, execute, features } = useTerminal();
+  const { commands, execute } = useTerminal();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
@@ -44,8 +44,8 @@ export function CommandPalette() {
   }, [open]);
 
   const visible = useMemo(
-    () => commands.filter((c) => !c.hidden || (c.name === "fortune" && features.fortune)),
-    [commands, features.fortune]
+    () => commands.filter((c) => !c.hidden),
+    [commands]
   );
 
   const filtered = useMemo(() => {

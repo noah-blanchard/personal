@@ -15,13 +15,11 @@ import { LineRow } from "./LineRow";
 
 type Props = {
   title?: string;
-  /** Lines printed before any user interaction; only shown if persisted scrollback is empty. */
   greeting?: ReactNode[];
-  /** Command auto-run on first ever mount (e.g. "whoami"). Only if persisted scrollback is empty. */
   bootCommand?: string;
-  /** Max height of the scrollback area. */
   maxHeightClass?: string;
   className?: string;
+  fullscreen?: boolean;
 };
 
 export function Terminal({
@@ -30,11 +28,12 @@ export function Terminal({
   bootCommand = "whoami",
   maxHeightClass = "h-80 md:h-[26rem]",
   className,
+  fullscreen = false,
 }: Props) {
   const t = useTranslations("terminal");
   const titleText = title ?? t("title");
   const greetingLines: ReactNode[] = greeting ?? [t("boot")];
-  const { lines, history, execute, appendLine, commands, cwd } = useTerminal();
+  const { lines, history, execute, appendLine, commands } = useTerminal();
 
   const [input, setInput] = useState("");
   const [pos, setPos] = useState(0);
@@ -194,23 +193,26 @@ export function Terminal({
         <span className="text-accent">noah</span>
         <span className="text-ink-500">@</span>
         <span className="text-ink-700 dark:text-ink-300">mtl</span>
-        <span className="text-ink-500"> {cwd} </span>
+        <span className="text-ink-500"> ~ </span>
         <span className="text-ink-500">$ </span>
       </span>
     ),
-    [cwd]
+    []
   );
 
   return (
     <div
       onClick={focusInput}
       className={[
-        "group/term relative flex flex-col overflow-hidden rounded-lg border hairline bg-ink-50/95 font-mono text-[13px] leading-relaxed text-ink-700 shadow-lg shadow-ink-900/5 dark:bg-ink-950/80 dark:text-ink-300",
+        "group/term relative flex flex-col overflow-hidden font-mono text-[13px] leading-relaxed",
+        fullscreen
+          ? "h-screen w-screen rounded-none border-0 bg-ink-50 text-ink-800 dark:bg-ink-950 dark:text-ink-300"
+          : "rounded-lg border hairline bg-ink-50/95 text-ink-700 shadow-lg shadow-ink-900/5 dark:bg-ink-950/80 dark:text-ink-300",
         className ?? "",
       ].join(" ")}
     >
       {/* Title bar */}
-      <div className="flex items-center gap-2 border-b hairline bg-ink-100/70 px-3 py-2 dark:bg-ink-900/50">
+      <div className={["flex items-center gap-2 border-b px-3 py-2", fullscreen ? "border-ink-200 bg-ink-100 dark:border-ink-800 dark:bg-ink-900/60" : "hairline bg-ink-100/70 dark:bg-ink-900/50"].join(" ")}>
         <span className="inline-flex gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]/80" />
@@ -227,7 +229,7 @@ export function Terminal({
         ref={scrollRef}
         className={[
           "scrollbar-thin overflow-y-auto px-4 py-3",
-          maxHeightClass,
+          fullscreen ? "flex-1" : maxHeightClass,
         ].join(" ")}
       >
         {lines.map((line) => (

@@ -3,23 +3,11 @@ import type { Locale, Localized } from "@/content/types";
 
 export type CommandOutput = string | string[] | ReactNode;
 
-export type SectionId = "top" | "work" | "about" | "experience" | "tech" | "contact";
-
-export type BgEffect = "none" | "neon" | "matrix";
-
-export type Cwd = "~" | "~/fun-stuff";
-
-/**
- * Translate a key under the `terminal` namespace.
- * Mirrors `useTranslations("terminal")` from next-intl, but typed as a plain
- * function so commands stay framework-agnostic.
- */
 export type TerminalT = (key: string, params?: Record<string, string | number>) => string;
 
 export type CommandCtx = {
   print: (line: CommandOutput) => void;
   clear: () => void;
-  navigate: (id: SectionId) => void;
   setTheme: (t: "light" | "dark") => void;
   setLocale: (l: Locale) => void;
   open: (url: string) => void;
@@ -27,20 +15,13 @@ export type CommandCtx = {
   toast: (msg: string) => void;
   history: readonly string[];
   commands: readonly Command[];
-  features: { fortune: boolean; bgEffect: BgEffect; glitch: boolean };
   locale: Locale;
-  /** Translate a key under the `terminal` namespace. */
   t: TerminalT;
-  cwd: Cwd;
-  setCwd: (path: Cwd) => void;
-  setBgEffect: (effect: BgEffect) => void;
-  setGlitch: (val: boolean) => void;
+  navigateToRoute: (path: string) => void;
 };
 
 export type Command = {
-  /** Canonical command name. Stays in English for muscle memory. */
   name: string;
-  /** Short description, shown in `help` and the palette. Localizable. */
   description: Localized<string>;
   aliases?: string[];
   usage?: string;
