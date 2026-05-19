@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useSkin } from "../SkinContext"
-import { useSequencer } from "../useSequencer"
+import { useDR1 } from "../useDR1"
 import { Groove } from "./Groove"
 import { Knob } from "./Knob"
 import { LCD } from "./LCD"
@@ -16,18 +16,17 @@ import { StepGrid } from "./StepGrid"
 import { TapTempo } from "./TapTempo"
 import { Transport } from "./Transport"
 
-export function SequencerInner() {
+export function DR1Inner() {
   const skin = useSkin()
   const {
     pattern, isPlaying, currentStep,
     play, stop, reset,
     toggleStep, setVelocity, setBpm, setSwing, setStepCount, toggleMute,
-  } = useSequencer()
+  } = useDR1()
 
   const [viewPart, setViewPart] = useState<1 | 2>(1)
   const partBEnabled = pattern.stepCount === 32
 
-  // Auto-switch view to follow the playhead when both parts are active
   useEffect(() => {
     if (!isPlaying || pattern.stepCount !== 32) return
     setViewPart(currentStep >= 16 ? 2 : 1)

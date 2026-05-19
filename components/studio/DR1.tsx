@@ -2,13 +2,13 @@
 
 import { SkinProvider } from "./SkinContext"
 import { StudioBackground } from "./components/StudioBackground"
-import { SequencerInner } from "./components/SequencerInner"
+import { DR1Inner } from "./components/DR1Inner"
 
-export function Sequencer() {
+export function DR1() {
   return (
     <SkinProvider>
       <StudioBackground />
-      <SequencerInner />
+      <DR1Inner />
     </SkinProvider>
   )
 }

@@ -1,4 +1,4 @@
-import { Sequencer } from "@/components/studio/Sequencer"
+import { DR1 } from "@/components/studio/DR1"
 import { NoScroll } from "@/components/studio/NoScroll"
 
 export default function StudioPage() {
@@ -9,7 +9,7 @@ export default function StudioPage() {
     >
       <NoScroll />
       <div className="w-full overflow-y-auto" style={{ maxHeight: "calc(100vh - 6.5rem)" }}>
-        <Sequencer />
+        <DR1 />
       </div>
     </main>
   )

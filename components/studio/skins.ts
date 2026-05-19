@@ -28,7 +28,7 @@ export type Skin = {
     bg: string; borderMid: string; borderTop: string; borderBottom: string
     shadowOuter: string; shadowInner: string; color: string
   }
-  tracks: [string, string, string, string, string, string, string]
+  tracks: [string, string, string, string, string]
   silkscreen: string
   preview: { chassis: string; dot: string }
 }
@@ -95,7 +95,7 @@ export const ELECTRON: Skin = {
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.4)",
     color: "#5a5a56",
   },
-  tracks: ["#f59e0b", "#22d3ee", "#f472b6", "#2dd4bf", "#60a5fa", "#a3e635", "#a78bfa"],
+  tracks: ["#f59e0b", "#22d3ee", "#f472b6", "#2dd4bf", "#60a5fa"],
   silkscreen: "rgba(255,255,255,0.14)",
   preview: { chassis: "#141412", dot: "#a3e635" },
 }
@@ -162,7 +162,7 @@ export const CREAM: Skin = {
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 2px rgba(0,0,0,0.12)",
     color: "#4a3820",
   },
-  tracks: ["#e05a20", "#d4a030", "#98b828", "#28a868", "#2878b8", "#b82060", "#7040a8"],
+  tracks: ["#e05a20", "#d4a030", "#98b828", "#28a868", "#2878b8"],
   silkscreen: "rgba(60,45,25,0.72)",
   preview: { chassis: "#d0c2a8", dot: "#e05a20" },
 }
@@ -229,7 +229,7 @@ export const ARCTIC: Skin = {
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 2px rgba(0,0,0,0.07)",
     color: "#1e1c18",
   },
-  tracks: ["#c44000", "#b87200", "#6a8000", "#0a7a44", "#0060b0", "#6800b0", "#a80038"],
+  tracks: ["#c44000", "#b87200", "#6a8000", "#0a7a44", "#0060b0"],
   silkscreen: "rgba(15,12,8,0.80)",
   preview: { chassis: "#f8f8f6", dot: "#ff5500" },
 }
@@ -296,7 +296,7 @@ export const VAPOR: Skin = {
     shadowInner: "inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 2px rgba(0,0,0,0.4)",
     color: "#b090d4",
   },
-  tracks: ["#e8245e", "#e85c14", "#d4a000", "#14b85a", "#0098c8", "#9414d4", "#d40080"],
+  tracks: ["#e8245e", "#e85c14", "#d4a000", "#14b85a", "#0098c8"],
   silkscreen: "rgba(255,255,255,0.40)",
   preview: { chassis: "#120818", dot: "#ff2d78" },
 }

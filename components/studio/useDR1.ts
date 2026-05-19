@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { makeDefaultPattern, PENTATONIC_NOTES } from "./constants"
+import { makeDefaultPattern } from "./constants"
 import type { Pattern } from "./types"
 
 const URL_PARAM = "p"
@@ -23,14 +23,11 @@ function decodePattern(s: string): Pattern | null {
   }
 }
 
-// Shared audio trigger — handles the per-track synthesis dispatch.
-// `time` is Tone.now() for immediate triggers or the scheduled sequence time for playback.
 function triggerNote(
   trackId: string,
   synths: Record<string, unknown>,
   time: number,
   vol: number,
-  note?: string
 ) {
   switch (trackId) {
     case "kick":
@@ -43,33 +40,15 @@ function triggerNote(
       ;(synths.clap as import("tone").NoiseSynth).triggerAttackRelease("16n", time, vol)
       break
     case "hhcl":
-      ;(synths.hhcl as import("tone").MetalSynth).triggerAttackRelease("32n", time, vol)
+      ;(synths.hhcl as import("tone").MetalSynth).triggerAttackRelease(400, "32n", time, vol)
       break
     case "hhop":
-      ;(synths.hhop as import("tone").MetalSynth).triggerAttackRelease("8n", time, vol)
-      break
-    case "bass":
-      ;(synths.bass as import("tone").MonoSynth).triggerAttackRelease(note ?? "C3", "8n", time, vol)
-      break
-    case "lead":
-      ;(synths.lead as import("tone").PolySynth).triggerAttackRelease(note ?? "C4", "8n", time, vol)
+      ;(synths.hhop as import("tone").MetalSynth).triggerAttackRelease(400, "8n", time, vol)
       break
   }
 }
 
-function resolveNote(trackId: string, stepIndex: number): string | undefined {
-  if (trackId === "bass") return PENTATONIC_NOTES[stepIndex % 5] ?? "C3"
-  if (trackId === "lead") return PENTATONIC_NOTES[stepIndex % PENTATONIC_NOTES.length] ?? "C4"
-  return undefined
-}
-
-function resolveNoteRandom(trackId: string): string | undefined {
-  if (trackId === "bass") return PENTATONIC_NOTES[Math.floor(Math.random() * 5)] ?? "C3"
-  if (trackId === "lead") return PENTATONIC_NOTES[Math.floor(Math.random() * PENTATONIC_NOTES.length)] ?? "C4"
-  return undefined
-}
-
-export function useSequencer() {
+export function useDR1() {
   const [pattern, setPattern] = useState<Pattern>(makeDefaultPattern)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(-1)
@@ -109,59 +88,46 @@ export function useSequencer() {
     await Tone.start()
 
     const reverb = new Tone.Reverb({ decay: 1.2, wet: 0.15 }).toDestination()
-    const limiter = new Tone.Limiter(-3).toDestination()
 
-    synthsRef.current = {
-      kick: new Tone.MembraneSynth({
-        pitchDecay: 0.05, octaves: 6,
-        envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.1 },
-      }).connect(limiter),
+    const kick = new Tone.MembraneSynth({
+      pitchDecay: 0.05, octaves: 6,
+      envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.1 },
+    }).toDestination()
+    kick.volume.value = -6
 
-      snare: (() => {
-        const noise = new Tone.NoiseSynth({
-          noise: { type: "white" },
-          envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.05 },
-        }).connect(new Tone.Filter(3000, "bandpass").connect(limiter))
-        return noise
-      })(),
+    const snareFilter = new Tone.Filter(3000, "bandpass").toDestination()
+    const snare = new Tone.NoiseSynth({
+      noise: { type: "white" },
+      envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.05 },
+    }).connect(snareFilter)
+    snare.volume.value = -9
 
-      clap: (() => {
-        const noise = new Tone.NoiseSynth({
-          noise: { type: "pink" },
-          envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 },
-        }).connect(reverb)
-        return noise
-      })(),
+    const clap = new Tone.NoiseSynth({
+      noise: { type: "pink" },
+      envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 },
+    }).connect(reverb)
+    clap.volume.value = -9
 
-      hhcl: new Tone.MetalSynth({
-        envelope: { attack: 0.001, decay: 0.05, release: 0.01 },
-        harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5,
-      }).connect(limiter),
+    const hhcl = new Tone.MetalSynth({
+      envelope: { attack: 0.001, decay: 0.05, release: 0.01 },
+      harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5,
+    }).toDestination()
+    hhcl.volume.value = -18
 
-      hhop: new Tone.MetalSynth({
-        envelope: { attack: 0.001, decay: 0.3, release: 0.1 },
-        harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5,
-      }).connect(limiter),
+    const hhop = new Tone.MetalSynth({
+      envelope: { attack: 0.001, decay: 0.3, release: 0.1 },
+      harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5,
+    }).toDestination()
+    hhop.volume.value = -16
 
-      bass: new Tone.MonoSynth({
-        oscillator: { type: "sawtooth" },
-        filter: { Q: 2, type: "lowpass", rolloff: -24 },
-        envelope: { attack: 0.01, decay: 0.1, sustain: 0.3, release: 0.1 },
-        filterEnvelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.1, baseFrequency: 200, octaves: 2 },
-      }).connect(limiter),
-
-      lead: new Tone.PolySynth(Tone.Synth, {
-        oscillator: { type: "triangle" },
-        envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.2 },
-      }).connect(reverb),
-    }
+    synthsRef.current = { kick, snare, clap, hhcl, hhop }
   }, [])
 
   const triggerTrack = useCallback((trackId: string, velocity: number) => {
     const Tone = toneRef.current
     const synths = synthsRef.current
     if (!Tone || !synths) return
-    triggerNote(trackId, synths, Tone.now(), velocity / 127, resolveNoteRandom(trackId))
+    triggerNote(trackId, synths, Tone.now(), velocity / 127)
   }, [])
 
   const play = useCallback(async () => {
@@ -184,13 +150,7 @@ export function useSequencer() {
         p.tracks.forEach((track) => {
           const s = track.steps[step as number]
           if (s?.active && !track.muted) {
-            triggerNote(
-              track.id,
-              synthsRef.current,
-              time,
-              s.velocity / 127,
-              resolveNote(track.id, step as number)
-            )
+            triggerNote(track.id, synthsRef.current, time, s.velocity / 127)
           }
         })
 
