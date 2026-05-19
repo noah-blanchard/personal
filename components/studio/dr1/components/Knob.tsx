@@ -1,7 +1,7 @@
 "use client"
 
 import { useSkin } from "../SkinContext"
-import { useKnob } from "../useKnob"
+import { useKnob } from "../../shared/useKnob"
 
 type KnobProps = {
   label: string
