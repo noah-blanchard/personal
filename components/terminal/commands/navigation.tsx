@@ -43,16 +43,31 @@ export const NAVIGATION_COMMANDS: Command[] = [
     run: (ctx) => ctx.clear(),
   },
   {
-    name: "noah-studio.sh",
-    aliases: ["./noah-studio.sh"],
+    name: "open studio",
+    aliases: ["noah-studio.sh", "./noah-studio.sh", "studio"],
     description: { en: "open the studio", fr: "ouvrir le studio" },
     run: async (ctx) => {
-      ctx.print("→ loading noah-studio.sh...")
-      await delay(400)
-      ctx.print("→ initializing audio engine...")
-      await delay(500)
-      ctx.print("→ ready.")
-      await delay(300)
+      const steps = [
+        { percent: 20,  label: "loading project..." },
+        { percent: 55,  label: "initializing audio engine..." },
+        { percent: 80,  label: "mounting plugins..." },
+        { percent: 100, label: "ready." },
+      ]
+
+      for (const step of steps) {
+        const filled = Math.round(step.percent / 5)
+        const bar = `[${"█".repeat(filled)}${"░".repeat(20 - filled)}] ${step.percent}%`
+        ctx.print(
+          <>
+            <span className="text-amber-400">{bar}</span>
+            {"  "}
+            <span className="text-ink-500">→ {step.label}</span>
+          </>
+        )
+        await delay(step.percent === 100 ? 200 : 380)
+      }
+
+      await delay(150)
       ctx.navigateToRoute("/studio")
     },
   },
