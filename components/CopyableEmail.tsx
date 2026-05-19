@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, type ReactNode } from "react";
-import { useToast } from "./Toaster";
+import { useToast } from "./providers/Toaster";
 
 type Props = {
   email: string;

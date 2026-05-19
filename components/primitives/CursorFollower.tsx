@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
+import { SPRING_CURSOR } from "@/lib/animation";
 
 export function CursorFollower() {
   const reduced = useReducedMotion();
@@ -11,8 +12,8 @@ export function CursorFollower() {
 
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  const sx = useSpring(x, { stiffness: 320, damping: 28, mass: 0.4 });
-  const sy = useSpring(y, { stiffness: 320, damping: 28, mass: 0.4 });
+  const sx = useSpring(x, SPRING_CURSOR);
+  const sy = useSpring(y, SPRING_CURSOR);
 
   useEffect(() => {
     if (reduced) return;

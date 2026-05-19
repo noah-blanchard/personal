@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTerminal } from "./terminal/TerminalProvider";
-import { useToast } from "./Toaster";
+import { useTerminal } from "../terminal/TerminalProvider";
+import { useToast } from "../providers/Toaster";
 
 const SEQUENCE = [
   "ArrowUp",

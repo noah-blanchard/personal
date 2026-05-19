@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useSkin } from "./SkinContext"
-import type { Step } from "./types"
+import { useSkin } from "../SkinContext"
+import type { Step } from "../types"
 
 type StepButtonProps = {
   step: Step
@@ -34,9 +34,7 @@ export function StepButton({ step, isPlaying, color, onToggle, onVelocityChange 
   }
 
   const inactiveStyle: React.CSSProperties = {
-    background: pressed
-      ? skin.pad.bg.replace("145deg,", "145deg,").replace("0%", "0%") // slightly darker — just use same bg
-      : skin.pad.bg,
+    background: pressed ? skin.pad.bg : skin.pad.bg,
     borderRadius: "5px",
     border: `1px solid ${skin.pad.borderMid}`,
     borderTopColor: pressed ? skin.pad.borderBottom : skin.pad.borderTop,
@@ -65,22 +63,8 @@ export function StepButton({ step, isPlaying, color, onToggle, onVelocityChange 
     boxShadow: pressed
       ? "inset 0 2px 4px rgba(0,0,0,0.5)"
       : isPlaying
-      ? [
-          `0 3px 0 rgba(0,0,0,0.7)`,
-          `0 4px 8px rgba(0,0,0,0.4)`,
-          `inset 0 1px 0 rgba(255,255,255,0.15)`,
-          `inset 0 -1px 2px rgba(0,0,0,0.3)`,
-          `0 0 10px 4px rgba(${r},${g},${b},0.7)`,
-          `0 0 24px 10px rgba(${r},${g},${b},0.3)`,
-        ].join(", ")
-      : [
-          `0 3px 0 rgba(0,0,0,0.7)`,
-          `0 4px 8px rgba(0,0,0,0.4)`,
-          `inset 0 1px 0 rgba(255,255,255,0.12)`,
-          `inset 0 -1px 2px rgba(0,0,0,0.3)`,
-          `0 0 7px 2px rgba(${r},${g},${b},0.45)`,
-          `0 0 16px 6px rgba(${r},${g},${b},0.15)`,
-        ].join(", "),
+      ? [`0 3px 0 rgba(0,0,0,0.7)`, `0 4px 8px rgba(0,0,0,0.4)`, `inset 0 1px 0 rgba(255,255,255,0.15)`, `inset 0 -1px 2px rgba(0,0,0,0.3)`, `0 0 10px 4px rgba(${r},${g},${b},0.7)`, `0 0 24px 10px rgba(${r},${g},${b},0.3)`].join(", ")
+      : [`0 3px 0 rgba(0,0,0,0.7)`, `0 4px 8px rgba(0,0,0,0.4)`, `inset 0 1px 0 rgba(255,255,255,0.12)`, `inset 0 -1px 2px rgba(0,0,0,0.3)`, `0 0 7px 2px rgba(${r},${g},${b},0.45)`, `0 0 16px 6px rgba(${r},${g},${b},0.15)`].join(", "),
     transform: pressed ? "translateY(3px)" : "translateY(0px)",
     transition: pressed
       ? "transform 30ms ease, box-shadow 30ms ease"

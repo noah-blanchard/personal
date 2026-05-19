@@ -2,17 +2,17 @@
 
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
-import { ScrambleText } from "./ScrambleText";
-import { ScrollIndicator } from "./ScrollIndicator";
-import { CopyableEmail } from "./CopyableEmail";
-import { Terminal } from "./terminal/Terminal";
+import { ScrambleText } from "../primitives/ScrambleText";
+import { CopyableEmail } from "../CopyableEmail";
+import { Terminal } from "../terminal/Terminal";
 import { SITE } from "@/content/site";
 import { HERO } from "@/content/hero";
 import { pick, type Locale } from "@/content/types";
+import { EASE_OUT_EXPO } from "@/lib/animation";
 
 const enter = {
   hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE_OUT_EXPO } },
 };
 
 export function Hero() {
@@ -107,15 +107,13 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
+            transition={{ duration: 0.7, delay: 0.4, ease: EASE_OUT_EXPO }}
             className="md:col-span-7"
           >
             <Terminal />
           </motion.div>
         </div>
       </div>
-
-      {/* <ScrollIndicator /> */}
 
       <div
         aria-hidden

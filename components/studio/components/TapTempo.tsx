@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
-import { useSkin } from "./SkinContext"
+import { useSkin } from "../SkinContext"
 
 type TapTempoProps = {
   onBpmChange: (bpm: number) => void
@@ -45,11 +45,7 @@ export function TapTempo({ onBpmChange }: TapTempoProps) {
           height: pressed ? "50px" : "52px",
           marginBottom: pressed ? "2px" : "0",
           borderRadius: "50%",
-          background: flash
-            ? skin.btn.bg
-            : pressed
-            ? skin.panel.bg
-            : skin.btn.bg,
+          background: flash ? skin.btn.bg : pressed ? skin.panel.bg : skin.btn.bg,
           border: `1px solid ${skin.btn.borderMid}`,
           borderTopColor: pressed ? skin.btn.borderBottom : skin.btn.borderTop,
           borderBottomColor: skin.btn.borderBottom,
@@ -61,7 +57,6 @@ export function TapTempo({ onBpmChange }: TapTempoProps) {
             : "height 80ms, margin-bottom 80ms, box-shadow 80ms",
         }}
       >
-        {/* Concentric ring details */}
         <div
           className="absolute rounded-full pointer-events-none"
           style={{ inset: "6px", border: `1px solid rgba(128,128,128,0.08)`, boxShadow: "inset 0 1px 2px rgba(0,0,0,0.3)" }}

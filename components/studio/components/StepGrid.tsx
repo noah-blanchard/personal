@@ -1,8 +1,8 @@
 "use client"
 
-import { useSkin } from "./SkinContext"
+import { useSkin } from "../SkinContext"
 import { TrackRow } from "./TrackRow"
-import type { Pattern } from "./types"
+import type { Pattern } from "../types"
 
 type StepGridProps = {
   pattern: Pattern
@@ -19,7 +19,6 @@ export function StepGrid({ pattern, currentStep, onToggleStep, onVelocityChange,
 
   return (
     <div className="relative">
-      {/* Playhead */}
       {currentStep >= 0 && (
         <div
           className="absolute top-6 bottom-0 pointer-events-none z-10"
@@ -34,7 +33,6 @@ export function StepGrid({ pattern, currentStep, onToggleStep, onVelocityChange,
         />
       )}
 
-      {/* Step number indicators */}
       <div className="flex items-center gap-2 mb-2" style={{ paddingLeft: "64px" }}>
         <div className="grid flex-1" style={{ gridTemplateColumns: `repeat(${stepCount}, minmax(0, 1fr))`, gap: "3px" }}>
           {Array.from({ length: stepCount }, (_, i) => {
@@ -55,7 +53,6 @@ export function StepGrid({ pattern, currentStep, onToggleStep, onVelocityChange,
         </div>
       </div>
 
-      {/* Beat group dividers */}
       <div className="absolute top-[18px] bottom-0 pointer-events-none" style={{ left: "64px", right: 0 }}>
         {Array.from({ length: groupCount - 1 }, (_, i) => (
           <div key={i} className="absolute top-0 bottom-0 flex flex-col" style={{ left: `${((i + 1) / groupCount) * 100}%` }}>
@@ -65,7 +62,6 @@ export function StepGrid({ pattern, currentStep, onToggleStep, onVelocityChange,
         ))}
       </div>
 
-      {/* Track rows — inject skin track colors */}
       <div className="flex flex-col gap-[5px]">
         {pattern.tracks.map((track, i) => (
           <TrackRow

@@ -1,7 +1,7 @@
 "use client"
 
-import { useSkin } from "./SkinContext"
-import type { Pattern } from "./types"
+import { useSkin } from "../SkinContext"
+import type { Pattern } from "../types"
 
 type LCDProps = {
   pattern: Pattern
@@ -28,7 +28,6 @@ export function LCD({ pattern, isPlaying, currentStep }: LCDProps) {
           className="relative px-4 py-2.5 font-mono select-none"
           style={{ background: lcd.screenBg, minHeight: "58px" }}
         >
-          {/* Pixel dot-matrix grid */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -40,7 +39,6 @@ export function LCD({ pattern, isPlaying, currentStep }: LCDProps) {
               zIndex: 2,
             }}
           />
-          {/* Scanlines */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -48,7 +46,6 @@ export function LCD({ pattern, isPlaying, currentStep }: LCDProps) {
               zIndex: 3,
             }}
           />
-          {/* Corner glare */}
           <div
             className="absolute top-0 right-0 pointer-events-none"
             style={{ width: "40%", height: "50%", background: "linear-gradient(225deg, rgba(255,255,255,0.025) 0%, transparent 60%)", zIndex: 4, borderRadius: "0 4px 0 0" }}
@@ -76,7 +73,6 @@ export function LCD({ pattern, isPlaying, currentStep }: LCDProps) {
               </div>
             </div>
 
-            {/* Mini step bar */}
             <div className="flex gap-[2px]">
               {Array.from({ length: pattern.stepCount }, (_, i) => (
                 <div

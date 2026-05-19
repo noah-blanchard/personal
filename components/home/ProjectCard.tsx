@@ -2,13 +2,14 @@
 
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
-import { Tag } from "./ui/Tag";
+import { Tag } from "../ui/Tag";
 import type { Project } from "@/content/work";
 import { pick, type Locale } from "@/content/types";
+import { EASE_OUT_EXPO } from "@/lib/animation";
 
 const card = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT_EXPO } },
 };
 
 export function ProjectCard({ project }: { project: Project }) {
@@ -58,7 +59,7 @@ export function ProjectCard({ project }: { project: Project }) {
               }}
               animate="rest"
               whileHover="hover"
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] as const }}
+              transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
               className="absolute inset-0 flex items-end bg-ink-950/85 p-6 text-ink-50 backdrop-blur-[2px] md:p-8"
             >
               <div className="max-w-md">

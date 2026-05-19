@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { CopyableEmail } from "./CopyableEmail";
+import { CopyableEmail } from "../CopyableEmail";
 import { SITE, SOCIALS } from "@/content/site";
+import { EASE_OUT_EXPO } from "@/lib/animation";
 
 const ICONS: Record<"gh" | "li" | "x", (p: { className?: string }) => React.ReactElement> = {
   gh: GitHubIcon,
@@ -13,7 +14,7 @@ const ICONS: Record<"gh" | "li" | "x", (p: { className?: string }) => React.Reac
 
 const fade = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT_EXPO } },
 };
 
 export function Contact() {

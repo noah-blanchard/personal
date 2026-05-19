@@ -1,7 +1,7 @@
 "use client"
 
-import { useSkin } from "./SkinContext"
-import { useKnob } from "./useKnob"
+import { useSkin } from "../SkinContext"
+import { useKnob } from "../useKnob"
 
 type KnobProps = {
   label: string
@@ -94,15 +94,11 @@ export function Knob({ label, value, min, max, unit = "", color, onChange }: Kno
             </radialGradient>
           </defs>
 
-          {/* Drop shadow */}
           <circle cx={CX + 1} cy={CY + 2} r={R_OUTER + 1} fill="rgba(0,0,0,0.5)" />
-
-          {/* Aluminum ring */}
           <circle cx={CX} cy={CY} r={R_OUTER} fill={`url(#${gradId})`} />
           <circle cx={CX} cy={CY} r={R_OUTER} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.5" />
           <circle cx={CX} cy={CY} r={R_OUTER} fill={`url(#${ringShadowId})`} />
 
-          {/* Tick marks */}
           {MINOR_TICKS.map((a) => {
             const inner = polar(CX, CY, R_OUTER - 5, a)
             const outer = polar(CX, CY, R_OUTER - 1, a)
@@ -114,7 +110,6 @@ export function Knob({ label, value, min, max, unit = "", color, onChange }: Kno
             return <line key={a} x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke="rgba(0,0,0,0.8)" strokeWidth="1.5" strokeLinecap="round" />
           })}
 
-          {/* Grip ring */}
           <circle cx={CX} cy={CY} r={R_GRIP + 3} fill={skin.knob.gripColor} />
           <circle cx={CX} cy={CY} r={R_GRIP + 3} fill="none" stroke="rgba(0,0,0,0.4)" strokeWidth="1" />
           {Array.from({ length: 12 }, (_, i) => {
@@ -122,11 +117,9 @@ export function Knob({ label, value, min, max, unit = "", color, onChange }: Kno
             return <circle key={i} cx={p.x} cy={p.y} r="1.2" fill={skin.knob.gripBumpColor} />
           })}
 
-          {/* Arc track */}
           <path d={arcPath(CX, CY, ARC_R, -135, 135)} fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="5" strokeLinecap="round" />
           <path d={arcPath(CX, CY, ARC_R, -135, 135)} fill="none" stroke={skin.knob.trackColor} strokeWidth="4" strokeLinecap="round" />
 
-          {/* Filled arc */}
           {normalized > 0 && (
             <path
               d={arcPath(CX, CY, ARC_R, -135, fillEnd)}
@@ -135,11 +128,9 @@ export function Knob({ label, value, min, max, unit = "", color, onChange }: Kno
             />
           )}
 
-          {/* Cap */}
           <circle cx={CX} cy={CY} r={R_CAP} fill={`url(#${capId})`} />
           <circle cx={CX} cy={CY} r={R_CAP} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
 
-          {/* Pointer */}
           <line x1={pInner.x} y1={pInner.y} x2={pOuter.x} y2={pOuter.y}
             stroke={arcColor} strokeWidth="2.5" strokeLinecap="round"
             style={{ filter: `drop-shadow(0 0 2px ${arcColor})` }}

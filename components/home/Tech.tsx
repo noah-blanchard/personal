@@ -3,9 +3,10 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Tag } from "./ui/Tag";
+import { Tag } from "../ui/Tag";
 import { TECH_GROUPS, type TechGroup } from "@/content/tech";
 import { pick, type Locale } from "@/content/types";
+import { EASE_OUT_EXPO } from "@/lib/animation";
 
 // A deterministic pseudo-random per pill so SSR & client agree on drift params.
 function pseudo(str: string, seed: number) {
@@ -53,7 +54,7 @@ function Group({ group }: { group: TechGroup }) {
     <motion.div
       variants={{
         hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
+        show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT_EXPO } },
       }}
     >
       <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-ink-500 dark:text-ink-400">

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { makeDefaultPattern, PENTATONIC_NOTES } from "./constants"
-import type { Pattern, Track } from "./types"
+import type { Pattern } from "./types"
 
 const URL_PARAM = "p"
 const SYNC_DEBOUNCE_MS = 500
@@ -23,21 +23,63 @@ function decodePattern(s: string): Pattern | null {
   }
 }
 
+// Shared audio trigger — handles the per-track synthesis dispatch.
+// `time` is Tone.now() for immediate triggers or the scheduled sequence time for playback.
+function triggerNote(
+  trackId: string,
+  synths: Record<string, unknown>,
+  time: number,
+  vol: number,
+  note?: string
+) {
+  switch (trackId) {
+    case "kick":
+      ;(synths.kick as import("tone").MembraneSynth).triggerAttackRelease("C1", "8n", time, vol)
+      break
+    case "snare":
+      ;(synths.snare as import("tone").NoiseSynth).triggerAttackRelease("16n", time, vol)
+      break
+    case "clap":
+      ;(synths.clap as import("tone").NoiseSynth).triggerAttackRelease("16n", time, vol)
+      break
+    case "hhcl":
+      ;(synths.hhcl as import("tone").MetalSynth).triggerAttackRelease("32n", time, vol)
+      break
+    case "hhop":
+      ;(synths.hhop as import("tone").MetalSynth).triggerAttackRelease("8n", time, vol)
+      break
+    case "bass":
+      ;(synths.bass as import("tone").MonoSynth).triggerAttackRelease(note ?? "C3", "8n", time, vol)
+      break
+    case "lead":
+      ;(synths.lead as import("tone").PolySynth).triggerAttackRelease(note ?? "C4", "8n", time, vol)
+      break
+  }
+}
+
+function resolveNote(trackId: string, stepIndex: number): string | undefined {
+  if (trackId === "bass") return PENTATONIC_NOTES[stepIndex % 5] ?? "C3"
+  if (trackId === "lead") return PENTATONIC_NOTES[stepIndex % PENTATONIC_NOTES.length] ?? "C4"
+  return undefined
+}
+
+function resolveNoteRandom(trackId: string): string | undefined {
+  if (trackId === "bass") return PENTATONIC_NOTES[Math.floor(Math.random() * 5)] ?? "C3"
+  if (trackId === "lead") return PENTATONIC_NOTES[Math.floor(Math.random() * PENTATONIC_NOTES.length)] ?? "C4"
+  return undefined
+}
+
 export function useSequencer() {
-  // Always start with the default so SSR and client render identical HTML.
-  // URL-encoded pattern is applied after hydration in the effect below.
   const [pattern, setPattern] = useState<Pattern>(makeDefaultPattern)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentStep, setCurrentStep] = useState(-1)
 
-  // Tone.js refs — dynamic import, never serialized
   const toneRef = useRef<typeof import("tone") | null>(null)
   const synthsRef = useRef<Record<string, unknown>>({})
   const seqRef = useRef<import("tone").Sequence | null>(null)
   const patternRef = useRef<Pattern>(pattern)
   patternRef.current = pattern
 
-  // On mount: read URL param and hydrate pattern (runs only on client, after SSR)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const encoded = params.get(URL_PARAM)
@@ -47,7 +89,6 @@ export function useSequencer() {
     }
   }, [])
 
-  // URL sync (debounced)
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     if (syncTimer.current) clearTimeout(syncTimer.current)
@@ -61,7 +102,6 @@ export function useSequencer() {
     }, SYNC_DEBOUNCE_MS)
   }, [pattern])
 
-  // Initialize Tone.js synths (lazy, on first play)
   const initTone = useCallback(async () => {
     if (toneRef.current) return
     const Tone = await import("tone")
@@ -121,35 +161,7 @@ export function useSequencer() {
     const Tone = toneRef.current
     const synths = synthsRef.current
     if (!Tone || !synths) return
-    const vol = velocity / 127
-
-    switch (trackId) {
-      case "kick":
-        ;(synths.kick as import("tone").MembraneSynth).triggerAttackRelease("C1", "8n", Tone.now(), vol)
-        break
-      case "snare":
-        ;(synths.snare as import("tone").NoiseSynth).triggerAttackRelease("16n", Tone.now(), vol)
-        break
-      case "clap":
-        ;(synths.clap as import("tone").NoiseSynth).triggerAttackRelease("16n", Tone.now(), vol)
-        break
-      case "hhcl":
-        ;(synths.hhcl as import("tone").MetalSynth).triggerAttackRelease("32n", Tone.now(), vol)
-        break
-      case "hhop":
-        ;(synths.hhop as import("tone").MetalSynth).triggerAttackRelease("8n", Tone.now(), vol)
-        break
-      case "bass": {
-        const note = PENTATONIC_NOTES[Math.floor(Math.random() * 5)] ?? "C3"
-        ;(synths.bass as import("tone").MonoSynth).triggerAttackRelease(note, "8n", Tone.now(), vol)
-        break
-      }
-      case "lead": {
-        const note = PENTATONIC_NOTES[Math.floor(Math.random() * PENTATONIC_NOTES.length)] ?? "C4"
-        ;(synths.lead as import("tone").PolySynth).triggerAttackRelease(note, "8n", Tone.now(), vol)
-        break
-      }
-    }
+    triggerNote(trackId, synths, Tone.now(), velocity / 127, resolveNoteRandom(trackId))
   }, [])
 
   const play = useCallback(async () => {
@@ -172,41 +184,13 @@ export function useSequencer() {
         p.tracks.forEach((track) => {
           const s = track.steps[step as number]
           if (s?.active && !track.muted) {
-            Tone.getDraw().schedule(() => {
-              // velocity-based trigger handled via triggerTrack at audio time
-            }, time)
-            // Audio trigger (not draw-scheduled)
-            const vol = s.velocity / 127
-            const synths = synthsRef.current
-            const now = time
-
-            switch (track.id) {
-              case "kick":
-                ;(synths.kick as import("tone").MembraneSynth).triggerAttackRelease("C1", "8n", now, vol)
-                break
-              case "snare":
-                ;(synths.snare as import("tone").NoiseSynth).triggerAttackRelease("16n", now, vol)
-                break
-              case "clap":
-                ;(synths.clap as import("tone").NoiseSynth).triggerAttackRelease("16n", now, vol)
-                break
-              case "hhcl":
-                ;(synths.hhcl as import("tone").MetalSynth).triggerAttackRelease("32n", now, vol)
-                break
-              case "hhop":
-                ;(synths.hhop as import("tone").MetalSynth).triggerAttackRelease("8n", now, vol)
-                break
-              case "bass": {
-                const note = PENTATONIC_NOTES[(step as number) % 5] ?? "C3"
-                ;(synths.bass as import("tone").MonoSynth).triggerAttackRelease(note, "8n", now, vol)
-                break
-              }
-              case "lead": {
-                const note = PENTATONIC_NOTES[(step as number) % PENTATONIC_NOTES.length] ?? "C4"
-                ;(synths.lead as import("tone").PolySynth).triggerAttackRelease(note, "8n", now, vol)
-                break
-              }
-            }
+            triggerNote(
+              track.id,
+              synthsRef.current,
+              time,
+              s.velocity / 127,
+              resolveNote(track.id, step as number)
+            )
           }
         })
 
@@ -237,7 +221,6 @@ export function useSequencer() {
     setPattern(makeDefaultPattern(patternRef.current.stepCount))
   }, [stop])
 
-  // Sync BPM/swing to transport while playing
   useEffect(() => {
     const Tone = toneRef.current
     if (!Tone || !isPlaying) return
@@ -245,7 +228,6 @@ export function useSequencer() {
     Tone.Transport.swing = pattern.swing / 100
   }, [pattern.bpm, pattern.swing, isPlaying])
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       const Tone = toneRef.current
@@ -265,12 +247,7 @@ export function useSequencer() {
       tracks: p.tracks.map((t) =>
         t.id !== trackId
           ? t
-          : {
-              ...t,
-              steps: t.steps.map((s, i) =>
-                i !== stepIndex ? s : { ...s, active: !s.active }
-              ),
-            }
+          : { ...t, steps: t.steps.map((s, i) => (i !== stepIndex ? s : { ...s, active: !s.active })) }
       ),
     }))
   }, [])
@@ -281,10 +258,7 @@ export function useSequencer() {
       tracks: p.tracks.map((t) =>
         t.id !== trackId
           ? t
-          : {
-              ...t,
-              steps: t.steps.map((s, i) => (i !== stepIndex ? s : { ...s, velocity })),
-            }
+          : { ...t, steps: t.steps.map((s, i) => (i !== stepIndex ? s : { ...s, velocity })) }
       ),
     }))
   }, [])

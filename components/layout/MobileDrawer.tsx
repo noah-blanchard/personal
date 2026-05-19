@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { SectionId } from "./ActiveSectionProvider";
+import type { SectionId } from "../providers/ActiveSectionProvider";
 import { SITE } from "@/content/site";
 
 type Link = { id: SectionId; label: string };

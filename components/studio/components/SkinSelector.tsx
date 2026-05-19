@@ -1,7 +1,7 @@
 "use client"
 
-import { SKINS } from "./skins"
-import { useSkin, useSkinSetter } from "./SkinContext"
+import { SKINS } from "../skins"
+import { useSkin, useSkinSetter } from "../SkinContext"
 
 export function SkinSelector() {
   const current = useSkin()
@@ -34,7 +34,6 @@ export function SkinSelector() {
             onMouseEnter={(e) => { if (!active) (e.currentTarget as HTMLElement).style.transform = "scale(1.1)" }}
             onMouseLeave={(e) => { if (!active) (e.currentTarget as HTMLElement).style.transform = "scale(1)" }}
           >
-            {/* Accent dot */}
             <span
               className="absolute inset-0 flex items-center justify-center"
               style={{ pointerEvents: "none" }}

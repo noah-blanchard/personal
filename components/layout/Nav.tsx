@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useActiveSection } from "./ActiveSectionProvider";
+import { useActiveSection } from "../providers/ActiveSectionProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { MobileDrawer } from "./MobileDrawer";
 import { LangSwitch } from "./LangSwitch";
 import { NAV_LINKS } from "@/content/nav";
 import { SITE } from "@/content/site";
+import { SCROLL_NAV_THRESHOLD } from "@/lib/animation";
 
 export function Nav() {
   const active = useActiveSection();
@@ -15,7 +16,7 @@ export function Nav() {
   const tNav = useTranslations("nav");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > SCROLL_NAV_THRESHOLD);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

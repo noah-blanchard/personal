@@ -2,15 +2,15 @@
 
 import { useEffect, type ReactNode } from "react";
 import { ToasterProvider, useToast } from "./Toaster";
-import { TerminalProvider, useTerminal } from "./terminal/TerminalProvider";
-import { CommandPalette } from "./terminal/CommandPalette";
-import { KeyboardNav } from "./KeyboardNav";
-import { KonamiListener } from "./KonamiListener";
-import { ScrollProgress } from "./ScrollProgress";
-import { CursorFollower } from "./CursorFollower";
+import { TerminalProvider, useTerminal } from "../terminal/TerminalProvider";
+import { CommandPalette } from "../terminal/CommandPalette";
+import { KeyboardNav } from "../layout/KeyboardNav";
+import { KonamiListener } from "../primitives/KonamiListener";
+import { ScrollProgress } from "../primitives/ScrollProgress";
+import { CursorFollower } from "../primitives/CursorFollower";
 import { ActiveSectionProvider } from "./ActiveSectionProvider";
-import { NeonFluidBackground } from "./NeonFluidBackground";
-import { MatrixBackground } from "./MatrixBackground";
+import { NeonFluidBackground } from "../primitives/NeonFluidBackground";
+import { MatrixBackground } from "../primitives/MatrixBackground";
 
 function BackgroundEffectLayer() {
   const { features } = useTerminal();

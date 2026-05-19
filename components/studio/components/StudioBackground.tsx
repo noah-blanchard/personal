@@ -1,9 +1,8 @@
 "use client"
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { useSkin } from "./SkinContext"
+import { useSkin } from "../SkinContext"
 
-// Deterministic blob configs — no Math.random() for SSR safety
 const BLOB_CONFIGS = [
   { w: "55vw", h: "55vw", top: "-10%", left: "-15%",  dur: 22, dx: [0, 120, -60, 80, 0],  dy: [0, -80, 60, -40, 0],  sc: [1, 1.15, 0.9, 1.08, 1], colorIdx: 0, opacity: 0.38 },
   { w: "45vw", h: "45vw", top: "30%",  left: "55%",   dur: 28, dx: [0, -90, 50, -70, 0],  dy: [0, 70, -50, 90, 0],   sc: [1, 0.88, 1.12, 0.95, 1], colorIdx: 1, opacity: 0.32 },
@@ -13,14 +12,12 @@ const BLOB_CONFIGS = [
   { w: "30vw", h: "30vw", top: "20%",  left: "25%",   dur: 32, dx: [0, -40, 60, -30, 0],  dy: [0, 40, -60, 50, 0],   sc: [1, 0.95, 1.05, 0.98, 1], colorIdx: 5, opacity: 0.22 },
 ] as const
 
-// Deterministic sine wave configs
 const WAVE_CONFIGS = [
   { freq: 0.006, amp: 90,  phase: 0,    dur: 18, colorIdx: 1, opacity: 0.10, strokeW: 1.2 },
   { freq: 0.009, amp: 60,  phase: 2.1,  dur: 13, colorIdx: 0, opacity: 0.08, strokeW: 1.0 },
   { freq: 0.004, amp: 130, phase: 4.5,  dur: 22, colorIdx: 5, opacity: 0.07, strokeW: 1.5 },
 ] as const
 
-// Deterministic particle configs
 const PARTICLE_CONFIGS = [
   { size: 5, top: "12%", left: "8%",   dur: 9,  dx: [0, 40, -30, 0],  dy: [0, -50, 30, 0],  op: [0.25, 0.55, 0.2,  0.25], colorIdx: 0 },
   { size: 4, top: "28%", left: "85%",  dur: 11, dx: [0, -50, 20, 0],  dy: [0, 40, -60, 0],  op: [0.2,  0.5,  0.3,  0.2],  colorIdx: 1 },
@@ -67,39 +64,24 @@ function BackgroundLayers({ skinId }: { skinId: string }) {
       transition={{ duration: 0.8 }}
       style={{ background: skin.bgBase }}
     >
-      {/* Layer 1: Blob orbs */}
       {BLOB_CONFIGS.map((b, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full pointer-events-none"
           style={{
-            width: b.w,
-            height: b.h,
-            top: b.top,
-            left: b.left,
+            width: b.w, height: b.h, top: b.top, left: b.left,
             background: blobColors[b.colorIdx] ?? skin.accent,
             filter: `blur(${100 + i * 10}px)`,
             opacity: b.opacity,
           }}
-          animate={reduced ? {} : {
-            x: [...b.dx],
-            y: [...b.dy],
-            scale: [...b.sc],
-          }}
-          transition={reduced ? {} : {
-            duration: b.dur,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-          }}
+          animate={reduced ? {} : { x: [...b.dx], y: [...b.dy], scale: [...b.sc] }}
+          transition={reduced ? {} : { duration: b.dur, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
         />
       ))}
 
-      {/* Layer 2: SVG sine waves */}
       <svg
         className="absolute inset-0 pointer-events-none"
-        width="200%"
-        height="100%"
+        width="200%" height="100%"
         viewBox={`0 0 ${VIEW_W * 2} ${VIEW_H}`}
         preserveAspectRatio="none"
         style={{ top: 0, left: 0 }}
@@ -111,58 +93,34 @@ function BackgroundLayers({ skinId }: { skinId: string }) {
             <motion.g
               key={i}
               animate={reduced ? {} : { x: [0, -VIEW_W] as number[] }}
-              transition={reduced ? {} : {
-                duration: w.dur,
-                repeat: Infinity,
-                ease: "linear",
-              }}
+              transition={reduced ? {} : { duration: w.dur, repeat: Infinity, ease: "linear" }}
             >
               <polyline
-                points={pts}
-                fill="none"
-                stroke={color}
-                strokeWidth={w.strokeW}
-                strokeOpacity={w.opacity}
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                points={pts} fill="none" stroke={color}
+                strokeWidth={w.strokeW} strokeOpacity={w.opacity}
+                strokeLinecap="round" strokeLinejoin="round"
               />
             </motion.g>
           )
         })}
       </svg>
 
-      {/* Layer 3: Floating particles */}
       {PARTICLE_CONFIGS.map((p, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full pointer-events-none"
           style={{
-            width: p.size,
-            height: p.size,
-            top: p.top,
-            left: p.left,
+            width: p.size, height: p.size, top: p.top, left: p.left,
             background: (trackColors as string[])[p.colorIdx] ?? skin.accent,
           }}
-          animate={reduced ? {} : {
-            x: [...p.dx],
-            y: [...p.dy],
-            opacity: [...p.op],
-          }}
-          transition={reduced ? {} : {
-            duration: p.dur,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-          }}
+          animate={reduced ? {} : { x: [...p.dx], y: [...p.dy], opacity: [...p.op] }}
+          transition={reduced ? {} : { duration: p.dur, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
         />
       ))}
 
-      {/* Layer 4: Radial vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 20%, rgba(0,0,0,0.75) 100%)",
-        }}
+        style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 20%, rgba(0,0,0,0.75) 100%)" }}
       />
     </motion.div>
   )

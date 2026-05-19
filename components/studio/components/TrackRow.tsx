@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { StepButton } from "./StepButton"
-import type { Track } from "./types"
+import type { Track } from "../types"
 
 type TrackRowProps = {
   track: Track
@@ -26,15 +26,11 @@ export function TrackRow({ track, currentStep, onToggleStep, onVelocityChange, o
 
   return (
     <div className="flex items-center gap-2">
-      {/* Track label + LED + mute */}
       <div className="flex items-center gap-1.5 w-[60px] shrink-0">
-        {/* Status LED */}
         <div
           className="w-[5px] h-[5px] rounded-full shrink-0"
           style={{
-            background: track.muted
-              ? "#1a1a18"
-              : `rgba(${r},${g},${b},1)`,
+            background: track.muted ? "#1a1a18" : `rgba(${r},${g},${b},1)`,
             boxShadow: track.muted
               ? "inset 0 1px 1px rgba(0,0,0,0.6)"
               : `0 0 4px 1px rgba(${r},${g},${b},0.8), 0 0 8px 2px rgba(${r},${g},${b},0.3)`,
@@ -43,7 +39,6 @@ export function TrackRow({ track, currentStep, onToggleStep, onVelocityChange, o
           }}
         />
 
-        {/* Mute button / label */}
         <button
           onClick={onToggleMute}
           onMouseDown={() => setMutePressed(true)}
@@ -54,11 +49,7 @@ export function TrackRow({ track, currentStep, onToggleStep, onVelocityChange, o
           style={{
             padding: "2px 4px",
             borderRadius: "3px",
-            background: mutePressed
-              ? "#0e0e0c"
-              : track.muted
-              ? "#111110"
-              : "transparent",
+            background: mutePressed ? "#0e0e0c" : track.muted ? "#111110" : "transparent",
             border: `1px solid ${track.muted ? "#1e1e1c" : "transparent"}`,
             boxShadow: mutePressed
               ? "inset 0 1px 2px rgba(0,0,0,0.8)"
@@ -71,12 +62,8 @@ export function TrackRow({ track, currentStep, onToggleStep, onVelocityChange, o
           <span
             className="text-[9px] font-mono tracking-[0.12em] leading-none"
             style={{
-              color: track.muted
-                ? "rgba(255,255,255,0.2)"
-                : `rgba(${r},${g},${b},0.85)`,
-              textShadow: track.muted
-                ? "none"
-                : `0 0 6px rgba(${r},${g},${b},0.5)`,
+              color: track.muted ? "rgba(255,255,255,0.2)" : `rgba(${r},${g},${b},0.85)`,
+              textShadow: track.muted ? "none" : `0 0 6px rgba(${r},${g},${b},0.5)`,
               transition: "all 150ms",
             }}
           >
@@ -85,7 +72,6 @@ export function TrackRow({ track, currentStep, onToggleStep, onVelocityChange, o
         </button>
       </div>
 
-      {/* Step buttons */}
       <div
         className="grid gap-[3px] flex-1"
         style={{ gridTemplateColumns: `repeat(${track.steps.length}, minmax(0, 1fr))` }}

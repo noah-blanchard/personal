@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Kbd } from "./ui/Kbd";
+import { Kbd } from "../ui/Kbd";
+import { KEYBOARD_G_MODE_TIMEOUT_MS } from "@/lib/animation";
 
 type Target = "top" | "work" | "about" | "experience" | "tech" | "contact";
 
@@ -48,7 +49,7 @@ export function KeyboardNav() {
   const enterG = useCallback(() => {
     if (gTimer.current) clearTimeout(gTimer.current);
     setGMode(true);
-    gTimer.current = setTimeout(() => setGMode(false), 1200);
+    gTimer.current = setTimeout(() => setGMode(false), KEYBOARD_G_MODE_TIMEOUT_MS);
   }, []);
 
   useEffect(() => {

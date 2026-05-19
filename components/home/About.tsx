@@ -4,10 +4,11 @@ import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { BIO, CURRENTLY, FACTS, HEADLINE, WHOAMI } from "@/content/about";
 import { pick, type Locale } from "@/content/types";
+import { EASE_OUT_EXPO } from "@/lib/animation";
 
 const block = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT_EXPO } },
 };
 
 const stagger = {
