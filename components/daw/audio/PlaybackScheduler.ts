@@ -67,7 +67,13 @@ export class PlaybackScheduler {
   public stop() {
     this.isPlaying = false
     this.clearScheduledEvents()
+    // Clear triggered clips so they can play again on next start
     this.triggeredClips.clear()
+    
+    // Stop the transport
+    if (Tone.Transport.state === "started") {
+      Tone.Transport.stop()
+    }
   }
 
   /**
