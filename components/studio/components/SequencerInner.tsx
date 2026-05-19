@@ -1,11 +1,13 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useSkin } from "../SkinContext"
 import { useSequencer } from "../useSequencer"
 import { Groove } from "./Groove"
 import { Knob } from "./Knob"
 import { LCD } from "./LCD"
 import { Panel } from "./Panel"
+import { PartSwitch } from "./PartSwitch"
 import { Screw } from "./Screw"
 import { ShareButton } from "./ShareButton"
 import { SkinSelector } from "./SkinSelector"
@@ -21,6 +23,20 @@ export function SequencerInner() {
     play, stop, reset,
     toggleStep, setVelocity, setBpm, setSwing, setStepCount, toggleMute,
   } = useSequencer()
+
+  const [viewPart, setViewPart] = useState<1 | 2>(1)
+  const partBEnabled = pattern.stepCount === 32
+
+  // Auto-switch view to follow the playhead when both parts are active
+  useEffect(() => {
+    if (!isPlaying || pattern.stepCount !== 32) return
+    setViewPart(currentStep >= 16 ? 2 : 1)
+  }, [currentStep, isPlaying, pattern.stepCount])
+
+  const handleTogglePartB = () => {
+    setStepCount(partBEnabled ? 16 : 32)
+    if (partBEnabled) setViewPart(1)
+  }
 
   return (
     <div
@@ -58,7 +74,7 @@ export function SequencerInner() {
           >
             <div>
               <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-0.5" style={{ color: skin.brand.sub }}>
-                N.Blanchard
+                NBLXRD
               </div>
               <div
                 className="font-mono font-bold tracking-[0.12em] uppercase"
@@ -70,7 +86,7 @@ export function SequencerInner() {
                   lineHeight: 1,
                 }}
               >
-                MK-1
+                DR-1
               </div>
             </div>
             <div className="flex flex-col gap-2">
@@ -91,11 +107,9 @@ export function SequencerInner() {
           <div className="flex items-end gap-5 sm:gap-7 flex-wrap">
             <Transport
               isPlaying={isPlaying}
-              stepCount={pattern.stepCount}
               onPlay={play}
               onStop={stop}
               onReset={reset}
-              onSetStepCount={setStepCount}
             />
             <div className="self-stretch w-px hidden sm:block" style={{ background: `linear-gradient(180deg, transparent, ${skin.groove.light} 20%, ${skin.groove.light} 80%, transparent)` }} />
             <Knob label="BPM"   value={pattern.bpm}   min={60}  max={200} color={skin.accent}    onChange={setBpm} />
@@ -112,15 +126,46 @@ export function SequencerInner() {
         <Groove />
 
         {/* ── Step Grid ── */}
-        <Panel label="Sequencer">
-          <StepGrid
-            pattern={pattern}
-            currentStep={currentStep}
-            onToggleStep={toggleStep}
-            onVelocityChange={setVelocity}
-            onToggleMute={toggleMute}
-          />
-        </Panel>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between px-0.5">
+            <span
+              className="text-[10px] font-mono tracking-[0.25em] uppercase"
+              style={{ color: skin.silkscreen, letterSpacing: "0.28em" }}
+            >
+              Sequencer
+            </span>
+            <PartSwitch
+              viewPart={viewPart}
+              partBEnabled={partBEnabled}
+              onSetViewPart={setViewPart}
+              onTogglePartB={handleTogglePartB}
+            />
+          </div>
+          <div
+            className="rounded-md"
+            style={{
+              background: skin.panel.bg,
+              border: "1px solid",
+              borderColor: skin.panel.borderBottom,
+              borderTopColor: skin.panel.borderTop,
+              boxShadow: [
+                "inset 0 2px 5px rgba(0,0,0,0.5)",
+                "inset 0 -1px 0 rgba(255,255,255,0.04)",
+                "0 1px 0 rgba(255,255,255,0.05)",
+              ].join(", "),
+              padding: "10px 12px",
+            }}
+          >
+            <StepGrid
+              pattern={pattern}
+              currentStep={currentStep}
+              viewPart={viewPart}
+              onToggleStep={toggleStep}
+              onVelocityChange={setVelocity}
+              onToggleMute={toggleMute}
+            />
+          </div>
+        </div>
 
         <div className="flex items-center justify-between px-0.5 pt-1">
           <span className="text-[10px] font-mono tracking-widest uppercase" style={{ color: skin.silkscreen, opacity: 0.6 }}>
