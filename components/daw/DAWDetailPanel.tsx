@@ -1,8 +1,10 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
+import { useEffect } from "react"
 import { useDAW } from "./DAWProvider"
 import { useDAWAudio } from "./audio/useDAWAudio"
+import { useSamplePreview } from "./audio/useSamplePreview"
 import { DAW_FILES_BY_ID, DAW_FOLDER_BY_ID } from "./files"
 import { BIO, FACTS, CURRENTLY, WHOAMI } from "@/content/about"
 import { ENTRIES } from "@/content/experience"
@@ -15,6 +17,7 @@ import type { DAWFile, DAWFolderId } from "./types"
 export function DAWDetailPanel() {
   const { detailSelection, openFileDetail, setDetailOpen, locale } = useDAW()
   const audio = useDAWAudio()
+  const preview = useSamplePreview()
 
   const selectedFile =
     detailSelection?.type === "file" ? DAW_FILES_BY_ID[detailSelection.fileId] : null
@@ -23,8 +26,25 @@ export function DAWDetailPanel() {
 
   function handleClose() {
     audio.playClose()
+    preview.stopPreview()
     setDetailOpen(false)
   }
+
+  async function handlePreviewToggle(fileId: string) {
+    if (preview.isPlaying(fileId)) {
+      preview.stopPreview()
+    } else {
+      const url = `/audio/${selectedFile?.folderId}/${selectedFile?.itemId}.mp3`
+      await preview.playPreview(fileId, url)
+    }
+  }
+
+  // Stop preview when selection changes to a different file
+  useEffect(() => {
+    if (preview.currentFileId && preview.currentFileId !== selectedFile?.id) {
+      preview.stopPreview()
+    }
+  }, [selectedFile?.id])
 
   function handleSelectFile(fileId: string) {
     audio.playOpen()
@@ -43,8 +63,18 @@ export function DAWDetailPanel() {
             <span className="text-[11px] text-stone-700 dark:text-zinc-300">
               {selectedFile.name}
               <span className="text-stone-400 dark:text-zinc-600">.{selectedFile.ext}</span>
-            </span>
-          </>
+            </span>            {/* Preview Play Button */}
+            <button
+              onClick={() => handlePreviewToggle(selectedFile.id)}
+              className={`ml-1 flex h-5 w-5 items-center justify-center rounded text-[10px] transition-colors ${
+                preview.isPlaying(selectedFile.id)
+                  ? "bg-amber-500 text-black"
+                  : "text-stone-400 dark:text-zinc-600 hover:bg-stone-200 dark:hover:bg-zinc-800 hover:text-stone-600 dark:hover:text-zinc-300"
+              }`}
+              title={preview.isPlaying(selectedFile.id) ? "Stop preview" : "Play preview"}
+            >
+              {preview.isPlaying(selectedFile.id) ? "⏸" : "▶"}
+            </button>          </>
         )}
         {!selectedFile && selectedFolder && (
           <>

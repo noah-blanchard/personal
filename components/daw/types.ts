@@ -11,6 +11,7 @@ export interface DAWFile {
   ext: DAWFileExt
   color: string // tailwind bg- class for the track color
   glyph: string // single char displayed as icon
+  durationBars?: number // calculated from audio sample duration at current BPM
 }
 
 export interface DAWFolder {
